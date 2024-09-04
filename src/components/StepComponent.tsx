@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react'
+import React, { ChangeEvent } from 'react'
 import GeneratedRepoCards from './RepoCardComponents';
 import type { RepoCardComponentDetails } from '../models/RepoCardModels';
 import { handleSubmitUserName } from '../utilities/repoDetailUtilities';
@@ -7,9 +7,11 @@ type StepComponentProps = {
 	setUsername: React.Dispatch<React.SetStateAction<string>>
 	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[]>>
 	setStep: React.Dispatch<React.SetStateAction<number>>
+	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>
 	username: string
 	repoDetails: RepoCardComponentDetails[]
 	step: number
+	selectedRepos: string[]
 }
 
 type StepOneComponentProps = {
@@ -21,6 +23,8 @@ type StepOneComponentProps = {
 
 type StepTwoComponentProps = {
 	repoDetails: RepoCardComponentDetails[]
+	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>
+	selectedRepos: string[]
 }
 
 
@@ -42,14 +46,14 @@ const StepOneComponent = ({setUsername, setRepoDetails, setStep, username}: Step
 	)
 }
 
-const StepTwoComponent = ({ repoDetails }: StepTwoComponentProps) => {
+const StepTwoComponent = ({ repoDetails, selectedRepos, setSelectedRepos }: StepTwoComponentProps) => {
 	return (
-		<GeneratedRepoCards repoDetails={repoDetails} />
+		<GeneratedRepoCards setSelectedRepos={setSelectedRepos} selectedRepos={selectedRepos} repoDetails={repoDetails} />
 	)
 }
 
 
-const StepComponent = ({setUsername, setRepoDetails, setStep, username, repoDetails, step}: StepComponentProps) => {
+const StepComponent = ({setUsername, setRepoDetails, setStep, setSelectedRepos, selectedRepos, username, repoDetails, step}: StepComponentProps) => {
 
     let CurrentStepUI = <></>;
 
@@ -59,7 +63,7 @@ const StepComponent = ({setUsername, setRepoDetails, setStep, username, repoDeta
         break;
 
       case 2:
-        CurrentStepUI = <StepTwoComponent repoDetails={repoDetails} />
+        CurrentStepUI = <StepTwoComponent repoDetails={repoDetails} setSelectedRepos={setSelectedRepos} selectedRepos={selectedRepos} />
         break;
 
       case 3:
