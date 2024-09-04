@@ -1,80 +1,18 @@
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
+import HeaderComponent from './components/HeaderComponent';
+import StepComponent from './components/StepComponent';
+import type { RepoCardComponentDetails } from './models/RepoCardModels'
 import './App.css'
 
 function App() {
-  const [username, setUsername] = useState('')
-  const [repoDetails, setRepoDetails] = useState({}) 
-
-  type RepoCardComponentDetails = {
-    name: string;
-    clone_url: string;
-  }
-
-
-  async function handleFetchUserRepos() {
-
-    if (!username) {
-      console.warn('No username entered')
-      return;
-    }
-
-    const results = await fetch(`https://api.github.com/users/${username}/repos`)
-      .then((response) => response.json())
-    
-    if (results?.length > 0) {
-      const relevantDetails = results.map((repo: any) => {
-        return {
-          name: repo.name,
-          clone_url: repo.clone_url,
-        }
-      }
-      )
-
-      setRepoDetails(relevantDetails)
-
-    }    
-   }
-
-   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (!event?.target?.value) {
-      return;
-    }
-
-    setUsername(event?.target?.value);
-
-  };
-
-  const RepoCardComponent = (repo : RepoCardComponentDetails) => {
-    return (
-      <a href={repo.clone_url}>
-        <div>
-          <h3>{repo.name}</h3>
-        </div>
-      </a>
-    )
-  }
-
-  const generatedRepoCards = () => {
-    return (
-      repoDetails.map((repo: RepoCardComponentDetails) => {
-        return (
-          <RepoCardComponent name={repo.name} clone_url={repo.clone_url} />
-        )
-      })
-    )
-  }
+  const [username, setUsername] = useState<string>('')
+  const [step, setStep] = useState<number>(1)
+  const [repoDetails, setRepoDetails] = useState<RepoCardComponentDetails[]>([]) 
 
   return (
     <>
-    {
-      !repoDetails && 
-        <div>
-          <h2>Enter Your Github Username</h2>
-          <input type="text" placeholder='e.g. @rollingwolf238' value={username} onChange={(e) => handleUserNameChange(e)}></input>
-          <button onClick={() => handleFetchUserRepos()} type='submit'>Submit</button>
-        </div>
-    }
-    
+      <HeaderComponent setStepState={setStep} currentStep={step} />
+      <StepComponent setUsername={setUsername} setRepoDetails={setRepoDetails} setStep={setStep} username={username} repoDetails={repoDetails} step={step} />  
     </>
   )
 }
