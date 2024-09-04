@@ -53,6 +53,11 @@ async function handleFetchUserRepos(username: string): Promise<RepoCardComponent
 
    }
 
-export { handleFetchUserRepos, handleSubmitUserName }
+async function handleFetchActivePRs({repoNamesList}: {repoNamesList: string[]}): Promise<any> {
+
+	
+}
+
+export { handleFetchUserRepos, handleSubmitUserName, handleFetchActivePRs }
 
    

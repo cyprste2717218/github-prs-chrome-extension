@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import HeaderComponent from './components/HeaderComponent';
 import StepComponent from './components/StepComponent';
+import FooterComponent from './components/FooterComponent';
 import type { RepoCardComponentDetails } from './models/RepoCardModels'
 import './App.css'
 
@@ -14,7 +15,8 @@ function App() {
   return (
     <>
       <HeaderComponent setStepState={setStep} currentStep={step} />
-      <StepComponent setSelectedRepos={setSelectedRepos} setUsername={setUsername} setRepoDetails={setRepoDetails} setStep={setStep} username={username} repoDetails={repoDetails} step={step} selectedRepos={selectedRepos} />  
+      <StepComponent setSelectedRepos={setSelectedRepos} setUsername={setUsername} setRepoDetails={setRepoDetails} setStep={setStep} username={username} repoDetails={repoDetails} step={step} selectedRepos={selectedRepos} /> 
+      <FooterComponent setStepState={setStep} currentStep={step} />
     </>
   )
 }

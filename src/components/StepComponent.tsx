@@ -27,7 +27,6 @@ type StepTwoComponentProps = {
 	selectedRepos: string[]
 }
 
-
 const StepOneComponent = ({setUsername, setRepoDetails, setStep, username}: StepOneComponentProps) => {
 	const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
 		if (!event?.target?.value) {

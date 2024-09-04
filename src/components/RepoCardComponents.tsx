@@ -36,27 +36,32 @@ const RepoCardComponent = ({name, clone_url, selectedRepos, setSelectedRepos} : 
 	};
 
 	return (
-			<>
-				<div style={{border: '2px solid #000'}}>
-					<a href={clone_url} target="_blank">
-						<h3>{name}</h3>
-					</a>
+		<>
+			<div style={{display: 'flex', justifyContent: 'center', padding: '10px'}}>
+				<div style={{width: '80%'}}>
+					<div style={{border: '2px solid #000'}}>
+						<a href={clone_url} target="_blank">
+							<h3>{name}</h3>
+						</a>
+					</div>
 				</div>
-				<label >
-					<button
-						type='button'
-						role='checkbox'
-						aria-checked={repoChecked}
-						id={`check${name}`}
-						style={{backgroundColor: '#fff', border: '1px solid #fff'}}
-						onClick={handleClick}
-					>
-						<FontAwesomeIcon size='lg' style={{fontSize: '2rem', color: '#ADD8E6'}} icon={repoChecked ? filledCheckBox : unFilledCheckBox} />
+				<div style={{width: '20%'}}>	
+					<label>
+						<button
+							type='button'
+							role='checkbox'
+							aria-checked={repoChecked}
+							id={`check${name}`}
+							style={{backgroundColor: '#fff', border: '1px solid #fff'}}
+							onClick={handleClick}
+						>
+							<FontAwesomeIcon size='lg' style={{fontSize: '2rem', color: '#ADD8E6'}} icon={repoChecked ? filledCheckBox : unFilledCheckBox} />
 
-					</button>
-
-    </label>
-			</>
+						</button>
+					</label>
+				</div>
+			</div>
+		</>
 	)
 }
 
