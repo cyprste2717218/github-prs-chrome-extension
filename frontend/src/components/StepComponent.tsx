@@ -5,11 +5,11 @@ import { handleSubmitUserName } from '../utilities/repoDetailUtilities';
 
 type StepComponentProps = {
 	setUsername: React.Dispatch<React.SetStateAction<string>>
-	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[]>>
+	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[] | null>>
 	setStep: React.Dispatch<React.SetStateAction<number>>
 	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>
 	username: string
-	repoDetails: RepoCardComponentDetails[]
+	repoDetails: RepoCardComponentDetails[] | null
 	step: number
 	selectedRepos: string[]
 	activeNumPRs: ActiveNumPRs[]
@@ -17,13 +17,13 @@ type StepComponentProps = {
 
 type StepOneComponentProps = {
 	setUsername: React.Dispatch<React.SetStateAction<string>>
-	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[]>>
+	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[] | null>>
 	setStep: React.Dispatch<React.SetStateAction<number>>
 	username: string
 }
 
 type StepTwoComponentProps = {
-	repoDetails: RepoCardComponentDetails[]
+	repoDetails: RepoCardComponentDetails[] | null
 	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>
 	selectedRepos: string[]
 }
@@ -34,10 +34,6 @@ type StepThreeComponentProps = {
 
 const StepOneComponent = ({setUsername, setRepoDetails, setStep, username}: StepOneComponentProps) => {
 	const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-		if (!event?.target?.value) {
-		  return;
-		}
-	
 		setUsername(event?.target?.value);
 	
 	  };

@@ -2,7 +2,7 @@ import type { RepoCardComponentDetails, ActiveNumPRs } from "../models/RepoCardM
 
 type RepoDetailUtilities = {
 	username: string;
-	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[]>>;
+	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[] | null>>;
 	setStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -14,7 +14,7 @@ type SubmitPRDetailsProps = {
 
 async function handleSubmitPRDetails({setActiveNumPRs, activeNumPRs, repoOwner}: SubmitPRDetailsProps) {
   console.log('gets to here');
-  console.log('active num of prs:',activeNumPRs)
+  console.log('active num of prs:', activeNumPRs)
   const updatedNumPRs = await Promise.all(
     activeNumPRs.map( async (repo) => {
       const repoName = repo.name;

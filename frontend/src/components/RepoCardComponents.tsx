@@ -5,7 +5,7 @@ import {faCircleCheck as filledCheckBox} from '@fortawesome/free-solid-svg-icons
 import { useState } from "react";
 
 type GeneratedRepoCardsProps = {
-	repoDetails: RepoCardComponentDetails[];
+	repoDetails: RepoCardComponentDetails[] | null;
 	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>;
 	selectedRepos: string[];
 }
