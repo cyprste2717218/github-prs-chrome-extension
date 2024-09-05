@@ -1,4 +1,4 @@
-import { RepoCardComponentDetails } from "../models/RepoCardModels";
+import { ActiveNumPRs, RepoCardComponentDetails } from "../models/RepoCardModels";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faCircle as unFilledCheckBox} from '@fortawesome/free-regular-svg-icons';
 import {faCircleCheck as filledCheckBox} from '@fortawesome/free-solid-svg-icons';
@@ -6,33 +6,52 @@ import { useState } from "react";
 
 type GeneratedRepoCardsProps = {
 	repoDetails: RepoCardComponentDetails[] | null;
-	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>;
-	selectedRepos: string[];
+	setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+	activeNumPRs: ActiveNumPRs[];
 }
 
 type RepoCardProps = {
 	name: string;
 	clone_url: string;
-	selectedRepos: string[];
-	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>;
+	activeNumPRs: ActiveNumPRs[];
+	setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
 }
 
-const RepoCardComponent = ({name, clone_url, selectedRepos, setSelectedRepos} : RepoCardProps): JSX.Element => {
+const RepoCardComponent = ({name, clone_url, activeNumPRs, setActiveNumPRs} : RepoCardProps): JSX.Element => {
 
 	const [repoChecked, setRepoChecked] = useState<boolean>(false);
-
+	
 	const handleClick = () => {
+
 		setRepoChecked(!repoChecked);
-		for ( let i = 0; i < selectedRepos.length; i++) {
-			if ((selectedRepos[i] === name) && !repoChecked) {
-				const updatedRepoDetails = [...selectedRepos];
-  				updatedRepoDetails.splice(i, 1);
-				setSelectedRepos(updatedRepoDetails);
+
+		// TODO: fix issue where repoChecked value is out of sync with value shown in UI
+
+		const currentRepoDetails: ActiveNumPRs[] = [...activeNumPRs];
+		let updatedRepoDetails: ActiveNumPRs[] = [];
+
+		if (repoChecked) {
+			// logic for repo not tracked
+
+			
+			 updatedRepoDetails = currentRepoDetails.filter(repo => repo.name !== name);
+
+			
+		} else {
+			// logic for repo when is tracked
+
+			const existingRepo = currentRepoDetails.find(repo => repo.name === name);
+
+			if (existingRepo) {
+				return currentRepoDetails;
 			} else {
-				setSelectedRepos([...selectedRepos, name]);
-			}
+				const newRepo = { name: name, numActivePRs: 0 };
+				updatedRepoDetails = [...currentRepoDetails, newRepo];
+			};
 		}
-		
+
+		setActiveNumPRs(updatedRepoDetails);
+	
 	};
 
 	return (
@@ -65,7 +84,7 @@ const RepoCardComponent = ({name, clone_url, selectedRepos, setSelectedRepos} : 
 	)
 }
 
-const GeneratedRepoCards = ({repoDetails, setSelectedRepos, selectedRepos}: GeneratedRepoCardsProps): JSX.Element => {
+const GeneratedRepoCards = ({repoDetails, setActiveNumPRs, activeNumPRs}: GeneratedRepoCardsProps): JSX.Element => {
 
     if (!repoDetails) {
       return <h3>No Repos found for provided username</h3>;
@@ -74,7 +93,7 @@ const GeneratedRepoCards = ({repoDetails, setSelectedRepos, selectedRepos}: Gene
     return (
 		<>
 		{repoDetails.map((repo: RepoCardComponentDetails) => 
-			<RepoCardComponent name={repo.name} clone_url={repo.clone_url} setSelectedRepos={setSelectedRepos} selectedRepos={selectedRepos} />
+			<RepoCardComponent name={repo.name} clone_url={repo.clone_url} setActiveNumPRs={setActiveNumPRs} activeNumPRs={activeNumPRs} />
 			
 		)}
 	  	</>

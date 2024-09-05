@@ -7,11 +7,10 @@ type StepComponentProps = {
 	setUsername: React.Dispatch<React.SetStateAction<string>>
 	setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[] | null>>
 	setStep: React.Dispatch<React.SetStateAction<number>>
-	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>
+	setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>
 	username: string
 	repoDetails: RepoCardComponentDetails[] | null
 	step: number
-	selectedRepos: string[]
 	activeNumPRs: ActiveNumPRs[]
 }
 
@@ -24,8 +23,8 @@ type StepOneComponentProps = {
 
 type StepTwoComponentProps = {
 	repoDetails: RepoCardComponentDetails[] | null
-	setSelectedRepos: React.Dispatch<React.SetStateAction<string[]>>
-	selectedRepos: string[]
+	setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>
+	activeNumPRs: ActiveNumPRs[]
 }
 
 type StepThreeComponentProps = {
@@ -34,6 +33,7 @@ type StepThreeComponentProps = {
 
 const StepOneComponent = ({setUsername, setRepoDetails, setStep, username}: StepOneComponentProps) => {
 	const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+	
 		setUsername(event?.target?.value);
 	
 	  };
@@ -46,9 +46,9 @@ const StepOneComponent = ({setUsername, setRepoDetails, setStep, username}: Step
 	)
 }
 
-const StepTwoComponent = ({ repoDetails, selectedRepos, setSelectedRepos }: StepTwoComponentProps) => {
+const StepTwoComponent = ({ repoDetails, setActiveNumPRs, activeNumPRs }: StepTwoComponentProps) => {
 	return (
-		<GeneratedRepoCards setSelectedRepos={setSelectedRepos} selectedRepos={selectedRepos} repoDetails={repoDetails} />
+		<GeneratedRepoCards setActiveNumPRs={setActiveNumPRs} activeNumPRs={activeNumPRs} repoDetails={repoDetails} />
 	)
 }
 
@@ -65,7 +65,7 @@ const StepThreeComponent = ({activeNumPRs}: StepThreeComponentProps) => {
 	)
 }
 
-const StepComponent = ({setUsername, setRepoDetails, setStep, setSelectedRepos, selectedRepos, username, repoDetails, step, activeNumPRs}: StepComponentProps) => {
+const StepComponent = ({setUsername, setRepoDetails, setActiveNumPRs, setStep, username, repoDetails, step, activeNumPRs}: StepComponentProps) => {
 
     let CurrentStepUI = <></>;
 
@@ -75,7 +75,7 @@ const StepComponent = ({setUsername, setRepoDetails, setStep, setSelectedRepos, 
         break;
 
       case 2:
-        CurrentStepUI = <StepTwoComponent repoDetails={repoDetails} setSelectedRepos={setSelectedRepos} selectedRepos={selectedRepos} />
+        CurrentStepUI = <StepTwoComponent setActiveNumPRs={setActiveNumPRs} activeNumPRs={activeNumPRs} repoDetails={repoDetails} />
         break;
 
       case 3:
