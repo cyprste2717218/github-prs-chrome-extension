@@ -2,35 +2,36 @@ import { ActiveNumPRs } from "../models/RepoCardModels";
 import { updatePRDetails } from "../utilities/repoDetailUtilities";
 
 type FooterComponentProps = {
-	setStepState: React.Dispatch<React.SetStateAction<number>>
-	currentStep: number;
-	setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>
-	activeNumPRs: ActiveNumPRs[]
-	repoOwner: string
-}
+  setStepState: React.Dispatch<React.SetStateAction<number>>;
+  currentStep: number;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  activeNumPRs: ActiveNumPRs[];
+  repoOwner: string;
+};
 
-const FooterComponent = ({setStepState, setActiveNumPRs, currentStep, activeNumPRs, repoOwner}: FooterComponentProps): JSX.Element => {
+const FooterComponent = ({
+  setStepState,
+  setActiveNumPRs,
+  currentStep,
+  activeNumPRs,
+  repoOwner,
+}: FooterComponentProps): JSX.Element => {
+  async function handleClick() {
+    if (activeNumPRs.length !== 0) {
+      console.log("activeNumPRs array is not empty");
+      updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+    } else {
+      console.log("activeNumPRs array is empty");
+    }
 
-	async function handleClick() {
-		if(activeNumPRs.length !== 0) {
-			console.log('activeNumPRs array is not empty')
-			updatePRDetails({setActiveNumPRs, activeNumPRs, repoOwner});
-		} else {
-			console.log('activeNumPRs array is empty')
-		}
-		
-		
-		
+    setStepState(currentStep + 1);
+  }
 
-		setStepState(currentStep + 1); 
-	}
-	
-
-	return (
-		<>
-			{(currentStep === 2) && <button onClick={() => handleClick()}>Next</button>}
-		</>
-	)
-}
+  return (
+    <>
+      {currentStep === 2 && <button onClick={() => handleClick()}>Next</button>}
+    </>
+  );
+};
 
 export default FooterComponent;
