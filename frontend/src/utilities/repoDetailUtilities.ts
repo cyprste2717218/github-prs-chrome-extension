@@ -13,7 +13,7 @@ type SubmitPRDetailsProps = {
   repoOwner: string;
 }
 
-async function handleSubmitPRDetails({setActiveNumPRs, activeNumPRs, repoOwner}: SubmitPRDetailsProps) {
+async function updatePRDetails({setActiveNumPRs, activeNumPRs, repoOwner}: SubmitPRDetailsProps) {
   console.log('gets to here');
   console.log('active num of prs:', activeNumPRs)
   const updatedNumPRs = await Promise.all(
@@ -98,6 +98,6 @@ async function handleFetchUserRepos(username: string): Promise<RepoCardComponent
 
 
 
-export { handleFetchUserRepos, handleSubmitUserName, handleSubmitPRDetails}
+export { handleFetchUserRepos, handleSubmitUserName, updatePRDetails}
 
    

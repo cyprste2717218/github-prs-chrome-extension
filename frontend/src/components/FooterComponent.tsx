@@ -1,5 +1,5 @@
 import { ActiveNumPRs } from "../models/RepoCardModels";
-import { handleSubmitPRDetails } from "../utilities/repoDetailUtilities";
+import { updatePRDetails } from "../utilities/repoDetailUtilities";
 
 type FooterComponentProps = {
 	setStepState: React.Dispatch<React.SetStateAction<number>>
@@ -14,7 +14,7 @@ const FooterComponent = ({setStepState, setActiveNumPRs, currentStep, activeNumP
 	async function handleClick() {
 		if(activeNumPRs.length !== 0) {
 			console.log('activeNumPRs array is not empty')
-			handleSubmitPRDetails({setActiveNumPRs, activeNumPRs, repoOwner});
+			updatePRDetails({setActiveNumPRs, activeNumPRs, repoOwner});
 		} else {
 			console.log('activeNumPRs array is empty')
 		}
