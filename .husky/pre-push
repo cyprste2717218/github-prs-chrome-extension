@@ -1,0 +1,2 @@
+echo "pre-commit hook started (husky)"
+npm run build
