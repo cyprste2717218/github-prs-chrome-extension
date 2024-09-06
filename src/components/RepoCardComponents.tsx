@@ -40,13 +40,13 @@ const RepoCardComponent = ({
       // logic for repo not tracked
 
       updatedRepoDetails = currentRepoDetails.filter(
-        (repo) => repo.name !== name,
+        (repo) => repo.name !== name
       );
     } else {
       // logic for repo when is tracked
 
       const existingRepo = currentRepoDetails.find(
-        (repo) => repo.name === name,
+        (repo) => repo.name === name
       );
 
       if (existingRepo) {

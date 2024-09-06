@@ -51,7 +51,7 @@ async function updatePRDetails({
         name: repoName,
         numActivePRs: updatedNumPRs,
       };
-    }),
+    })
   );
 
   setActiveNumPRs(updatedNumPRs);
@@ -77,7 +77,7 @@ async function handleSubmitUserName({
 }
 
 async function handleFetchUserRepos(
-  username: string,
+  username: string
 ): Promise<RepoCardComponentDetails[] | undefined> {
   if (!username) {
     console.warn("No username entered");
@@ -85,7 +85,7 @@ async function handleFetchUserRepos(
   }
 
   const results = await fetch(
-    `https://api.github.com/users/${username}/repos`,
+    `https://api.github.com/users/${username}/repos`
   ).then((response) => response.json());
 
   if (results?.length > 0) {

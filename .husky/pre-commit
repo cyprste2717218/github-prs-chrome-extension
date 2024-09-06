@@ -1,1 +1,4 @@
 echo "pre-commit hook started (husky)"
+echo "-------------------------------"
+echo "checking code adheres to prettier formatting rules "
+npm run pretty-check

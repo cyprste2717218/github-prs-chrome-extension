@@ -1,3 +1,4 @@
 echo "pre-push hook started (husky)"
+echo "-------------------------------"
 echo "validating extension builds succesfully"
 npm run build
