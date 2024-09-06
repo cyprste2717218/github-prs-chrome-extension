@@ -1,4 +1,5 @@
 import type { RepoCardComponentDetails, ActiveNumPRs } from "../models/RepoCardModels";
+import { request } from "@octokit/request";
 
 type RepoDetailUtilities = {
 	username: string;
@@ -19,21 +20,24 @@ async function handleSubmitPRDetails({setActiveNumPRs, activeNumPRs, repoOwner}:
     activeNumPRs.map( async (repo) => {
       const repoName = repo.name;
       const owner = repoOwner;
-      const currentNumPRs = repo.numActivePRs.toString();
+      /* const currentNumPRs = repo.numActivePRs.toString(); */
       
+      const response = await request(`GET /repos/${owner}/${repoName}/pulls`, {
+        owner: owner,
+        repo: repoName,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }).then((response) => response.data)
+    
 
-      const queryParams = new URLSearchParams({
-        repoName,
-        owner,
-        currentNumPRs,
-      });
-
-    const response = (await fetch(`/api?${queryParams.toString()}`)).json();
-    const data = await response
+     
+    
+    console.log('response:', response)
     
     return {
       name: repoName,
-      numActivePRs: data.numActivePRs
+      numActivePRs: response.length
     } 
   }))
 
