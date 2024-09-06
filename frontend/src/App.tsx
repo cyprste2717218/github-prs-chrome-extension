@@ -4,6 +4,7 @@ import StepComponent from './components/StepComponent';
 import FooterComponent from './components/FooterComponent';
 import type { RepoCardComponentDetails, ActiveNumPRs } from './models/RepoCardModels'
 import './App.css'
+import { updatePRDetails } from './utilities/repoDetailUtilities';
 
 
 function App() {
@@ -15,15 +16,26 @@ function App() {
 
 
   useEffect(() => {
-    console.log('repoDetails here:', repoDetails);
-    console.log('activeNumPRs here:', activeNumPRs);
-  }, [repoDetails, activeNumPRs])
+    
+    if (activeNumPRs.length > 0) {
+      const repoOwner = username;
+
+      const interval = setInterval(async () => {
+        const response = await updatePRDetails({setActiveNumPRs, activeNumPRs, repoOwner})
+        console.log(response);
+  
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }
+    
+  }, [activeNumPRs])
 
   return (
     <>
       <HeaderComponent setStepState={setStep} currentStep={step} />
 
-      <StepComponent setUsername={setUsername} setRepoDetails={setRepoDetails} setStep={setStep}setActiveNumPRs={setActiveNumPRs} username={username} repoDetails={repoDetails}  step={step}  activeNumPRs={activeNumPRs} /> 
+      <StepComponent setUsername={setUsername} setRepoDetails={setRepoDetails} setStep={setStep} setActiveNumPRs={setActiveNumPRs} username={username} repoDetails={repoDetails}  step={step}  activeNumPRs={activeNumPRs} /> 
 
       <FooterComponent setStepState={setStep} currentStep={step} setActiveNumPRs={setActiveNumPRs} activeNumPRs={activeNumPRs} repoOwner={username}/>
     </>
