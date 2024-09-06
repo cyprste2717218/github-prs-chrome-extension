@@ -20,7 +20,7 @@ async function handleSubmitPRDetails({setActiveNumPRs, activeNumPRs, repoOwner}:
     activeNumPRs.map( async (repo) => {
       const repoName = repo.name;
       const owner = repoOwner;
-      /* const currentNumPRs = repo.numActivePRs.toString(); */
+      const currentNumPRs = repo.numActivePRs
       
       const response = await request(`GET /repos/${owner}/${repoName}/pulls`, {
         owner: owner,
@@ -29,15 +29,19 @@ async function handleSubmitPRDetails({setActiveNumPRs, activeNumPRs, repoOwner}:
           'X-GitHub-Api-Version': '2022-11-28'
         }
       }).then((response) => response.data)
-    
-
+      
+      // update number of PRs for repo if number changed
+      let updatedNumPRs: number = currentNumPRs;
+      if (currentNumPRs !== response.length) {
+        updatedNumPRs = response.length;
+      } 
      
     
     console.log('response:', response)
     
     return {
       name: repoName,
-      numActivePRs: response.length
+      numActivePRs: updatedNumPRs
     } 
   }))
 
