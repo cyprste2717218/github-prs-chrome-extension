@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "vite-ts-react-test",
+  "name": "Github Pull Request Tracker",
   "version": "1.0",
-  "description": "",
+  "description": "See at a glance how many pull requests are open across your tracked repositories!",
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": ["scripting", "tabs", "activeTab"],
+  "permissions": ["scripting", "tabs", "activeTab", "storage"],
   "host_permissions": ["https://*/*", "http://*/*"]
 }

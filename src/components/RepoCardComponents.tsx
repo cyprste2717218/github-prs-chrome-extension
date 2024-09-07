@@ -11,10 +11,12 @@ type GeneratedRepoCardsProps = {
   repoDetails: RepoCardComponentDetails[] | null;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
+  step: number;
 };
 
 type RepoCardProps = {
   name: string;
+  step: number;
   clone_url: string;
   activeNumPRs: ActiveNumPRs[];
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
@@ -28,8 +30,14 @@ const RepoCardComponent = ({
 }: RepoCardProps): JSX.Element => {
   const [repoChecked, setRepoChecked] = useState<boolean>(false);
 
-  const handleClick = () => {
-    setRepoChecked(!repoChecked);
+  async function handleClick() {
+
+
+	setRepoChecked(!repoChecked);
+
+
+		
+
 
     // TODO: fix issue where repoChecked value is out of sync with value shown in UI
 
@@ -57,7 +65,8 @@ const RepoCardComponent = ({
       }
     }
 
-    setActiveNumPRs(updatedRepoDetails);
+	setActiveNumPRs(updatedRepoDetails);
+
   };
 
   return (
@@ -97,6 +106,7 @@ const RepoCardComponent = ({
 
 const GeneratedRepoCards = ({
   repoDetails,
+  step,
   setActiveNumPRs,
   activeNumPRs,
 }: GeneratedRepoCardsProps): JSX.Element => {
@@ -109,6 +119,7 @@ const GeneratedRepoCards = ({
       {repoDetails.map((repo: RepoCardComponentDetails) => (
         <RepoCardComponent
           name={repo.name}
+		  step={step}
           clone_url={repo.clone_url}
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}

@@ -5,6 +5,7 @@ import type {
   RepoCardComponentDetails,
 } from "../models/RepoCardModels";
 import { handleSubmitUserName } from "../utilities/repoDetailUtilities";
+import '../App.css'
 
 type StepComponentProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
@@ -32,6 +33,7 @@ type StepTwoComponentProps = {
   repoDetails: RepoCardComponentDetails[] | null;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
+  step: number;
 };
 
 type StepThreeComponentProps = {
@@ -51,6 +53,7 @@ const StepOneComponent = ({
   return (
     <div>
       <input
+	  	className="placeholder"
         type="text"
         placeholder="e.g. @rollingwolf238"
         value={username}
@@ -72,12 +75,14 @@ const StepTwoComponent = ({
   repoDetails,
   setActiveNumPRs,
   activeNumPRs,
+  step,
 }: StepTwoComponentProps) => {
   return (
     <GeneratedRepoCards
       setActiveNumPRs={setActiveNumPRs}
       activeNumPRs={activeNumPRs}
       repoDetails={repoDetails}
+	  step={step}
     />
   );
 };
@@ -125,6 +130,7 @@ const StepComponent = ({
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}
+		  step={step}
         />
       );
       break;

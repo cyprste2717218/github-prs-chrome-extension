@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons";
-
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import '../App.css'
 type HeaderProps = {
   currentStep: number;
   setStepState: React.Dispatch<React.SetStateAction<number>>;
@@ -36,7 +37,14 @@ const TitleComponent = ({
       break;
   }
 
-  return <h2>{stepTitle}</h2>;
+  return (
+    <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div>
+        {currentStep === 1 && <FontAwesomeIcon icon={faGithub} size="xl" />}
+        <h2 className="title">{stepTitle}</h2>
+      </div>
+    </div>
+);
 };
 
 const HeaderComponent = ({

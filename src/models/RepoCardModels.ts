@@ -1,5 +1,6 @@
 type RepoCardComponentDetails = {
   name: string;
+  step: number;
   clone_url: string;
 };
 
