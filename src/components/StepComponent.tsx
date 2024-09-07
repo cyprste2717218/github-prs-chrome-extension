@@ -1,11 +1,14 @@
 import React, { ChangeEvent } from "react";
 import GeneratedRepoCards from "./RepoCardComponents";
+import { ChevronRight } from "lucide-react";
+import { Button } from "./ui/button";
+import { Input } from "@/components/ui/input";
 import type {
   ActiveNumPRs,
   RepoCardComponentDetails,
 } from "../models/RepoCardModels";
 import { handleSubmitUserName } from "../utilities/repoDetailUtilities";
-import '../App.css'
+import "../App.css";
 
 type StepComponentProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
@@ -51,22 +54,32 @@ const StepOneComponent = ({
   };
 
   return (
-    <div>
-      <input
-	  	className="placeholder"
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        columnGap: "10px",
+        marginTop: "20px",
+        color: "#000",
+      }}
+    >
+      <Input
+        className="placeholder"
         type="text"
         placeholder="e.g. @rollingwolf238"
         value={username}
         onChange={(e) => handleUserNameChange(e)}
-      ></input>
-      <button
+      ></Input>
+
+      <Button
+        variant="outline"
         onClick={() =>
           handleSubmitUserName({ username, setRepoDetails, setStep })
         }
         type="submit"
       >
-        Submit
-      </button>
+        <ChevronRight className="h-4 w-4" />
+      </Button>
     </div>
   );
 };
@@ -82,7 +95,7 @@ const StepTwoComponent = ({
       setActiveNumPRs={setActiveNumPRs}
       activeNumPRs={activeNumPRs}
       repoDetails={repoDetails}
-	  step={step}
+      step={step}
     />
   );
 };
@@ -130,7 +143,7 @@ const StepComponent = ({
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}
-		  step={step}
+          step={step}
         />
       );
       break;

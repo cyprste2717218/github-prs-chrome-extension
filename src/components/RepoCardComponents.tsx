@@ -3,6 +3,13 @@ import {
   RepoCardComponentDetails,
 } from "../models/RepoCardModels";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 import { faCircle as unFilledCheckBox } from "@fortawesome/free-regular-svg-icons";
 import { faCircleCheck as filledCheckBox } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -31,13 +38,7 @@ const RepoCardComponent = ({
   const [repoChecked, setRepoChecked] = useState<boolean>(false);
 
   async function handleClick() {
-
-
-	setRepoChecked(!repoChecked);
-
-
-		
-
+    setRepoChecked(!repoChecked);
 
     // TODO: fix issue where repoChecked value is out of sync with value shown in UI
 
@@ -65,41 +66,37 @@ const RepoCardComponent = ({
       }
     }
 
-	setActiveNumPRs(updatedRepoDetails);
-
-  };
+    setActiveNumPRs(updatedRepoDetails);
+  }
 
   return (
     <>
-      <div
-        style={{ display: "flex", justifyContent: "center", padding: "10px" }}
-      >
-        <div style={{ width: "80%" }}>
-          <div style={{ border: "2px solid #000" }}>
+      <Card>
+        <CardHeader>
+          <CardTitle>
             <a href={clone_url} target="_blank">
               <h3>{name}</h3>
             </a>
-          </div>
-        </div>
-        <div style={{ width: "20%" }}>
-          <label>
-            <button
-              type="button"
-              role="checkbox"
-              aria-checked={repoChecked}
-              id={`check${name}`}
-              style={{ backgroundColor: "#fff", border: "1px solid #fff" }}
-              onClick={handleClick}
-            >
-              <FontAwesomeIcon
-                size="lg"
-                style={{ fontSize: "2rem", color: "#ADD8E6" }}
-                icon={repoChecked ? filledCheckBox : unFilledCheckBox}
-              />
-            </button>
-          </label>
-        </div>
-      </div>
+          </CardTitle>
+        </CardHeader>
+        <CardDescription>technologies go here</CardDescription>
+      </Card>
+      <label>
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={repoChecked}
+          id={`check${name}`}
+          style={{ backgroundColor: "#fff", border: "1px solid #fff" }}
+          onClick={handleClick}
+        >
+          <FontAwesomeIcon
+            size="lg"
+            style={{ fontSize: "2rem", color: "#ADD8E6" }}
+            icon={repoChecked ? filledCheckBox : unFilledCheckBox}
+          />
+        </button>
+      </label>
     </>
   );
 };
@@ -119,7 +116,7 @@ const GeneratedRepoCards = ({
       {repoDetails.map((repo: RepoCardComponentDetails) => (
         <RepoCardComponent
           name={repo.name}
-		  step={step}
+          step={step}
           clone_url={repo.clone_url}
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}

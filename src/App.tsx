@@ -9,9 +9,12 @@ import type {
 import "./App.css";
 import { updatePRDetails } from "./utilities/repoDetailUtilities";
 // @ts-ignore
-import { saveLocalRepoDetails, getLocalRepoDetails, saveLocalCurrentStep, getLocalCurrentStep } from "../public/background.js"
-
-
+import {
+  saveLocalRepoDetails,
+  getLocalRepoDetails,
+  saveLocalCurrentStep,
+  getLocalCurrentStep,
+} from "../public/background.js";
 
 function App() {
   const [username, setUsername] = useState<string>("");
@@ -21,28 +24,24 @@ function App() {
   >(null);
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
 
-
-
-
   useEffect(() => {
-    
     const setInitialStep = async () => {
       try {
-        const response = await getLocalCurrentStep()
+        const response = await getLocalCurrentStep();
         const initialStep = await response;
         //setStep(initialStep);
-        console.log('Initial step set to:', initialStep);
+        console.log("Initial step set to:", initialStep);
       } catch (error) {
-        console.error('Error setting initial step:', error);
+        console.error("Error setting initial step:", error);
       }
     };
 
     setInitialStep();
-    saveLocalCurrentStep(step)
+    saveLocalCurrentStep(step);
 
-    console.log('localCurrentStep:', getLocalCurrentStep())
+    console.log("localCurrentStep:", getLocalCurrentStep());
 
-    if ((activeNumPRs.length > 0 ) && (step === 3)) {
+    if (activeNumPRs.length > 0 && step === 3) {
       const repoOwner = username;
 
       const interval = setInterval(async () => {
