@@ -9,10 +9,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
+import { ChevronsUpDown } from "lucide-react";
+
 import { useState } from "react";
 import { Github } from "lucide-react";
 
@@ -44,6 +51,7 @@ const RepoCardComponent = ({
   setActiveNumPRs,
 }: RepoCardProps): JSX.Element => {
   const [repoChecked, setRepoChecked] = useState<boolean>(false);
+  const [cardExpanded, setCardExpanded] = useState<boolean>(false);
 
   async function handleClick() {
     setRepoChecked(!repoChecked);
@@ -79,58 +87,74 @@ const RepoCardComponent = ({
 
   return (
     <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
-      <Card className="w-[400px]">
-        <CardHeader>
-          <CardTitle>{name}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Separator className="my-4" />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "row",
-            }}
-          >
-            <div className="flex h-5 items-center space-x-4 text-sm">
+      <Collapsible open={cardExpanded} onOpenChange={setCardExpanded}>
+        <Card className="w-[400px]">
+          <CardHeader>
+            <CardTitle>
+              <div style={{ display: "flex", flexDirection: "row" }}>
+                <div style={{ width: "380px" }}>{name}</div>
+                <div>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-9 p-0">
+                      <ChevronsUpDown className="h-4 w-4" />
+                      <span className="sr-only">Toggle Repository Details</span>
+                    </Button>
+                  </CollapsibleTrigger>
+                </div>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardDescription>{description}</CardDescription>
+            <CardContent>
+              <Separator className="my-4" />
               <div
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  flexDirection: "column",
+                  flexDirection: "row",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "left" }}>
-                  {language && <Badge>{language}</Badge>}
-                </div>
-                <div style={{ display: "flex", justifyContent: "left" }}>
-                  {topics ? (
-                    topics.map((topic) => (
-                      <Badge variant="outline" key={topic}>
-                        {topic}
-                      </Badge>
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              </div>
-              <Separator orientation="vertical" />
-              <div style={{ display: "flex", justifyContent: "left" }}>
-                <a href={clone_url} target="_blank">
-                  <Button variant="link">
-                    <div style={{ padding: "10px" }}>
-                      <Github className="h-4 w-4" />
+                <div className="flex h-5 items-center space-x-4 text-sm">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "left" }}>
+                      {language && <Badge>{language}</Badge>}
                     </div>
-                    Link to Repo
-                  </Button>
-                </a>
+                    <div style={{ display: "flex", justifyContent: "left" }}>
+                      {topics ? (
+                        topics.map((topic) => (
+                          <Badge variant="outline" key={topic}>
+                            {topic}
+                          </Badge>
+                        ))
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  </div>
+                  <Separator orientation="vertical" />
+                  <div style={{ display: "flex", justifyContent: "left" }}>
+                    <a href={clone_url} target="_blank">
+                      <Button variant="link">
+                        <div style={{ padding: "10px" }}>
+                          <Github className="h-4 w-4" />
+                        </div>
+                        Link to Repo
+                      </Button>
+                    </a>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       <Checkbox
         aria-checked={repoChecked}
