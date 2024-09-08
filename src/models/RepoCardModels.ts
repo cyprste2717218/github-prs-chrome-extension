@@ -1,7 +1,10 @@
 type RepoCardComponentDetails = {
   name: string;
+  description: string;
+  language: string;
   step: number;
   clone_url: string;
+  topics: string[];
 };
 
 type ActiveNumPRs = {

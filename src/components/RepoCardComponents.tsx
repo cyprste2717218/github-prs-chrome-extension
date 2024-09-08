@@ -2,16 +2,15 @@ import {
   ActiveNumPRs,
   RepoCardComponentDetails,
 } from "../models/RepoCardModels";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { faCircle as unFilledCheckBox } from "@fortawesome/free-regular-svg-icons";
-import { faCircleCheck as filledCheckBox } from "@fortawesome/free-solid-svg-icons";
+import { Badge } from "./ui/badge";
+import { Checkbox } from "./ui/checkbox";
 import { useState } from "react";
 
 type GeneratedRepoCardsProps = {
@@ -23,6 +22,9 @@ type GeneratedRepoCardsProps = {
 
 type RepoCardProps = {
   name: string;
+  description: string;
+  language: string;
+  topics: string[];
   step: number;
   clone_url: string;
   activeNumPRs: ActiveNumPRs[];
@@ -31,6 +33,9 @@ type RepoCardProps = {
 
 const RepoCardComponent = ({
   name,
+  description,
+  language,
+  topics,
   clone_url,
   activeNumPRs,
   setActiveNumPRs,
@@ -70,34 +75,38 @@ const RepoCardComponent = ({
   }
 
   return (
-    <>
-      <Card>
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <Card className="w-[250px]">
         <CardHeader>
-          <CardTitle>
-            <a href={clone_url} target="_blank">
-              <h3>{name}</h3>
-            </a>
-          </CardTitle>
+          <CardTitle>{name}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </CardHeader>
-        <CardDescription>technologies go here</CardDescription>
+        <CardContent>
+          <div>
+            <a href={clone_url} target="_blank">
+              Repo Link
+            </a>
+          </div>
+          <div style={{ display: "flex", justifyContent: "left" }}>
+            {language && <Badge>{language}</Badge>}
+          </div>
+          <div style={{ display: "flex", justifyContent: "left" }}>
+            {topics &&
+              topics.map((topic) => (
+                <Badge variant="outline" key={topic}>
+                  {topic}
+                </Badge>
+              ))}
+          </div>
+        </CardContent>
       </Card>
-      <label>
-        <button
-          type="button"
-          role="checkbox"
-          aria-checked={repoChecked}
-          id={`check${name}`}
-          style={{ backgroundColor: "#fff", border: "1px solid #fff" }}
-          onClick={handleClick}
-        >
-          <FontAwesomeIcon
-            size="lg"
-            style={{ fontSize: "2rem", color: "#ADD8E6" }}
-            icon={repoChecked ? filledCheckBox : unFilledCheckBox}
-          />
-        </button>
-      </label>
-    </>
+
+      <Checkbox
+        aria-checked={repoChecked}
+        id={`check${name}`}
+        onClick={handleClick}
+      />
+    </div>
   );
 };
 
@@ -116,6 +125,9 @@ const GeneratedRepoCards = ({
       {repoDetails.map((repo: RepoCardComponentDetails) => (
         <RepoCardComponent
           name={repo.name}
+          description={repo.description}
+          language={repo.language}
+          topics={repo.topics}
           step={step}
           clone_url={repo.clone_url}
           setActiveNumPRs={setActiveNumPRs}

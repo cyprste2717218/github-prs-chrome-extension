@@ -93,6 +93,9 @@ async function handleFetchUserRepos(
       return {
         name: repo.name,
         clone_url: repo.clone_url,
+        description: repo.description,
+        language: repo.language,
+        topics: repo.topics,
       };
     });
 

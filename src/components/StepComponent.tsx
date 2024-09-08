@@ -2,6 +2,7 @@ import React, { ChangeEvent } from "react";
 import GeneratedRepoCards from "./RepoCardComponents";
 import { ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
+import { ButtonLoading } from "./ui/loadingButton";
 import { Input } from "@/components/ui/input";
 import type {
   ActiveNumPRs,
@@ -30,6 +31,8 @@ type StepOneComponentProps = {
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   username: string;
+  currentStep: number;
+  repoDetails: RepoCardComponentDetails[] | null;
 };
 
 type StepTwoComponentProps = {
@@ -46,11 +49,27 @@ type StepThreeComponentProps = {
 const StepOneComponent = ({
   setUsername,
   setRepoDetails,
+  repoDetails,
+  currentStep,
   setStep,
   username,
 }: StepOneComponentProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event?.target?.value);
+  };
+
+  const SubmitButton = () => {
+    return (
+      <Button
+        variant="outline"
+        onClick={() =>
+          handleSubmitUserName({ username, setRepoDetails, setStep })
+        }
+        type="submit"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    );
   };
 
   return (
@@ -71,15 +90,7 @@ const StepOneComponent = ({
         onChange={(e) => handleUserNameChange(e)}
       ></Input>
 
-      <Button
-        variant="outline"
-        onClick={() =>
-          handleSubmitUserName({ username, setRepoDetails, setStep })
-        }
-        type="submit"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+      {!repoDetails && currentStep === 1 ? <SubmitButton /> : <ButtonLoading />}
     </div>
   );
 };
@@ -133,6 +144,8 @@ const StepComponent = ({
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
           setStep={setStep}
+          repoDetails={repoDetails}
+          currentStep={step}
         />
       );
       break;

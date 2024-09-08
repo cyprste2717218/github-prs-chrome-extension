@@ -1,9 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
 import "../App.css";
+
 type HeaderProps = {
   currentStep: number;
   setStepState: React.Dispatch<React.SetStateAction<number>>;
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
 };
 
 const HeaderArrow = ({
@@ -49,12 +54,32 @@ const TitleComponent = ({
 
 const HeaderComponent = ({
   setStepState,
+  setRepoDetails,
   currentStep,
 }: HeaderProps): JSX.Element => {
+  type HandleStepChangeProps = {
+    currentStep: number;
+    setRepoDetails: React.Dispatch<
+      React.SetStateAction<RepoCardComponentDetails[] | null>
+    >;
+  };
+
+  const handleStepChange = ({
+    currentStep,
+    setRepoDetails,
+  }: HandleStepChangeProps) => {
+    setStepState(currentStep - 1);
+    setRepoDetails(null);
+  };
+
   return (
     <div>
       {(currentStep === 2 || currentStep === 3) && (
-        <HeaderArrow setStepState={setStepState} currentStep={currentStep} />
+        <HeaderArrow
+          setRepoDetails={setRepoDetails}
+          setStepState={() => handleStepChange({ currentStep, setRepoDetails })}
+          currentStep={currentStep}
+        />
       )}
       <TitleComponent currentStep={currentStep} />
     </div>
