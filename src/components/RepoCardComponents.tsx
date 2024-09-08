@@ -12,6 +12,7 @@ import {
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 import { useState } from "react";
 import { Github } from "lucide-react";
 
@@ -78,41 +79,54 @@ const RepoCardComponent = ({
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <Card className="w-[250px]">
+      <Card className="w-[400px]">
         <CardHeader>
           <CardTitle>{name}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent>
+          <Separator className="my-4" />
           <div
             style={{
               display: "flex",
-              justifyContent: "left",
-              flexDirection: "column",
+              justifyContent: "center",
+              flexDirection: "row",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "left" }}>
-              <a href={clone_url} target="_blank">
-                <Button variant="link">
-                  <div style={{ padding: "10px" }}>
-                    <Github className="h-4 w-4" />
-                  </div>
-                  Link to Repo
-                </Button>
-              </a>
-            </div>
-            <br></br>
-            <div style={{ display: "flex", justifyContent: "left" }}>
-              {language && <Badge>{language}</Badge>}
-            </div>
-            <br></br>
-            <div style={{ display: "flex", justifyContent: "left" }}>
-              {topics &&
-                topics.map((topic) => (
-                  <Badge variant="outline" key={topic}>
-                    {topic}
-                  </Badge>
-                ))}
+            <div className="flex h-5 items-center space-x-4 text-sm">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "left" }}>
+                  {language && <Badge>{language}</Badge>}
+                </div>
+                <div style={{ display: "flex", justifyContent: "left" }}>
+                  {topics ? (
+                    topics.map((topic) => (
+                      <Badge variant="outline" key={topic}>
+                        {topic}
+                      </Badge>
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+              <Separator orientation="vertical" />
+              <div style={{ display: "flex", justifyContent: "left" }}>
+                <a href={clone_url} target="_blank">
+                  <Button variant="link">
+                    <div style={{ padding: "10px" }}>
+                      <Github className="h-4 w-4" />
+                    </div>
+                    Link to Repo
+                  </Button>
+                </a>
+              </div>
             </div>
           </div>
         </CardContent>
