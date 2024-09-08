@@ -90,10 +90,16 @@ async function handleFetchUserRepos(
 
   if (results?.length > 0) {
     const relevantDetails = results.map((repo: any) => {
+      let shortenedDesc = repo.description;
+
+      if (repo.description.length > 150) {
+        shortenedDesc = repo.description.slice(0, 150) + "...";
+      }
+
       return {
         name: repo.name,
         clone_url: repo.clone_url,
-        description: repo.description,
+        description: shortenedDesc,
         language: repo.language,
         topics: repo.topics,
       };
