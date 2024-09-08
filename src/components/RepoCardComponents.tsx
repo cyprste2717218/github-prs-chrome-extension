@@ -78,7 +78,7 @@ const RepoCardComponent = ({
   }
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle>{name}</CardTitle>
