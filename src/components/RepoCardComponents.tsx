@@ -11,7 +11,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "./ui/badge";
 import { Checkbox } from "./ui/checkbox";
+import { Button } from "./ui/button";
 import { useState } from "react";
+import { Github } from "lucide-react";
 
 type GeneratedRepoCardsProps = {
   repoDetails: RepoCardComponentDetails[] | null;
@@ -82,21 +84,36 @@ const RepoCardComponent = ({
           <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div>
-            <a href={clone_url} target="_blank">
-              Repo Link
-            </a>
-          </div>
-          <div style={{ display: "flex", justifyContent: "left" }}>
-            {language && <Badge>{language}</Badge>}
-          </div>
-          <div style={{ display: "flex", justifyContent: "left" }}>
-            {topics &&
-              topics.map((topic) => (
-                <Badge variant="outline" key={topic}>
-                  {topic}
-                </Badge>
-              ))}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "left",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "left" }}>
+              <a href={clone_url} target="_blank">
+                <Button variant="link">
+                  <div style={{ padding: "10px" }}>
+                    <Github className="h-4 w-4" />
+                  </div>
+                  Link to Repo
+                </Button>
+              </a>
+            </div>
+            <br></br>
+            <div style={{ display: "flex", justifyContent: "left" }}>
+              {language && <Badge>{language}</Badge>}
+            </div>
+            <br></br>
+            <div style={{ display: "flex", justifyContent: "left" }}>
+              {topics &&
+                topics.map((topic) => (
+                  <Badge variant="outline" key={topic}>
+                    {topic}
+                  </Badge>
+                ))}
+            </div>
           </div>
         </CardContent>
       </Card>
