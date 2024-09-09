@@ -7,7 +7,7 @@
 
 Chrome extension that displays the number of open pull requests across tracked repositories (note: public repos only at current but this may change).
 
-Built in React with TypeScript using Vite, utilising shadcn/ui components using tailwind on the frontend.
+Built in React with TypeScript using Vite, utilising [shadcn/ui](https://ui.shadcn.com) components using tailwind on the frontend.
 
 To-do: include link to chrome web store listing when out here
 
