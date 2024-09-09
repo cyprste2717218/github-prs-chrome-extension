@@ -7,7 +7,6 @@ import type {
   ActiveNumPRs,
 } from "./models/RepoCardModels";
 import "./App.css";
-import { updatePRDetails } from "./utilities/repoDetailUtilities";
 
 import {
   saveLocalCurrentStep,
@@ -38,21 +37,6 @@ function App() {
     saveLocalCurrentStep(step);
 
     console.log("localCurrentStep:", getLocalCurrentStep());
-
-    if (activeNumPRs.length > 0 && step === 3) {
-      const repoOwner = username;
-
-      const interval = setInterval(async () => {
-        const response = await updatePRDetails({
-          setActiveNumPRs,
-          activeNumPRs,
-          repoOwner,
-        });
-        console.log(response);
-      }, 30000);
-
-      return () => clearInterval(interval);
-    }
   }, [activeNumPRs]);
 
   return (

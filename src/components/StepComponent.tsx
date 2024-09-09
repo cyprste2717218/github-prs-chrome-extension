@@ -1,5 +1,8 @@
 import React, { ChangeEvent } from "react";
-import GeneratedRepoCards from "./RepoCardComponents";
+import {
+  GeneratedDisplayRepoCards,
+  GeneratedPreviewRepoCards,
+} from "./RepoCardComponents";
 import { ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { ButtonLoading } from "./ui/loadingButton";
@@ -102,7 +105,7 @@ const StepTwoComponent = ({
   step,
 }: StepTwoComponentProps) => {
   return (
-    <GeneratedRepoCards
+    <GeneratedPreviewRepoCards
       setActiveNumPRs={setActiveNumPRs}
       activeNumPRs={activeNumPRs}
       repoDetails={repoDetails}
@@ -114,12 +117,7 @@ const StepTwoComponent = ({
 const StepThreeComponent = ({ activeNumPRs }: StepThreeComponentProps) => {
   return (
     <>
-      {activeNumPRs.map((repo, index) => (
-        <div key={index}>
-          <h3>{repo.name}</h3>
-          <p>Active Pull Requests: {repo.numActivePRs}</p>
-        </div>
-      ))}
+      <GeneratedDisplayRepoCards activeNumPRs={activeNumPRs} />
     </>
   );
 };

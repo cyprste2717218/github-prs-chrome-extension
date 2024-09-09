@@ -45,7 +45,7 @@ async function updatePRDetails({
         updatedNumPRs = response.length;
       }
 
-      console.log("response:", response);
+      console.log("github prs fetched:", response);
 
       return {
         name: repoName,

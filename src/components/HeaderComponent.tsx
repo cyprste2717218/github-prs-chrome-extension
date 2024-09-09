@@ -64,12 +64,8 @@ const HeaderComponent = ({
     >;
   };
 
-  const handleStepChange = ({
-    currentStep,
-    setRepoDetails,
-  }: HandleStepChangeProps) => {
+  const handleStepChange = ({ currentStep }: HandleStepChangeProps) => {
     setStepState(currentStep - 1);
-    setRepoDetails(null);
   };
 
   return (

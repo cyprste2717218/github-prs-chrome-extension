@@ -1,6 +1,9 @@
 import {
   ActiveNumPRs,
   RepoCardComponentDetails,
+  DisplayRepoCardProps,
+  PreviewRepoCardProps,
+  GeneratedRepoCardsProps,
 } from "../models/RepoCardModels";
 import {
   Card,
@@ -23,25 +26,82 @@ import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { Github } from "lucide-react";
 
-type GeneratedRepoCardsProps = {
-  repoDetails: RepoCardComponentDetails[] | null;
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  activeNumPRs: ActiveNumPRs[];
-  step: number;
+const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
+  return (
+    <Card className="w-[200px]">
+      <CardHeader>
+        <CardTitle>{name}</CardTitle>
+      </CardHeader>
+      <CardContent>{numPRs} Open PRs</CardContent>
+    </Card>
+  );
 };
 
-type RepoCardProps = {
-  name: string;
-  description: string;
-  language: string;
-  topics: string[];
-  step: number;
-  clone_url: string;
+const GeneratedDisplayRepoCards = ({
+  activeNumPRs,
+}: {
   activeNumPRs: ActiveNumPRs[];
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+}) => {
+  type RepoRowProps = {
+    repoOneName: string;
+    repoTwoName?: string;
+    repoOneNumPRs: number;
+    repoTwoNumPRs?: number;
+  };
+
+  const RepoRow = ({
+    repoOneName,
+    repoTwoName,
+    repoOneNumPRs,
+    repoTwoNumPRs,
+  }: RepoRowProps) => {
+    const shouldRenderCardTwo = repoTwoName && repoTwoNumPRs;
+    return (
+      <>
+        <DisplayCardComponent name={repoOneName} numPRs={repoOneNumPRs} />
+        {shouldRenderCardTwo && (
+          <DisplayCardComponent name={repoTwoName} numPRs={repoTwoNumPRs} />
+        )}
+      </>
+    );
+  };
+
+  if (!activeNumPRs) return <></>;
+
+  const totalRepos = activeNumPRs.length;
+  let results = [];
+
+  if (totalRepos > 0) {
+    for (let i = 0; i < totalRepos; i += 2) {
+      function isIndexOutOfRange() {
+        return i + 1 >= totalRepos;
+      }
+
+      results.push(
+        <RepoRow
+          repoOneName={activeNumPRs[i].name}
+          repoOneNumPRs={activeNumPRs[i].numActivePRs}
+          repoTwoName={
+            isIndexOutOfRange() ? undefined : activeNumPRs[i + 1].name
+          }
+          repoTwoNumPRs={
+            isIndexOutOfRange() ? undefined : activeNumPRs[i + 1].numActivePRs
+          }
+        />
+      );
+    }
+  }
+
+  return (
+    <>
+      {activeNumPRs.map((repo) => (
+        <DisplayCardComponent name={repo.name} numPRs={repo.numActivePRs} />
+      ))}
+    </>
+  );
 };
 
-const RepoCardComponent = ({
+const PreviewCardComponent = ({
   name,
   description,
   language,
@@ -49,12 +109,13 @@ const RepoCardComponent = ({
   clone_url,
   activeNumPRs,
   setActiveNumPRs,
-}: RepoCardProps): JSX.Element => {
+}: PreviewRepoCardProps): JSX.Element => {
   const [repoChecked, setRepoChecked] = useState<boolean>(false);
   const [cardExpanded, setCardExpanded] = useState<boolean>(false);
 
   async function handleClick() {
     setRepoChecked(!repoChecked);
+    ``;
 
     // TODO: fix issue where repoChecked value is out of sync with value shown in UI
 
@@ -165,7 +226,7 @@ const RepoCardComponent = ({
   );
 };
 
-const GeneratedRepoCards = ({
+const GeneratedPreviewRepoCards = ({
   repoDetails,
   step,
   setActiveNumPRs,
@@ -178,7 +239,7 @@ const GeneratedRepoCards = ({
   return (
     <>
       {repoDetails.map((repo: RepoCardComponentDetails) => (
-        <RepoCardComponent
+        <PreviewCardComponent
           name={repo.name}
           description={repo.description}
           language={repo.language}
@@ -193,4 +254,4 @@ const GeneratedRepoCards = ({
   );
 };
 
-export default GeneratedRepoCards;
+export { GeneratedPreviewRepoCards, GeneratedDisplayRepoCards };
