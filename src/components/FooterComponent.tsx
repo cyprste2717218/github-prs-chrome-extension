@@ -25,14 +25,16 @@ const FooterComponent = ({
       console.log("activeNumPRs array is empty");
     }
 
-    setStepState(currentStep + 1);
+	if (currentStep === 2) {
+		setStepState(currentStep + 1);
+	} 
   }
 
   return (
     <>
       {currentStep === 2 && <button onClick={() => handleClick()}>Next</button>}
       {currentStep === 3 && (
-        <RefreshButton handleRefresh={() => handleClick()} />
+        <RefreshButton handleRefresh={handleClick} />
       )}
     </>
   );
