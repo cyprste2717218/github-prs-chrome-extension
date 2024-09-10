@@ -33,11 +33,13 @@ const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
     return <Fragment></Fragment>;
   }
   return (
-    <Card className="w-[200px]" style={{margin: '5px'}}>
+    <Card className="w-[200px]" style={{ margin: "5px" }}>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
       </CardHeader>
-      <CardContent>{numPRs} Open PRs</CardContent>
+      <CardContent>
+        <span className="text-4xl font-semibold">{numPRs}</span> 
+        <span>Open PRs</span></CardContent>
     </Card>
   );
 };
