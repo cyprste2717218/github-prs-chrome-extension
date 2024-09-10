@@ -33,7 +33,7 @@ const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
     return <Fragment></Fragment>;
   }
   return (
-    <Card className="w-[200px]">
+    <Card className="w-[200px]" style={{margin: '5px'}}>
       <CardHeader>
         <CardTitle>{name}</CardTitle>
       </CardHeader>

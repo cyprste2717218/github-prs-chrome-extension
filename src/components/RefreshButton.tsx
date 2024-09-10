@@ -10,11 +10,11 @@ const RefreshButton = ({ handleRefresh }: HandleRefreshProps) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleClick = () => {
-	console.log('pressed refresh button')
+    console.log("pressed refresh button");
     setIsRefreshing(true);
     handleRefresh();
     setIsRefreshing(false);
-	console.log('succesfully refreshed prs')
+    console.log("succesfully refreshed prs");
   };
 
   return (
