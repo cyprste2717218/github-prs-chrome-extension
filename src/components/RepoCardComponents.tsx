@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import {
   ActiveNumPRs,
   RepoCardComponentDetails,
@@ -27,6 +28,9 @@ import { useState } from "react";
 import { Github } from "lucide-react";
 
 const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
+  if (name === "" && numPRs === -1) {
+    return <Fragment></Fragment>;
+  }
   return (
     <Card className="w-[200px]">
       <CardHeader>
@@ -44,9 +48,9 @@ const GeneratedDisplayRepoCards = ({
 }) => {
   type RepoRowProps = {
     repoOneName: string;
-    repoTwoName?: string;
+    repoTwoName: string;
     repoOneNumPRs: number;
-    repoTwoNumPRs?: number;
+    repoTwoNumPRs: number;
   };
 
   const RepoRow = ({
@@ -55,14 +59,17 @@ const GeneratedDisplayRepoCards = ({
     repoOneNumPRs,
     repoTwoNumPRs,
   }: RepoRowProps) => {
-    const shouldRenderCardTwo = repoTwoName && repoTwoNumPRs;
     return (
-      <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "row",
+        }}
+      >
         <DisplayCardComponent name={repoOneName} numPRs={repoOneNumPRs} />
-        {shouldRenderCardTwo && (
-          <DisplayCardComponent name={repoTwoName} numPRs={repoTwoNumPRs} />
-        )}
-      </>
+        <DisplayCardComponent name={repoTwoName} numPRs={repoTwoNumPRs} />
+      </div>
     );
   };
 
@@ -81,11 +88,9 @@ const GeneratedDisplayRepoCards = ({
         <RepoRow
           repoOneName={activeNumPRs[i].name}
           repoOneNumPRs={activeNumPRs[i].numActivePRs}
-          repoTwoName={
-            isIndexOutOfRange() ? undefined : activeNumPRs[i + 1].name
-          }
+          repoTwoName={isIndexOutOfRange() ? "" : activeNumPRs[i + 1].name}
           repoTwoNumPRs={
-            isIndexOutOfRange() ? undefined : activeNumPRs[i + 1].numActivePRs
+            isIndexOutOfRange() ? -1 : activeNumPRs[i + 1].numActivePRs
           }
         />
       );
@@ -94,9 +99,12 @@ const GeneratedDisplayRepoCards = ({
 
   return (
     <>
-      {activeNumPRs.map((repo) => (
-        <DisplayCardComponent name={repo.name} numPRs={repo.numActivePRs} />
+      {results.map((card) => (
+        <Fragment>{card}</Fragment>
       ))}
+      {/*  {activeNumPRs.map((repo) => (
+        <DisplayCardComponent name={repo.name} numPRs={repo.numActivePRs} />
+      ))} */}
     </>
   );
 };
@@ -216,12 +224,21 @@ const PreviewCardComponent = ({
           </CollapsibleContent>
         </Card>
       </Collapsible>
-
-      <Checkbox
-        aria-checked={repoChecked}
-        id={`check${name}`}
-        onClick={handleClick}
-      />
+      <Card>
+        <div>
+          <Checkbox
+            aria-checked={repoChecked}
+            id={`check${name}`}
+            onClick={handleClick}
+          />
+          <label
+            htmlFor={`check${name}`}
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Track Repo
+          </label>
+        </div>
+      </Card>
     </div>
   );
 };

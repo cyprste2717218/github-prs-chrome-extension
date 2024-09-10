@@ -69,6 +69,7 @@ const StepOneComponent = ({
           handleSubmitUserName({ username, setRepoDetails, setStep })
         }
         type="submit"
+        className="primary-foreground"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
