@@ -38,8 +38,9 @@ const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
         <CardTitle>{name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <span className="text-4xl font-semibold">{numPRs}</span> 
-        <span>Open PRs</span></CardContent>
+        <span className="text-4xl font-semibold">{numPRs}</span>
+        <span>Open PRs</span>
+      </CardContent>
     </Card>
   );
 };
