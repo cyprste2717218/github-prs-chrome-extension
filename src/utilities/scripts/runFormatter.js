@@ -1,10 +1,22 @@
-import { spawn } from 'child_process';
+import { spawn } from "child_process";
 
-const prettierProcess = spawn('prettier', ['--write', 'src/**/*.{js,jsx,ts,tsx}'], {
-  shell: true,
-  stdio: 'inherit',
+const prettierProcess = spawn(
+  "prettier",
+  ["--write", "src/**/*.{js,jsx,ts,tsx}"],
+  {
+    shell: true,
+    stdio: "inherit",
+  }
+);
+
+prettierProcess.on("error", (err) => {
+  console.error("Error running Prettier:", err);
 });
 
-prettierProcess.on('error', (err) => {
-  console.error('Error running Prettier:', err);
+prettierProcess.on("exit", (code) => {
+  if (code === 0) {
+    console.log("Prettier finished successfully.");
+  } else {
+    console.error("Prettier exited with code", code);
+  }
 });
