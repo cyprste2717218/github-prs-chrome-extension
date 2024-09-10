@@ -13,7 +13,7 @@ type RepoDetailUtilities = {
 };
 
 type SubmitPRDetailsProps = {
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>> ;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
 };
@@ -23,14 +23,16 @@ async function updatePRDetails({
   activeNumPRs,
   repoOwner,
 }: SubmitPRDetailsProps) {
+
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
+
   const updatedNumPRs = await Promise.all(
     activeNumPRs.map(async (repo) => {
       const repoName = repo.name;
       const owner = repoOwner;
       const currentNumPRs = repo.numActivePRs;
-
+      
       const response = await request(`GET /repos/${owner}/${repoName}/pulls`, {
         owner: owner,
         repo: repoName,
@@ -52,9 +54,11 @@ async function updatePRDetails({
         numActivePRs: updatedNumPRs,
       };
     })
-  );
-
+  )
+  
   setActiveNumPRs(updatedNumPRs);
+
+
 }
 
 async function handleSubmitUserName({
