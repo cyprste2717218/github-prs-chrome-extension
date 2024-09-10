@@ -33,18 +33,17 @@ const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
     return <Fragment></Fragment>;
   }
 
-
   let cardName = name;
   if (name.length > 27) {
     cardName = name.slice(0, 27) + "...";
   }
   return (
     <Card className="w-[200px] h-[200px]" style={{ margin: "5px" }}>
-      <CardHeader style={{height: '100px'}}>
+      <CardHeader style={{ height: "100px" }}>
         <CardTitle>{cardName}</CardTitle>
       </CardHeader>
-      <CardContent style={{height: '100px'}}>
-        <div style={{marginBottom: 'auto', marginTop: 'auto'}}>
+      <CardContent style={{ height: "100px" }}>
+        <div style={{ marginBottom: "auto", marginTop: "auto" }}>
           <div className="text-4xl font-semibold">{numPRs}</div>
           <div>Open PRs</div>
         </div>
