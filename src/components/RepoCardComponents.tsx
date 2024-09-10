@@ -29,6 +29,7 @@ import { Github } from "lucide-react";
 
 const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
   if (name === "" && numPRs === -1) {
+    //To-do: improve this 'null' logic handling - temporary measure for now
     return <Fragment></Fragment>;
   }
   return (
