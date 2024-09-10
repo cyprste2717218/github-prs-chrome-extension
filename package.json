@@ -10,6 +10,7 @@
     "lint-fix": "xo src --fix --prettier",
     "pretty-format": "npx prettier . --write src/**/*.{js,jsx,ts,tsx}",
     "pretty-check": "npx prettier . --check src/**/*.{js,jsx,ts,tsx}",
+    "run-pretty": "node src/utilities/scripts/runFormatter.js",
     "preview": "vite preview",
     "prepare": "husky",
     "test": "xo"
