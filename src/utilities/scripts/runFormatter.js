@@ -15,11 +15,10 @@ prettierProcess.on("error", (err) => {
 
 prettierProcess.on("exit", (code) => {
   if (code === 0) {
-    console.clear(); // clear prettier check/format commands outputs
-    console.log('-------------------------------')
+    console.log("-------------------------------");
     console.log("Prettier finished successfully.");
   } else {
-    console.log('-------------------------------')
+    console.log("-------------------------------");
     console.error("Prettier exited with code", code);
   }
 });
