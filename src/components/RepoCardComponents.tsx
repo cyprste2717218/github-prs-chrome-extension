@@ -32,14 +32,22 @@ const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
     //To-do: improve this 'null' logic handling - temporary measure for now
     return <Fragment></Fragment>;
   }
+
+
+  let cardName = name;
+  if (name.length > 27) {
+    cardName = name.slice(0, 27) + "...";
+  }
   return (
-    <Card className="w-[200px]" style={{ margin: "5px" }}>
-      <CardHeader>
-        <CardTitle>{name}</CardTitle>
+    <Card className="w-[200px] h-[200px]" style={{ margin: "5px" }}>
+      <CardHeader style={{height: '100px'}}>
+        <CardTitle>{cardName}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <span className="text-4xl font-semibold">{numPRs}</span>
-        <span>Open PRs</span>
+      <CardContent style={{height: '100px'}}>
+        <div style={{marginBottom: 'auto', marginTop: 'auto'}}>
+          <div className="text-4xl font-semibold">{numPRs}</div>
+          <div>Open PRs</div>
+        </div>
       </CardContent>
     </Card>
   );

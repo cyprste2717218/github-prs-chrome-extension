@@ -44,9 +44,23 @@ async function getLocalCurrentStep(step) {
   });
 }
 
+
+async function setChromeExtensionWindowSize() {
+	chrome.windows.getCurrent({ populate: true }, (window) => {
+		const updateInfo = {
+		  width: 100, 
+		  height: 100, 
+		};
+	  
+		chrome.windows.update(window.id, updateInfo);
+	  });
+	  
+}
+
 export {
   saveLocalRepoDetails,
   getLocalRepoDetails,
   saveLocalCurrentStep,
   getLocalCurrentStep,
+  setChromeExtensionWindowSize
 };

@@ -10,6 +10,7 @@ import "./App.css";
 
 import {
   saveLocalCurrentStep,
+  //setChromeExtensionWindowSize,
   getLocalCurrentStep, // @ts-ignore
 } from "../public/background.js";
 
@@ -35,7 +36,7 @@ function App() {
 
     setInitialStep();
     saveLocalCurrentStep(step);
-
+    //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", getLocalCurrentStep());
   }, [activeNumPRs]);
 
