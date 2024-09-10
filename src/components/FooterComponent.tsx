@@ -31,7 +31,9 @@ const FooterComponent = ({
   return (
     <>
       {currentStep === 2 && <button onClick={() => handleClick()}>Next</button>}
-	  {currentStep === 3 && <RefreshButton handleRefresh={() => handleClick()} />}
+      {currentStep === 3 && (
+        <RefreshButton handleRefresh={() => handleClick()} />
+      )}
     </>
   );
 };
