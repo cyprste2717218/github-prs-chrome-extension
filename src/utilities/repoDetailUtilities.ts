@@ -1,3 +1,4 @@
+import React from "react";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
@@ -17,6 +18,14 @@ type SubmitPRDetailsProps = {
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
 };
+
+type HandleRefreshProps = {
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+  activeNumPRs: ActiveNumPRs[];
+  currentStep: number;
+  repoOwner: string;
+}
 
 async function updatePRDetails({
   setActiveNumPRs,
@@ -112,4 +121,20 @@ async function handleFetchUserRepos(
   }
 }
 
-export { handleFetchUserRepos, handleSubmitUserName, updatePRDetails };
+async function handleRefresh({activeNumPRs, setActiveNumPRs, repoOwner, setStep, currentStep}: HandleRefreshProps) {
+  if (activeNumPRs.length !== 0) {
+    console.log("activeNumPRs array is not empty");
+    updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+  } else {
+    console.log("activeNumPRs array is empty");
+  }
+
+  if (currentStep === 2) {
+    setStep(currentStep + 1);
+  }
+}
+
+
+
+
+export { handleFetchUserRepos, handleSubmitUserName, handleRefresh, updatePRDetails };

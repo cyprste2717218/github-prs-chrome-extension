@@ -37,7 +37,7 @@ const TitleComponent = ({
       stepTitle = "Select the Repositories to Track";
       break;
     case 3:
-      stepTitle = "";
+      stepTitle = "Your Repositories";
       break;
   }
 
