@@ -25,7 +25,7 @@ type HandleRefreshProps = {
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;
-}
+};
 
 async function updatePRDetails({
   setActiveNumPRs,
@@ -121,7 +121,13 @@ async function handleFetchUserRepos(
   }
 }
 
-async function handleRefresh({activeNumPRs, setActiveNumPRs, repoOwner, setStep, currentStep}: HandleRefreshProps) {
+async function handleRefresh({
+  activeNumPRs,
+  setActiveNumPRs,
+  repoOwner,
+  setStep,
+  currentStep,
+}: HandleRefreshProps) {
   if (activeNumPRs.length !== 0) {
     console.log("activeNumPRs array is not empty");
     updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
@@ -134,7 +140,9 @@ async function handleRefresh({activeNumPRs, setActiveNumPRs, repoOwner, setStep,
   }
 }
 
-
-
-
-export { handleFetchUserRepos, handleSubmitUserName, handleRefresh, updatePRDetails };
+export {
+  handleFetchUserRepos,
+  handleSubmitUserName,
+  handleRefresh,
+  updatePRDetails,
+};
