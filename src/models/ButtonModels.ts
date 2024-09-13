@@ -10,7 +10,8 @@ type ButtonProps<T = {}> = CustomProps & T;
 
 type CustomButtonProps =
   | (RefreshButtonProps & { type: "refresh" })
-  | (SubmitButtonProps & { type: "submit" });
+  | (SubmitButtonProps & { type: "submit" })
+  | (BackButtonProps & { type: "back" });
 
 type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
@@ -28,4 +29,14 @@ type SubmitButtonProps = ButtonProps<{
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }>;
 
-export type { RefreshButtonProps, SubmitButtonProps, CustomButtonProps };
+type BackButtonProps = ButtonProps<{
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+  currentStep: number;
+}>;
+
+export type {
+  RefreshButtonProps,
+  SubmitButtonProps,
+  BackButtonProps,
+  CustomButtonProps,
+};

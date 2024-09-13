@@ -7,6 +7,7 @@ import {
   RefreshButtonProps,
   SubmitButtonProps,
   CustomButtonProps,
+  BackButtonProps,
 } from "@/models/ButtonModels";
 import { Button } from "./ui/button";
 import { RefreshCw, ChevronRight } from "lucide-react";
@@ -41,6 +42,18 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
   );
 };
 
+const BackButton: React.FC<BackButtonProps> = ({ setStep, currentStep }) => {
+  return (
+    <Button
+      onClick={() => setStep(currentStep - 1)}
+      variant="outline"
+      className="primary-foreground"
+    >
+      Back
+    </Button>
+  );
+};
+
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   username,
   setRepoDetails,
@@ -65,6 +78,8 @@ const ButtonCustom: React.FC<CustomButtonProps> = (props) => {
       return <RefreshButton {...props} />;
     case "submit":
       return <SubmitButton {...props} />;
+    case "back":
+      return <BackButton {...props} />;
     default:
       return <Fragment></Fragment>;
   }
