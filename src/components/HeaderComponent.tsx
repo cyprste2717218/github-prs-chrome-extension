@@ -98,6 +98,18 @@ const HeaderComponent = ({
       <div style={{ marginTop: "auto", marginBottom: "auto" }}>
         <TitleComponent currentStep={currentStep} />
       </div>
+      {currentStep === 3 && (
+        <div style={{ marginLeft: "60px" }}>
+          <ButtonCustom
+            type="refresh"
+            setActiveNumPRs={setActiveNumPRs}
+            setStep={setStepState}
+            activeNumPRs={activeNumPRs}
+            currentStep={currentStep}
+            repoOwner={repoOwner}
+          />
+        </div>
+      )}
       {currentStep === 2 && (
         <div style={{ marginLeft: "60px" }}>
           <ButtonCustom type="next" onClick={handleClick} />

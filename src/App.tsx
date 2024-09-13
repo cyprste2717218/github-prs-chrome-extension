@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import HeaderComponent from "./components/HeaderComponent";
 import StepComponent from "./components/StepComponent";
-import FooterComponent from "./components/FooterComponent";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
@@ -60,14 +59,6 @@ function App() {
         repoDetails={repoDetails}
         step={step}
         activeNumPRs={activeNumPRs}
-      />
-
-      <FooterComponent
-        setStepState={setStep}
-        currentStep={step}
-        setActiveNumPRs={setActiveNumPRs}
-        activeNumPRs={activeNumPRs}
-        repoOwner={username}
       />
     </>
   );
