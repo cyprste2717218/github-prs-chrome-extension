@@ -3,15 +3,13 @@ import {
   GeneratedDisplayRepoCards,
   GeneratedPreviewRepoCards,
 } from "./RepoCardComponents";
-import { ChevronRight } from "lucide-react";
-import { Button } from "./ui/button";
+import ButtonCustom from "./ButtonCustom";
 import { ButtonLoading } from "./ui/loadingButton";
 import { Input } from "@/components/ui/input";
 import type {
   ActiveNumPRs,
   RepoCardComponentDetails,
 } from "../models/RepoCardModels";
-import { handleSubmitUserName } from "../utilities/repoDetailUtilities";
 import "../App.css";
 
 type StepComponentProps = {
@@ -61,21 +59,6 @@ const StepOneComponent = ({
     setUsername(event?.target?.value);
   };
 
-  const SubmitButton = () => {
-    return (
-      <Button
-        variant="outline"
-        onClick={() =>
-          handleSubmitUserName({ username, setRepoDetails, setStep })
-        }
-        type="submit"
-        className="primary-foreground"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-    );
-  };
-
   return (
     <div
       style={{
@@ -94,7 +77,16 @@ const StepOneComponent = ({
         onChange={(e) => handleUserNameChange(e)}
       ></Input>
 
-      {!repoDetails && currentStep === 1 ? <SubmitButton /> : <ButtonLoading />}
+      {!repoDetails && currentStep === 1 ? (
+        <ButtonCustom
+          type="submit"
+          username={username}
+          setRepoDetails={setRepoDetails}
+          setStep={setStep}
+        />
+      ) : (
+        <ButtonLoading />
+      )}
     </div>
   );
 };
