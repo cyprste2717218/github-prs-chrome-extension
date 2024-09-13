@@ -83,6 +83,7 @@ const HeaderComponent = ({
         display: "flex",
         justifyContent: "center",
         flexDirection: "row",
+        marginBottom: "20px",
       }}
     >
       {(currentStep === 2 || currentStep === 3) && (
