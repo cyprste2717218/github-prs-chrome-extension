@@ -80,6 +80,8 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   setRepoDetails,
   setStep,
 }) => {
+  const isDisabled = username.length === 0;
+
   return (
     <Button
       variant="outline"
@@ -87,6 +89,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
         handleSubmitUserName({ username, setRepoDetails, setStep })
       }
       className="primary-foreground"
+      disabled={isDisabled}
     >
       <ChevronRight className="h-4 w-4" />
     </Button>
