@@ -1,5 +1,7 @@
 import ButtonCustom from "./ButtonCustom";
 import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
+import { updatePRDetails } from "@/utilities/repoDetailUtilities";
+import { ActiveNumPRs } from "@/models/RepoCardModels";
 import "../App.css";
 
 type HeaderProps = {
@@ -8,6 +10,9 @@ type HeaderProps = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  activeNumPRs: ActiveNumPRs[];
+  repoOwner: string;
 };
 
 const TitleComponent = ({
@@ -43,7 +48,10 @@ const TitleComponent = ({
 const HeaderComponent = ({
   setStepState,
   setRepoDetails,
+  setActiveNumPRs,
   currentStep,
+  activeNumPRs,
+  repoOwner,
 }: HeaderProps): JSX.Element => {
   type HandleStepChangeProps = {
     currentStep: number;
@@ -55,6 +63,19 @@ const HeaderComponent = ({
   const handleStepChange = ({ currentStep }: HandleStepChangeProps) => {
     setStepState(currentStep - 1);
   };
+
+  async function handleClick() {
+    if (activeNumPRs.length !== 0) {
+      console.log("activeNumPRs array is not empty");
+      updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+    } else {
+      console.log("activeNumPRs array is empty");
+    }
+
+    if (currentStep === 2) {
+      setStepState(currentStep + 1);
+    }
+  }
 
   return (
     <div
@@ -76,6 +97,7 @@ const HeaderComponent = ({
       >
         <TitleComponent currentStep={currentStep} />
       </div>
+      {currentStep === 2 && <ButtonCustom type="next" onClick={handleClick} />}
     </div>
   );
 };

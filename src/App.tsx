@@ -45,7 +45,10 @@ function App() {
       <HeaderComponent
         setStepState={setStep}
         setRepoDetails={setRepoDetails}
+        setActiveNumPRs={setActiveNumPRs}
+        activeNumPRs={activeNumPRs}
         currentStep={step}
+        repoOwner={username}
       />
 
       <StepComponent
