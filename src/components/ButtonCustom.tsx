@@ -10,7 +10,7 @@ import {
   BackButtonProps,
 } from "@/models/ButtonModels";
 import { Button } from "./ui/button";
-import { RefreshCw, ChevronRight } from "lucide-react";
+import { RefreshCw, ChevronRight, ArrowLeft } from "lucide-react";
 
 const RefreshButton: React.FC<RefreshButtonProps> = ({
   setActiveNumPRs,
@@ -49,7 +49,8 @@ const BackButton: React.FC<BackButtonProps> = ({ setStep, currentStep }) => {
       variant="outline"
       className="primary-foreground"
     >
-      Back
+      <ArrowLeft className="h-4 w-4" />
+      <p style={{ paddingLeft: "2px" }}>Back</p>
     </Button>
   );
 };
