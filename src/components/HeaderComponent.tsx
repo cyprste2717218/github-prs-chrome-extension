@@ -57,7 +57,13 @@ const HeaderComponent = ({
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "row",
+      }}
+    >
       {(currentStep === 2 || currentStep === 3) && (
         <ButtonCustom
           type="back"
@@ -65,7 +71,11 @@ const HeaderComponent = ({
           currentStep={currentStep}
         />
       )}
-      <TitleComponent currentStep={currentStep} />
+      <div
+        style={{ marginTop: "auto", marginBottom: "auto", paddingLeft: "5px" }}
+      >
+        <TitleComponent currentStep={currentStep} />
+      </div>
     </div>
   );
 };
