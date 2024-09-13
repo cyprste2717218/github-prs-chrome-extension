@@ -55,9 +55,16 @@ const BackButton: React.FC<BackButtonProps> = ({ setStep, currentStep }) => {
   );
 };
 
-const NextButton: React.FC<NextButtonProps> = ({ onClick }) => {
+const NextButton: React.FC<NextButtonProps> = ({ onClick, activeNumPRs }) => {
+  const isDisabled = activeNumPRs.length === 0;
+
   return (
-    <Button variant="outline" onClick={onClick} className="primary-foreground">
+    <Button
+      disabled={isDisabled}
+      variant="outline"
+      onClick={onClick}
+      className="primary-foreground"
+    >
       <p style={{ paddingRight: "2px" }}>Next</p>
       <div style={{ marginTop: "auto", marginBottom: "auto" }}>
         <div>

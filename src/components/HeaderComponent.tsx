@@ -112,7 +112,11 @@ const HeaderComponent = ({
       )}
       {currentStep === 2 && (
         <div style={{ marginLeft: "60px" }}>
-          <ButtonCustom type="next" onClick={handleClick} />
+          <ButtonCustom
+            type="next"
+            onClick={handleClick}
+            activeNumPRs={activeNumPRs}
+          />
         </div>
       )}
     </div>

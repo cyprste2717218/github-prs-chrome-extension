@@ -37,6 +37,7 @@ type BackButtonProps = ButtonProps<{
 
 type NextButtonProps = ButtonProps<{
   onClick: () => void;
+  activeNumPRs: ActiveNumPRs[];
 }>;
 
 export type {
