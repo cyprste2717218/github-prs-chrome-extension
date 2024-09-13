@@ -27,7 +27,7 @@ const TitleComponent = ({
       stepTitle = "Enter Your Github Username";
       break;
     case 2:
-      stepTitle = "Select the Repositories to Track";
+      stepTitle = "Choose Repositories";
       break;
     case 3:
       stepTitle = "Your Repositories";
@@ -86,18 +86,22 @@ const HeaderComponent = ({
       }}
     >
       {(currentStep === 2 || currentStep === 3) && (
-        <ButtonCustom
-          type="back"
-          setStep={() => handleStepChange({ currentStep, setRepoDetails })}
-          currentStep={currentStep}
-        />
+        <div style={{ marginRight: "60px" }}>
+          <ButtonCustom
+            type="back"
+            setStep={() => handleStepChange({ currentStep, setRepoDetails })}
+            currentStep={currentStep}
+          />
+        </div>
       )}
-      <div
-        style={{ marginTop: "auto", marginBottom: "auto", paddingLeft: "5px" }}
-      >
+      <div style={{ marginTop: "auto", marginBottom: "auto" }}>
         <TitleComponent currentStep={currentStep} />
       </div>
-      {currentStep === 2 && <ButtonCustom type="next" onClick={handleClick} />}
+      {currentStep === 2 && (
+        <div style={{ marginLeft: "60px" }}>
+          <ButtonCustom type="next" onClick={handleClick} />
+        </div>
+      )}
     </div>
   );
 };
