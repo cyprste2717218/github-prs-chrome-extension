@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import ButtonCustom from "./ButtonCustom";
 import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
 import "../App.css";
 
@@ -9,17 +8,6 @@ type HeaderProps = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
-};
-
-const HeaderArrow = ({
-  setStepState,
-  currentStep,
-}: HeaderProps): JSX.Element => {
-  return (
-    <div onClick={() => setStepState(currentStep - 1)}>
-      <FontAwesomeIcon icon={faCircleChevronLeft} size="lg" />
-    </div>
-  );
 };
 
 const TitleComponent = ({
@@ -71,9 +59,9 @@ const HeaderComponent = ({
   return (
     <div>
       {(currentStep === 2 || currentStep === 3) && (
-        <HeaderArrow
-          setRepoDetails={setRepoDetails}
-          setStepState={() => handleStepChange({ currentStep, setRepoDetails })}
+        <ButtonCustom
+          type="back"
+          setStep={() => handleStepChange({ currentStep, setRepoDetails })}
           currentStep={currentStep}
         />
       )}
