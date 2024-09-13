@@ -134,7 +134,6 @@ const PreviewCardComponent = ({
 
   async function handleClick() {
     setRepoChecked(!repoChecked);
-    ``;
 
     // TODO: fix issue where repoChecked value is out of sync with value shown in UI
 
@@ -245,9 +244,7 @@ const PreviewCardComponent = ({
           <label
             htmlFor={`check${name}`}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Track Repo
-          </label>
+          ></label>
         </div>
       </Card>
     </div>
