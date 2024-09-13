@@ -1,6 +1,6 @@
 import { ActiveNumPRs } from "../models/RepoCardModels";
 import { updatePRDetails } from "../utilities/repoDetailUtilities";
-import RefreshButton from "./RefreshButton";
+import ButtonCustom from "./ButtonCustom";
 
 type FooterComponentProps = {
   setStepState: React.Dispatch<React.SetStateAction<number>>;
@@ -33,7 +33,16 @@ const FooterComponent = ({
   return (
     <>
       {currentStep === 2 && <button onClick={() => handleClick()}>Next</button>}
-      {currentStep === 3 && <RefreshButton handleRefresh={handleClick} />}
+      {currentStep === 3 && (
+        <ButtonCustom
+          type="refresh"
+          setActiveNumPRs={setActiveNumPRs}
+          setStep={setStepState}
+          activeNumPRs={activeNumPRs}
+          currentStep={currentStep}
+          repoOwner={repoOwner}
+        />
+      )}
     </>
   );
 };

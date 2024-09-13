@@ -6,18 +6,18 @@ import {
 import {
   RefreshButtonProps,
   SubmitButtonProps,
-  ButtonCustomProps,
+  CustomButtonProps,
 } from "@/models/ButtonModels";
 import { Button } from "./ui/button";
 import { RefreshCw, ChevronRight } from "lucide-react";
 
-const RefreshButton = ({
+const RefreshButton: React.FC<RefreshButtonProps> = ({
   setActiveNumPRs,
   setStep,
   activeNumPRs,
   currentStep,
   repoOwner,
-}: RefreshButtonProps) => {
+}) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleClick = () => {
@@ -41,11 +41,11 @@ const RefreshButton = ({
   );
 };
 
-const SubmitButton = ({
+const SubmitButton: React.FC<SubmitButtonProps> = ({
   username,
   setRepoDetails,
   setStep,
-}: SubmitButtonProps) => {
+}) => {
   return (
     <Button
       variant="outline"
@@ -59,44 +59,15 @@ const SubmitButton = ({
   );
 };
 
-const ButtonCustom = ({
-  type,
-  username,
-  setRepoDetails,
-  setStep,
-  setActiveNumPRs,
-  activeNumPRs,
-  currentStep,
-  repoOwner,
-}: ButtonCustomProps) => {
-  let button;
-
-  switch (type) {
+const ButtonCustom: React.FC<CustomButtonProps> = (props) => {
+  switch (props.type) {
     case "refresh":
-      button = (
-        <RefreshButton
-          setActiveNumPRs={setActiveNumPRs}
-          setStep={setStep}
-          activeNumPRs={activeNumPRs}
-          currentStep={currentStep}
-          repoOwner={repoOwner}
-        />
-      );
-      break;
+      return <RefreshButton {...props} />;
     case "submit":
-      button = (
-        <SubmitButton
-          username={username}
-          setRepoDetails={setRepoDetails}
-          setStep={setStep}
-        />
-      );
-      break;
+      return <SubmitButton {...props} />;
     default:
-      button = <Fragment></Fragment>;
+      return <Fragment></Fragment>;
   }
-
-  return { button };
 };
 
 export default ButtonCustom;

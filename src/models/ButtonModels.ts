@@ -2,26 +2,30 @@ import React from "react";
 import { RepoCardComponentDetails } from "./RepoCardModels";
 import { ActiveNumPRs } from "./RepoCardModels";
 
-type ButtonCustomProps = {
+type CustomProps = {
   type: string;
-} & (RefreshButtonProps & SubmitButtonProps);
-
-type ButtonPropsCommon = {
-  setStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-type RefreshButtonProps = {
+type ButtonProps<T = {}> = CustomProps & T;
+
+type CustomButtonProps =
+  | (RefreshButtonProps & { type: "refresh" })
+  | (SubmitButtonProps & { type: "submit" });
+
+type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;
-} & ButtonPropsCommon;
+}>;
 
-type SubmitButtonProps = {
+type SubmitButtonProps = ButtonProps<{
   username: string;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
-} & ButtonPropsCommon;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+}>;
 
-export type { RefreshButtonProps, SubmitButtonProps, ButtonCustomProps };
+export type { RefreshButtonProps, SubmitButtonProps, CustomButtonProps };
