@@ -4,6 +4,7 @@ import type {
   ActiveNumPRs,
 } from "../models/RepoCardModels";
 import { request } from "@octokit/request";
+import { saveToStorage } from "../../public/background.ts";
 
 type RepoDetailUtilities = {
   username: string;
@@ -65,6 +66,7 @@ async function updatePRDetails({
   );
 
   setActiveNumPRs(updatedNumPRs);
+  saveToStorage("activeNumPRs", updatedNumPRs);
 }
 
 async function handleSubmitUserName({
@@ -83,6 +85,9 @@ async function handleSubmitUserName({
     }
     setRepoDetails(results);
     setStep(2);
+    // @ts-ignore
+    saveToStorage("repoDetails", results);
+    saveToStorage("step", 2);
   });
 }
 
@@ -125,18 +130,13 @@ async function handleRefresh({
   activeNumPRs,
   setActiveNumPRs,
   repoOwner,
-  setStep,
-  currentStep,
 }: HandleRefreshProps) {
   if (activeNumPRs.length !== 0) {
     console.log("activeNumPRs array is not empty");
     updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+    saveToStorage("activeNumPRs", activeNumPRs);
   } else {
     console.log("activeNumPRs array is empty");
-  }
-
-  if (currentStep === 2) {
-    setStep(currentStep + 1);
   }
 }
 

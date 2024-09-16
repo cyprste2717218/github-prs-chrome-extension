@@ -3,6 +3,7 @@ import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
 import { updatePRDetails } from "@/utilities/repoDetailUtilities";
 import { ActiveNumPRs } from "@/models/RepoCardModels";
 import "../App.css";
+import { saveToStorage } from "../../public/background.ts";
 
 type HeaderProps = {
   currentStep: number;
@@ -62,18 +63,26 @@ const HeaderComponent = ({
 
   const handleStepChange = ({ currentStep }: HandleStepChangeProps) => {
     setStepState(currentStep - 1);
+    saveToStorage("step", currentStep - 1);
+
+    if (currentStep === 1 || currentStep === 2) {
+      setActiveNumPRs([]);
+      saveToStorage("activeNumPRs", []);
+    }
   };
 
   async function handleClick() {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
       updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+      saveToStorage("activeNumPRs", activeNumPRs);
     } else {
       console.log("activeNumPRs array is empty");
     }
 
     if (currentStep === 2) {
       setStepState(currentStep + 1);
+      saveToStorage("step", currentStep + 1);
     }
   }
 

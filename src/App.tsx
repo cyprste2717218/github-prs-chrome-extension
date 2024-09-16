@@ -8,13 +8,13 @@ import type {
 import "./App.css";
 
 import {
-  saveLocalCurrentStep,
+  loadFromStorage,
   //setChromeExtensionWindowSize,
-  getLocalCurrentStep, // @ts-ignore
-} from "../public/background.js";
+  // @ts-ignore
+} from "../public/background.ts";
 
 function App() {
-  const [username, setUsername] = useState<string>("");
+  const [username, setUsername] = useState<string>(""); // @ts-ignore
   const [step, setStep] = useState<number>(1);
   const [repoDetails, setRepoDetails] = useState<
     RepoCardComponentDetails[] | null
@@ -22,22 +22,29 @@ function App() {
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
 
   useEffect(() => {
-    const setInitialStep = async () => {
-      try {
-        const response = await getLocalCurrentStep();
-        const initialStep = await response;
-        //setStep(initialStep);
-        console.log("Initial step set to:", initialStep);
-      } catch (error) {
-        console.error("Error setting initial step:", error);
-      }
-    };
+    // @ts-ignore
+    chrome.storage.local.get("username", (result) => {
+      setUsername(JSON.parse(result.username));
+    });
 
-    setInitialStep();
-    saveLocalCurrentStep(step);
+    // @ts-ignore
+    chrome.storage.local.get("repoDetails", (result) => {
+      setRepoDetails(JSON.parse(result.repoDetails));
+    });
+
+    // @ts-ignore
+    chrome.storage.local.get("activeNumPRs", (result) => {
+      setActiveNumPRs(JSON.parse(result.activeNumPRs));
+    });
+
+    // @ts-ignore
+    chrome.storage.local.get("step", (result) => {
+      setStep(JSON.parse(result.step));
+    });
+
     //setChromeExtensionWindowSize()
-    console.log("localCurrentStep:", getLocalCurrentStep());
-  }, [activeNumPRs]);
+    console.log("localCurrentStep:", loadFromStorage("step"));
+  }, []);
 
   return (
     <>

@@ -4,7 +4,6 @@ import {
   GeneratedPreviewRepoCards,
 } from "./RepoCardComponents";
 import ButtonCustom from "./ButtonCustom";
-import { ButtonLoading } from "./ui/loadingButton";
 import { Input } from "@/components/ui/input";
 import type {
   StepComponentProps,
@@ -14,17 +13,18 @@ import type {
 } from "@/models/StepComponentModels";
 
 import "../App.css";
+import { saveToStorage } from "../../public/background.ts";
 
 const StepOneComponent = ({
   setUsername,
   setRepoDetails,
-  repoDetails,
   currentStep,
   setStep,
   username,
 }: StepOneComponentProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event?.target?.value);
+    saveToStorage("username", username);
   };
 
   return (
@@ -45,15 +45,13 @@ const StepOneComponent = ({
         onChange={(e) => handleUserNameChange(e)}
       ></Input>
 
-      {!repoDetails && currentStep === 1 ? (
+      {currentStep === 1 && (
         <ButtonCustom
           type="submit"
           username={username}
           setRepoDetails={setRepoDetails}
           setStep={setStep}
         />
-      ) : (
-        <ButtonLoading />
       )}
     </div>
   );
