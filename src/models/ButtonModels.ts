@@ -42,9 +42,13 @@ type NextButtonProps = ButtonProps<{
   activeNumPRs: ActiveNumPRs[];
 }>;
 
-type UsernameWithPATButtonProps = ButtonProps<{}>;
+type UsernameWithPATButtonProps = ButtonProps<{
+  setHasPAT: React.Dispatch<React.SetStateAction<boolean>>;
+}>;
 
-type UsernameButtonProps = ButtonProps<{}>;
+type UsernameButtonProps = ButtonProps<{
+  setHasPAT: React.Dispatch<React.SetStateAction<boolean>>;
+}>;
 
 export type {
   RefreshButtonProps,

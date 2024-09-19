@@ -65,6 +65,7 @@ function App() {
         setRepoDetails={setRepoDetails}
         setStep={setStep}
         setActiveNumPRs={setActiveNumPRs}
+        setHasPAT={setHasPAT}
         username={username}
         repoDetails={repoDetails}
         step={step}

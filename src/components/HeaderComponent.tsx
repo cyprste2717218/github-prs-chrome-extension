@@ -42,7 +42,7 @@ const TitleComponent = ({
     case 3:
       stepTitle = "Choose Repositories";
       break;
-    case 3:
+    case 4:
       stepTitle = "Your Repositories";
       break;
   }

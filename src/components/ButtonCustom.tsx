@@ -13,14 +13,29 @@ import {
   UsernameButtonProps,
 } from "@/models/ButtonModels";
 import { Button } from "./ui/button";
-import { RefreshCw, ChevronRight, ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  RefreshCw,
+  ChevronRight,
+  ArrowLeft,
+  ArrowRight,
+  KeyRound,
+} from "lucide-react";
 
 const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
-  return <Button></Button>;
+  return (
+    <Button className="w-full">
+      <KeyRound className={`h-4 w-4`} />
+      Enter Github Username and PAT
+    </Button>
+  );
 };
 
 const UsernameButton: React.FC<UsernameButtonProps> = ({}) => {
-  return <Button></Button>;
+  return (
+    <Button variant="outline" className="w-full">
+      Enter Github Username
+    </Button>
+  );
 };
 
 const RefreshButton: React.FC<RefreshButtonProps> = ({

@@ -8,13 +8,16 @@ type StepComponentProps = {
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setHasPAT: React.Dispatch<React.SetStateAction<boolean>>;
   username: string;
   repoDetails: RepoCardComponentDetails[] | null;
   step: number;
   activeNumPRs: ActiveNumPRs[];
 };
 
-type StepOneComponentProps = {};
+type StepOneComponentProps = {
+  setHasPAT: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 type StepTwoComponentProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;

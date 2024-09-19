@@ -16,8 +16,13 @@ import type {
 import "../App.css";
 import { saveToStorage } from "../../public/background.ts";
 
-const StepOneComponent = ({}: StepOneComponentProps) => {
-  return <></>;
+const StepOneComponent = ({ setHasPAT }: StepOneComponentProps) => {
+  return (
+    <>
+      <ButtonCustom type="usernameWithPAT" setHasPAT={setHasPAT} />
+      <ButtonCustom type="username" setHasPAT={setHasPAT} />
+    </>
+  );
 };
 
 const StepTwoComponent = ({
@@ -90,6 +95,7 @@ const StepComponent = ({
   setUsername,
   setRepoDetails,
   setActiveNumPRs,
+  setHasPAT,
   setStep,
   username,
   repoDetails,
@@ -100,7 +106,7 @@ const StepComponent = ({
 
   switch (step) {
     case 1:
-      CurrentStepUI = <StepOneComponent />;
+      CurrentStepUI = <StepOneComponent setHasPAT={setHasPAT} />;
       break;
 
     case 2:
