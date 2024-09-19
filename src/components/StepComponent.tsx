@@ -5,6 +5,7 @@ import {
 } from "./RepoCardComponents";
 import ButtonCustom from "./ButtonCustom";
 import { Input } from "@/components/ui/input";
+import { Separator } from "./ui/separator.tsx";
 import type {
   StepComponentProps,
   StepOneComponentProps,
@@ -19,8 +20,19 @@ import { saveToStorage } from "../../public/background.ts";
 const StepOneComponent = ({ setHasPAT }: StepOneComponentProps) => {
   return (
     <>
-      <ButtonCustom type="usernameWithPAT" setHasPAT={setHasPAT} />
-      <ButtonCustom type="username" setHasPAT={setHasPAT} />
+      <div>
+        <div style={{ marginBottom: "10px" }}>
+          <ButtonCustom type="username" setHasPAT={setHasPAT} />
+        </div>
+        <Separator className="my-4" />
+
+        <div>
+          <ButtonCustom type="usernameWithPAT" setHasPAT={setHasPAT} />
+        </div>
+        <div className="mt-4 text-center text-sm">
+          Find out how to <a href="">create a PAT (classic) here</a>
+        </div>
+      </div>
     </>
   );
 };

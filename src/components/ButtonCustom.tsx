@@ -11,6 +11,7 @@ import {
   NextButtonProps,
   UsernameWithPATButtonProps,
   UsernameButtonProps,
+  LinkButtonProps,
 } from "@/models/ButtonModels";
 import { Button } from "./ui/button";
 import {
@@ -20,6 +21,12 @@ import {
   ArrowRight,
   KeyRound,
 } from "lucide-react";
+
+const LinkButton: React.FC<LinkButtonProps> = ({ text, url }) => (
+  <a href={url}>
+    <Button variant={"link"}>{text}</Button>
+  </a>
+);
 
 const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
   return (
@@ -135,6 +142,8 @@ const ButtonCustom: React.FC<CustomButtonProps> = (props) => {
       return <UsernameButton {...props} />;
     case "usernameWithPAT":
       return <UsernameWithPATButton {...props} />;
+    case "link":
+      return <LinkButton {...props} />;
     default:
       return <Fragment></Fragment>;
   }

@@ -14,7 +14,8 @@ type CustomButtonProps =
   | (BackButtonProps & { type: "back" })
   | (NextButtonProps & { type: "next" })
   | (UsernameWithPATButtonProps & { type: "usernameWithPAT" })
-  | (UsernameButtonProps & { type: "username" });
+  | (UsernameButtonProps & { type: "username" })
+  | (LinkButtonProps & { type: "link" });
 
 type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
@@ -43,11 +44,16 @@ type NextButtonProps = ButtonProps<{
 }>;
 
 type UsernameWithPATButtonProps = ButtonProps<{
-  setHasPAT: React.Dispatch<React.SetStateAction<boolean>>;
+  setHasPAT: React.Dispatch<React.SetStateAction<boolean | null>>;
 }>;
 
 type UsernameButtonProps = ButtonProps<{
-  setHasPAT: React.Dispatch<React.SetStateAction<boolean>>;
+  setHasPAT: React.Dispatch<React.SetStateAction<boolean | null>>;
+}>;
+
+type LinkButtonProps = ButtonProps<{
+  text: string;
+  url: string;
 }>;
 
 export type {
@@ -58,4 +64,5 @@ export type {
   NextButtonProps,
   UsernameWithPATButtonProps,
   UsernameButtonProps,
+  LinkButtonProps,
 };
