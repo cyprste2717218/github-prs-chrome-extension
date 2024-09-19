@@ -6,20 +6,25 @@ import "../App.css";
 import { saveToStorage } from "../../public/background.ts";
 
 type HeaderProps = {
-  currentStep: number;
   setStepState: React.Dispatch<React.SetStateAction<number>>;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setHasPAT: React.Dispatch<React.SetStateAction<boolean>>;
+  currentStep: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
+  hasPAT: boolean;
 };
 
+// To-do: move this props into own ts alias
 const TitleComponent = ({
   currentStep,
+  hasPAT,
 }: {
   currentStep: number;
+  hasPAT: boolean;
 }): JSX.Element => {
   let stepTitle = "";
 
@@ -28,6 +33,13 @@ const TitleComponent = ({
       stepTitle = "Choose a Setup Option from Below";
       break;
     case 2:
+      if (hasPAT) {
+        stepTitle = "Enter Your Github PAT and Username";
+      } else {
+        stepTitle = "Enter Your Username";
+      }
+      break;
+    case 3:
       stepTitle = "Choose Repositories";
       break;
     case 3:
@@ -53,6 +65,7 @@ const HeaderComponent = ({
   currentStep,
   activeNumPRs,
   repoOwner,
+  hasPAT,
 }: HeaderProps): JSX.Element => {
   type HandleStepChangeProps = {
     currentStep: number;
@@ -65,7 +78,7 @@ const HeaderComponent = ({
     setStepState(currentStep - 1);
     saveToStorage("step", currentStep - 1);
 
-    if (currentStep === 1 || currentStep === 2) {
+    if (currentStep === 2 || currentStep === 3) {
       setActiveNumPRs([]);
       saveToStorage("activeNumPRs", []);
     }
@@ -80,7 +93,7 @@ const HeaderComponent = ({
       console.log("activeNumPRs array is empty");
     }
 
-    if (currentStep === 2) {
+    if (currentStep === 3) {
       setStepState(currentStep + 1);
       saveToStorage("step", currentStep + 1);
     }
@@ -95,7 +108,7 @@ const HeaderComponent = ({
         marginBottom: "20px",
       }}
     >
-      {(currentStep === 2 || currentStep === 3) && (
+      {(currentStep === 3 || currentStep === 4) && (
         <div style={{ marginRight: "60px" }}>
           <ButtonCustom
             type="back"
@@ -111,9 +124,9 @@ const HeaderComponent = ({
             <h1 className="title">Welcome to Github PR Tracker!</h1>
           </div>
         )}
-        <TitleComponent currentStep={currentStep} />
+        <TitleComponent hasPAT={hasPAT} currentStep={currentStep} />
       </div>
-      {currentStep === 3 && (
+      {currentStep === 4 && (
         <div style={{ marginLeft: "60px" }}>
           <ButtonCustom
             type="refresh"

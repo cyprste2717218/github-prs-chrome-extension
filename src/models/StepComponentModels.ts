@@ -14,7 +14,9 @@ type StepComponentProps = {
   activeNumPRs: ActiveNumPRs[];
 };
 
-type StepOneComponentProps = {
+type StepOneComponentProps = {};
+
+type StepTwoComponentProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
@@ -25,14 +27,14 @@ type StepOneComponentProps = {
   repoDetails: RepoCardComponentDetails[] | null;
 };
 
-type StepTwoComponentProps = {
+type StepThreeComponentProps = {
   repoDetails: RepoCardComponentDetails[] | null;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
   step: number;
 };
 
-type StepThreeComponentProps = {
+type StepFourComponentProps = {
   activeNumPRs: ActiveNumPRs[];
 };
 
@@ -41,4 +43,5 @@ export type {
   StepOneComponentProps,
   StepTwoComponentProps,
   StepThreeComponentProps,
+  StepFourComponentProps,
 };

@@ -9,9 +9,19 @@ import {
   CustomButtonProps,
   BackButtonProps,
   NextButtonProps,
+  UsernameWithPATButtonProps,
+  UsernameButtonProps,
 } from "@/models/ButtonModels";
 import { Button } from "./ui/button";
 import { RefreshCw, ChevronRight, ArrowLeft, ArrowRight } from "lucide-react";
+
+const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
+  return <Button></Button>;
+};
+
+const UsernameButton: React.FC<UsernameButtonProps> = ({}) => {
+  return <Button></Button>;
+};
 
 const RefreshButton: React.FC<RefreshButtonProps> = ({
   setActiveNumPRs,
@@ -106,6 +116,10 @@ const ButtonCustom: React.FC<CustomButtonProps> = (props) => {
       return <BackButton {...props} />;
     case "next":
       return <NextButton {...props} />;
+    case "username":
+      return <UsernameButton {...props} />;
+    case "usernameWithPAT":
+      return <UsernameWithPATButton {...props} />;
     default:
       return <Fragment></Fragment>;
   }

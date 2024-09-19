@@ -12,7 +12,9 @@ type CustomButtonProps =
   | (RefreshButtonProps & { type: "refresh" })
   | (SubmitButtonProps & { type: "submit" })
   | (BackButtonProps & { type: "back" })
-  | (NextButtonProps & { type: "next" });
+  | (NextButtonProps & { type: "next" })
+  | (UsernameWithPATButtonProps & { type: "usernameWithPAT" })
+  | (UsernameButtonProps & { type: "username" });
 
 type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
@@ -40,10 +42,16 @@ type NextButtonProps = ButtonProps<{
   activeNumPRs: ActiveNumPRs[];
 }>;
 
+type UsernameWithPATButtonProps = ButtonProps<{}>;
+
+type UsernameButtonProps = ButtonProps<{}>;
+
 export type {
   RefreshButtonProps,
   SubmitButtonProps,
   BackButtonProps,
   CustomButtonProps,
   NextButtonProps,
+  UsernameWithPATButtonProps,
+  UsernameButtonProps,
 };

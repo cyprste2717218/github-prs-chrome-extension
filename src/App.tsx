@@ -20,6 +20,7 @@ function App() {
     RepoCardComponentDetails[] | null
   >(null);
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
+  const [hasPAT, setHasPAT] = useState<boolean>(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -55,6 +56,8 @@ function App() {
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}
+        hasPAT={hasPAT}
+        setHasPAT={setHasPAT}
       />
 
       <StepComponent

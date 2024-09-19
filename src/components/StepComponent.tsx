@@ -10,18 +10,23 @@ import type {
   StepOneComponentProps,
   StepTwoComponentProps,
   StepThreeComponentProps,
+  StepFourComponentProps,
 } from "@/models/StepComponentModels";
 
 import "../App.css";
 import { saveToStorage } from "../../public/background.ts";
 
-const StepOneComponent = ({
+const StepOneComponent = ({}: StepOneComponentProps) => {
+  return <></>;
+};
+
+const StepTwoComponent = ({
   setUsername,
   setRepoDetails,
   currentStep,
   setStep,
   username,
-}: StepOneComponentProps) => {
+}: StepTwoComponentProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event?.target?.value);
     saveToStorage("username", username);
@@ -45,7 +50,7 @@ const StepOneComponent = ({
         onChange={(e) => handleUserNameChange(e)}
       ></Input>
 
-      {currentStep === 1 && (
+      {currentStep === 2 && (
         <ButtonCustom
           type="submit"
           username={username}
@@ -57,12 +62,12 @@ const StepOneComponent = ({
   );
 };
 
-const StepTwoComponent = ({
+const StepThreeComponent = ({
   repoDetails,
   setActiveNumPRs,
   activeNumPRs,
   step,
-}: StepTwoComponentProps) => {
+}: StepThreeComponentProps) => {
   return (
     <GeneratedPreviewRepoCards
       setActiveNumPRs={setActiveNumPRs}
@@ -73,7 +78,7 @@ const StepTwoComponent = ({
   );
 };
 
-const StepThreeComponent = ({ activeNumPRs }: StepThreeComponentProps) => {
+const StepFourComponent = ({ activeNumPRs }: StepFourComponentProps) => {
   return (
     <>
       <GeneratedDisplayRepoCards activeNumPRs={activeNumPRs} />
@@ -95,8 +100,12 @@ const StepComponent = ({
 
   switch (step) {
     case 1:
+      CurrentStepUI = <StepOneComponent />;
+      break;
+
+    case 2:
       CurrentStepUI = (
-        <StepOneComponent
+        <StepTwoComponent
           username={username}
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
@@ -107,9 +116,9 @@ const StepComponent = ({
       );
       break;
 
-    case 2:
+    case 3:
       CurrentStepUI = (
-        <StepTwoComponent
+        <StepThreeComponent
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}
@@ -118,9 +127,8 @@ const StepComponent = ({
       );
       break;
 
-    case 3:
-      CurrentStepUI = <StepThreeComponent activeNumPRs={activeNumPRs} />;
-      break;
+    case 4:
+      CurrentStepUI = <StepFourComponent activeNumPRs={activeNumPRs} />;
   }
 
   return CurrentStepUI;
