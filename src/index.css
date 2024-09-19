@@ -118,6 +118,14 @@ button:focus-visible {
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
+  font-size: x-large;
+}
+
+.steptitle {
+  font-family: "Source Code Pro", monospace;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
   font-size: medium;
 }
 

@@ -25,7 +25,7 @@ const TitleComponent = ({
 
   switch (currentStep) {
     case 1:
-      stepTitle = "Enter Your Github Username";
+      stepTitle = "Choose a Setup Option from Below";
       break;
     case 2:
       stepTitle = "Choose Repositories";
@@ -38,7 +38,7 @@ const TitleComponent = ({
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <div>
-        <h2 className="title" style={{ textAlign: "left" }}>
+        <h2 className="steptitle" style={{ textAlign: "left" }}>
           {stepTitle}
         </h2>
       </div>
@@ -104,7 +104,13 @@ const HeaderComponent = ({
           />
         </div>
       )}
+
       <div style={{ marginTop: "auto", marginBottom: "auto" }}>
+        {currentStep === 1 && (
+          <div style={{ marginBottom: "30px", fontSize: "20px" }}>
+            <h1 className="title">Welcome to Github PR Tracker!</h1>
+          </div>
+        )}
         <TitleComponent currentStep={currentStep} />
       </div>
       {currentStep === 3 && (
