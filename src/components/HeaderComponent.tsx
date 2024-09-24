@@ -114,7 +114,7 @@ const HeaderComponent = ({
       }}
     >
       {(currentStep === 2 || currentStep === 3 || currentStep === 4) && (
-        <div style={{ marginRight: "60px" }}>
+        <div style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}>
           <ButtonCustom
             type="back"
             setStep={() => handleStepChange({ currentStep, setRepoDetails })}
