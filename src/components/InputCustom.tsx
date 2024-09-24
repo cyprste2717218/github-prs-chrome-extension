@@ -20,7 +20,8 @@ const UsernameInput: React.FC<UsernameInputProps> = ({
 }) => {
   return (
     <Input
-      className="placeholder w-full"
+      id="username"
+      className="placeholder"
       type="text"
       placeholder="e.g. @rollingwolf238"
       value={username}
@@ -32,7 +33,8 @@ const UsernameInput: React.FC<UsernameInputProps> = ({
 const PATInput: React.FC<PATInputProps> = ({ PAT, handlePATChange }) => {
   return (
     <Input
-      className="placeholder w-full"
+      id="githubPAT"
+      className="placeholder"
       type="text"
       placeholder="e.g. X62837..."
       value={PAT}

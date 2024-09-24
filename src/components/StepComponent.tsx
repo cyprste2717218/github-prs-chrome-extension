@@ -4,6 +4,7 @@ import {
   GeneratedPreviewRepoCards,
 } from "./RepoCardComponents";
 import ButtonCustom from "./ButtonCustom";
+import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator.tsx";
 import type {
   StepComponentProps,
@@ -77,21 +78,45 @@ const StepTwoComponent = ({
         color: "#000",
       }}
     >
-      <InputCustom
-        type="username"
-        username={username}
-        handleUserNameChange={handleUserNameChange}
-      />
-      {PAT !== null && (
-        <InputCustom type="PAT" PAT={PAT} handlePATChange={handlePATChange} />
-      )}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div>
+          <Separator className="my-4" />
+          <div style={{ margin: "5px", textAlign: "left" }}>
+            <Label htmlFor="username">Your Github Username</Label>
+          </div>
 
-      <ButtonCustom
-        type="submit"
-        username={username}
-        setRepoDetails={setRepoDetails}
-        setStep={setStep}
-      />
+          <InputCustom
+            type="username"
+            username={username}
+            handleUserNameChange={handleUserNameChange}
+          />
+        </div>
+        <div style={{ marginTop: "10px" }}>
+          {PAT !== null && (
+            <>
+              <div style={{ margin: "5px", textAlign: "left" }}>
+                <Label htmlFor="githubPAT">
+                  Your Github Personal Access Token (classic)
+                </Label>
+              </div>
+
+              <InputCustom
+                type="PAT"
+                PAT={PAT}
+                handlePATChange={handlePATChange}
+              />
+            </>
+          )}
+        </div>
+        <div style={{ marginTop: "15px" }}>
+          <ButtonCustom
+            type="submit"
+            username={username}
+            setRepoDetails={setRepoDetails}
+            setStep={setStep}
+          />
+        </div>
+      </div>
     </div>
   );
 };
