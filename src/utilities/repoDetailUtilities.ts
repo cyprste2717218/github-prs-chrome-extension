@@ -84,10 +84,10 @@ async function handleSubmitUserName({
       return;
     }
     setRepoDetails(results);
-    setStep(2);
+    setStep(3);
     // @ts-ignore
     saveToStorage("repoDetails", results);
-    saveToStorage("step", 2);
+    saveToStorage("step", 3);
   });
 }
 

@@ -8,15 +8,17 @@ type StepComponentProps = {
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setHasPAT: React.Dispatch<React.SetStateAction<boolean | null>>;
+  setHasPAT: React.Dispatch<React.SetStateAction<string | null>>;
   username: string;
   repoDetails: RepoCardComponentDetails[] | null;
   step: number;
   activeNumPRs: ActiveNumPRs[];
+  hasPAT: string | null;
 };
 
 type StepOneComponentProps = {
-  setHasPAT: React.Dispatch<React.SetStateAction<boolean | null>>;
+  setHasPAT: React.Dispatch<React.SetStateAction<string | null>>;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
 type StepTwoComponentProps = {
@@ -25,9 +27,11 @@ type StepTwoComponentProps = {
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   username: string;
   currentStep: number;
   repoDetails: RepoCardComponentDetails[] | null;
+  PAT: string | null;
 };
 
 type StepThreeComponentProps = {

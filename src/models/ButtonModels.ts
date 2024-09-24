@@ -43,13 +43,9 @@ type NextButtonProps = ButtonProps<{
   activeNumPRs: ActiveNumPRs[];
 }>;
 
-type UsernameWithPATButtonProps = ButtonProps<{
-  setHasPAT: React.Dispatch<React.SetStateAction<boolean | null>>;
-}>;
+type UsernameWithPATButtonProps = ButtonProps<{}>;
 
-type UsernameButtonProps = ButtonProps<{
-  setHasPAT: React.Dispatch<React.SetStateAction<boolean | null>>;
-}>;
+type UsernameButtonProps = ButtonProps<{}>;
 
 type LinkButtonProps = ButtonProps<{
   text: string;

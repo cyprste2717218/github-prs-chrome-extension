@@ -11,11 +11,11 @@ type HeaderProps = {
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setHasPAT: React.Dispatch<React.SetStateAction<boolean | null>>;
+  setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   currentStep: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
-  hasPAT: boolean | null;
+  hasPAT: string | null;
 };
 
 // To-do: move this props into own ts alias
@@ -24,7 +24,7 @@ const TitleComponent = ({
   hasPAT,
 }: {
   currentStep: number;
-  hasPAT: boolean | null;
+  hasPAT: string | null;
 }): JSX.Element => {
   let stepTitle = "";
 
@@ -33,10 +33,10 @@ const TitleComponent = ({
       stepTitle = "Choose a Setup Option from Below";
       break;
     case 2:
-      if (hasPAT) {
+      if (hasPAT !== null) {
         stepTitle = "Enter Your Github PAT and Username";
       } else {
-        stepTitle = "Enter Your Username";
+        stepTitle = "Enter Your Github Username";
       }
       break;
     case 3:
@@ -62,6 +62,7 @@ const HeaderComponent = ({
   setStepState,
   setRepoDetails,
   setActiveNumPRs,
+  setPAT,
   currentStep,
   activeNumPRs,
   repoOwner,
@@ -81,6 +82,11 @@ const HeaderComponent = ({
     if (currentStep === 2 || currentStep === 3) {
       setActiveNumPRs([]);
       saveToStorage("activeNumPRs", []);
+    }
+
+    if (currentStep === 1) {
+      setPAT(null);
+      saveToStorage("PAT", null);
     }
   };
 
@@ -108,7 +114,7 @@ const HeaderComponent = ({
         marginBottom: "20px",
       }}
     >
-      {(currentStep === 3 || currentStep === 4) && (
+      {(currentStep === 2 || currentStep === 3 || currentStep === 4) && (
         <div style={{ marginRight: "60px" }}>
           <ButtonCustom
             type="back"
@@ -138,7 +144,7 @@ const HeaderComponent = ({
           />
         </div>
       )}
-      {currentStep === 2 && (
+      {currentStep === 3 && (
         <div style={{ marginLeft: "60px" }}>
           <ButtonCustom
             type="next"

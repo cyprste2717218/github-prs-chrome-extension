@@ -20,7 +20,7 @@ function App() {
     RepoCardComponentDetails[] | null
   >(null);
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
-  const [hasPAT, setHasPAT] = useState<boolean | null>(null);
+  const [PAT, setPAT] = useState<string | null>(null);
 
   useEffect(() => {
     // @ts-ignore
@@ -43,6 +43,11 @@ function App() {
       setStep(JSON.parse(result.step));
     });
 
+    // @ts-ignore
+    chrome.storage.local.get("PAT", (result) => {
+      setPAT(JSON.parse(result.PAT));
+    });
+
     //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", loadFromStorage("step"));
   }, []);
@@ -56,8 +61,8 @@ function App() {
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}
-        hasPAT={hasPAT}
-        setHasPAT={setHasPAT}
+        hasPAT={PAT}
+        setPAT={setPAT}
       />
 
       <StepComponent
@@ -65,11 +70,12 @@ function App() {
         setRepoDetails={setRepoDetails}
         setStep={setStep}
         setActiveNumPRs={setActiveNumPRs}
-        setHasPAT={setHasPAT}
+        setHasPAT={setPAT}
         username={username}
         repoDetails={repoDetails}
         step={step}
         activeNumPRs={activeNumPRs}
+        hasPAT={PAT}
       />
     </>
   );

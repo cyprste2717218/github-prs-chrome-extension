@@ -4,7 +4,6 @@ import {
   GeneratedPreviewRepoCards,
 } from "./RepoCardComponents";
 import ButtonCustom from "./ButtonCustom";
-import { Input } from "@/components/ui/input";
 import { Separator } from "./ui/separator.tsx";
 import type {
   StepComponentProps,
@@ -16,18 +15,33 @@ import type {
 
 import "../App.css";
 import { saveToStorage } from "../../public/background.ts";
+import InputCustom from "./InputCustom.tsx";
 
-const StepOneComponent = ({ setHasPAT }: StepOneComponentProps) => {
+const StepOneComponent = ({ setHasPAT, setStep }: StepOneComponentProps) => {
+  function handleUsernamePATButtonClick() {
+    setHasPAT("");
+    setStep(2);
+    saveToStorage("step", 2);
+  }
+
+  function handleUsernameButtonClick() {
+    setStep(2);
+    saveToStorage("step", 2);
+  }
+
   return (
     <>
       <div>
-        <div style={{ marginBottom: "10px" }}>
-          <ButtonCustom type="username" setHasPAT={setHasPAT} />
+        <div
+          style={{ marginBottom: "10px" }}
+          onClick={handleUsernameButtonClick}
+        >
+          <ButtonCustom type="username" />
         </div>
         <Separator className="my-4" />
 
-        <div>
-          <ButtonCustom type="usernameWithPAT" setHasPAT={setHasPAT} />
+        <div onClick={() => handleUsernamePATButtonClick()}>
+          <ButtonCustom type="usernameWithPAT" />
         </div>
         <div className="mt-4 text-center text-sm">
           Find out how to <a href="">create a PAT (classic) here</a>
@@ -40,13 +54,19 @@ const StepOneComponent = ({ setHasPAT }: StepOneComponentProps) => {
 const StepTwoComponent = ({
   setUsername,
   setRepoDetails,
-  currentStep,
   setStep,
+  setPAT,
   username,
+  PAT,
 }: StepTwoComponentProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event?.target?.value);
     saveToStorage("username", username);
+  };
+
+  const handlePATChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPAT(event?.target?.value);
+    saveToStorage("PAT", PAT);
   };
 
   return (
@@ -59,22 +79,21 @@ const StepTwoComponent = ({
         color: "#000",
       }}
     >
-      <Input
-        className="placeholder"
-        type="text"
-        placeholder="e.g. @rollingwolf238"
-        value={username}
-        onChange={(e) => handleUserNameChange(e)}
-      ></Input>
-
-      {currentStep === 2 && (
-        <ButtonCustom
-          type="submit"
-          username={username}
-          setRepoDetails={setRepoDetails}
-          setStep={setStep}
-        />
+      <InputCustom
+        type="username"
+        username={username}
+        handleUserNameChange={handleUserNameChange}
+      />
+      {PAT !== null && (
+        <InputCustom type="PAT" PAT={PAT} handlePATChange={handlePATChange} />
       )}
+
+      <ButtonCustom
+        type="submit"
+        username={username}
+        setRepoDetails={setRepoDetails}
+        setStep={setStep}
+      />
     </div>
   );
 };
@@ -113,12 +132,15 @@ const StepComponent = ({
   repoDetails,
   step,
   activeNumPRs,
+  hasPAT,
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
   switch (step) {
     case 1:
-      CurrentStepUI = <StepOneComponent setHasPAT={setHasPAT} />;
+      CurrentStepUI = (
+        <StepOneComponent setStep={setStep} setHasPAT={setHasPAT} />
+      );
       break;
 
     case 2:
@@ -128,8 +150,10 @@ const StepComponent = ({
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
           setStep={setStep}
+          setPAT={setHasPAT}
           repoDetails={repoDetails}
           currentStep={step}
+          PAT={hasPAT}
         />
       );
       break;
