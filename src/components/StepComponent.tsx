@@ -21,12 +21,10 @@ const StepOneComponent = ({ setHasPAT, setStep }: StepOneComponentProps) => {
   function handleUsernamePATButtonClick() {
     setHasPAT("");
     setStep(2);
-    saveToStorage("step", 2);
   }
 
   function handleUsernameButtonClick() {
     setStep(2);
-    saveToStorage("step", 2);
   }
 
   return (
@@ -65,8 +63,7 @@ const StepTwoComponent = ({
   };
 
   const handlePATChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPAT(event?.target?.value);
-    saveToStorage("PAT", PAT);
+    setPAT(event?.target?.value); // no saving PAT to extension storage for security purposes
   };
 
   return (

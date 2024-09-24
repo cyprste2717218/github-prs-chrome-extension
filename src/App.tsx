@@ -43,11 +43,6 @@ function App() {
       setStep(JSON.parse(result.step));
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("PAT", (result) => {
-      setPAT(JSON.parse(result.PAT));
-    });
-
     //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", loadFromStorage("step"));
   }, []);
