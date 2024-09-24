@@ -86,7 +86,6 @@ const HeaderComponent = ({
 
     if (currentStep === 1) {
       setPAT(null);
-      saveToStorage("PAT", null);
     }
   };
 

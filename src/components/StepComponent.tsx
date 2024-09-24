@@ -25,6 +25,7 @@ const StepOneComponent = ({ setHasPAT, setStep }: StepOneComponentProps) => {
 
   function handleUsernameButtonClick() {
     setStep(2);
+    setHasPAT(null);
   }
 
   return (
