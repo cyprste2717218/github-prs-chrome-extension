@@ -6,6 +6,8 @@ import type {
 import { request } from "@octokit/request";
 import { saveToStorage } from "../../public/background.ts";
 
+import { Octokit } from "@octokit/core";
+
 type RepoDetailUtilities = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
@@ -103,13 +105,24 @@ async function handleFetchUserRepos(
     return;
   }
 
-  let results: any;
 
+
+  let results: any;
+  
   if (patCode === undefined) {
     results = await fetch(
       `https://api.github.com/users/${username}/repos`
     ).then((response) => response.json());
   } else {
+
+    const octokit = new Octokit({ auth: patCode });
+
+    results = await octokit.request("GET /users/{username}/repos", {
+      username: username,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    });
   }
 
   if (results?.length > 0) {
