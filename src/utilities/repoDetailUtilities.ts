@@ -7,11 +7,12 @@ import { request } from "@octokit/request";
 import { saveToStorage } from "../../public/background.ts";
 
 type RepoDetailUtilities = {
-  username: string;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  username: string;
+  patCode?: string;
 };
 
 type SubmitPRDetailsProps = {
@@ -70,9 +71,11 @@ async function updatePRDetails({
 }
 
 async function handleSubmitUserName({
-  username,
+  // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
   setRepoDetails,
   setStep,
+  username,
+  patCode,
 }: RepoDetailUtilities) {
   if (!username) {
     console.warn("No username entered, no repos fetched");
@@ -92,16 +95,22 @@ async function handleSubmitUserName({
 }
 
 async function handleFetchUserRepos(
-  username: string
+  username: string,
+  patCode?: string
 ): Promise<RepoCardComponentDetails[] | undefined> {
   if (!username) {
     console.warn("No username entered");
     return;
   }
 
-  const results = await fetch(
-    `https://api.github.com/users/${username}/repos`
-  ).then((response) => response.json());
+  let results: any;
+
+  if (patCode === undefined) {
+    results = await fetch(
+      `https://api.github.com/users/${username}/repos`
+    ).then((response) => response.json());
+  } else {
+  }
 
   if (results?.length > 0) {
     const relevantDetails = results.map((repo: any) => {
