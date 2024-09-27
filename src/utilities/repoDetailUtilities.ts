@@ -84,7 +84,7 @@ async function handleSubmitUserName({
     return;
   }
 
-  await handleFetchUserRepos(username).then((results) => {
+  await handleFetchUserRepos(username, patCode).then((results) => {
     if (!results) {
       return;
     }
@@ -105,16 +105,13 @@ async function handleFetchUserRepos(
     return;
   }
 
-
-
   let results: any;
-  
+
   if (patCode === undefined) {
     results = await fetch(
       `https://api.github.com/users/${username}/repos`
     ).then((response) => response.json());
   } else {
-
     const octokit = new Octokit({ auth: patCode });
 
     results = await octokit.request("GET /users/{username}/repos", {
