@@ -27,6 +27,7 @@ type RefreshButtonProps = ButtonProps<{
 
 type SubmitButtonProps = ButtonProps<{
   username: string;
+  patCode?: string;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;

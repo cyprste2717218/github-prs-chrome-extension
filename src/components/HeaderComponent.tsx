@@ -11,11 +11,11 @@ type HeaderProps = {
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setPAT: React.Dispatch<React.SetStateAction<string | null>>;
+  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
   currentStep: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
-  hasPAT: string | null;
+  hasPAT: string | undefined;
 };
 
 // To-do: move this props into own ts alias
@@ -24,7 +24,7 @@ const TitleComponent = ({
   hasPAT,
 }: {
   currentStep: number;
-  hasPAT: string | null;
+  hasPAT: string | undefined;
 }): JSX.Element => {
   let stepTitle = "";
 
@@ -85,7 +85,7 @@ const HeaderComponent = ({
     }
 
     if (currentStep === 1) {
-      setPAT(null);
+      setPAT(undefined);
     }
   };
 

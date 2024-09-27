@@ -26,7 +26,7 @@ const StepOneComponent = ({ setHasPAT, setStep }: StepOneComponentProps) => {
 
   function handleUsernameButtonClick() {
     setStep(2);
-    setHasPAT(null);
+    setHasPAT(undefined);
   }
 
   return (
@@ -92,7 +92,7 @@ const StepTwoComponent = ({
           />
         </div>
         <div style={{ marginTop: "10px" }}>
-          {PAT !== null && (
+          {PAT !== undefined && (
             <>
               <div style={{ margin: "5px", textAlign: "left" }}>
                 <Label htmlFor="githubPAT">
@@ -112,6 +112,7 @@ const StepTwoComponent = ({
           <ButtonCustom
             type="submit"
             username={username}
+            patCode={PAT}
             setRepoDetails={setRepoDetails}
             setStep={setStep}
           />

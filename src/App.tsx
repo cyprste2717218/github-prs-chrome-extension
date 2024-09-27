@@ -20,7 +20,7 @@ function App() {
     RepoCardComponentDetails[] | null
   >(null);
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
-  const [PAT, setPAT] = useState<string | null>(null);
+  const [PAT, setPAT] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     // @ts-ignore
