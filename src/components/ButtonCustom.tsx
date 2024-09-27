@@ -108,11 +108,18 @@ const NextButton: React.FC<NextButtonProps> = ({ onClick, activeNumPRs }) => {
 };
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
-  username,
   setRepoDetails,
   setStep,
+  username,
+  patCode,
 }) => {
-  const isDisabled = username.length === 0;
+  let isDisabled: boolean;
+
+  if (patCode !== undefined) {
+    isDisabled = username.length === 0 || patCode.length === 0;
+  } else {
+    isDisabled = username.length === 0;
+  }
 
   return (
     <Button
