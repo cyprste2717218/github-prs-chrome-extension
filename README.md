@@ -33,17 +33,13 @@ To be completed
 
 2). Choose the 'Enter Github Username and PAT' option
 
-3). Generate a Personal Access Token (classic) <a target="_blank" href="https://github.com/cyprste2717218/github-prs-chrome-extension/tree/dev#authenticated-approach">following Github's guide here (opens new tab)</a>.
-Ensure to add the following scopes to the token during configuration:
+3). Generate a Personal Access Token (classic) <a target="_blank" href="https://github.com/cyprste2717218/github-prs-chrome-extension/tree/dev#authenticated-approach">following Github's guide here (opens new tab) ensuring to not add any add additional scopes beyond the default</a>.
 
-- sggsgs
-- shshs
+4). Enter your Github Username and Personal Access Token and submit
 
-  4). Enter your Github Username and Personal Access Token and submit
+5). Select the Repositories You Wish to Track
 
-  5). Select the Repositories You Wish to Track
-
-  6). Voila!
+6). Voila!
 
 To-do: include screenshots of extension at each step
 
