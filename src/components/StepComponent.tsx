@@ -44,7 +44,13 @@ const StepOneComponent = ({ setHasPAT, setStep }: StepOneComponentProps) => {
           <ButtonCustom type="usernameWithPAT" />
         </div>
         <div className="mt-4 text-center text-sm">
-          Find out how to <a href="">create a PAT (classic) here</a>
+          <a
+            href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic"
+            target="_blank"
+          >
+            Follow the readme here
+          </a>{" "}
+          to create a PAT (classic)
         </div>
       </div>
     </>
@@ -65,7 +71,7 @@ const StepTwoComponent = ({
   };
 
   const handlePATChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPAT(event?.target?.value); // no saving PAT to extension storage for security purposes
+    setPAT(event?.target?.value);
   };
 
   return (

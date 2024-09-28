@@ -79,6 +79,11 @@ const HeaderComponent = ({
     setStepState(currentStep - 1);
     saveToStorage("step", currentStep - 1);
 
+    if (currentStep === 2) {
+      setPAT(undefined);
+      saveToStorage("patCode", undefined); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
+    }
+
     if (currentStep === 2 || currentStep === 3) {
       setActiveNumPRs([]);
       saveToStorage("activeNumPRs", []);

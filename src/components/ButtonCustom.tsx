@@ -125,7 +125,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     <Button
       variant="outline"
       onClick={() =>
-        handleSubmitUserName({ username, setRepoDetails, setStep })
+        handleSubmitUserName({ username, patCode, setRepoDetails, setStep })
       }
       className="primary-foreground"
       disabled={isDisabled}

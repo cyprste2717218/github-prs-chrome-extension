@@ -17,13 +17,33 @@ To be completed
 
 ## How to Use
 
+# Unauthenticated Approach
+
 1). [Download the extension]('') from the chrome web store
 
-2). Enter your Github Username
+2). Choose the 'Enter Github Username' option
 
 3). Select the Repositories You Wish to Track
 
 4). Voila!
+
+# Authenticated Approach
+
+1). [Download the extension]('') from the chrome web store
+
+2). Choose the 'Enter Github Username and PAT' option
+
+3). Generate a Personal Access Token (classic) <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic">following Github's guide here (opens new tab)</a>.
+Ensure to add the following scopes to the token during configuration:
+
+- sggsgs
+- shshs
+
+  4). Enter your Github Username and Personal Access Token and submit
+
+  5). Select the Repositories You Wish to Track
+
+  6). Voila!
 
 To-do: include screenshots of extension at each step
 

@@ -4,9 +4,7 @@ import type {
   ActiveNumPRs,
 } from "../models/RepoCardModels";
 import { request } from "@octokit/request";
-import { saveToStorage } from "../../public/background.ts";
-
-import { Octokit } from "@octokit/core";
+import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 
 type RepoDetailUtilities = {
   setRepoDetails: React.Dispatch<
@@ -38,28 +36,47 @@ async function updatePRDetails({
 }: SubmitPRDetailsProps) {
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
+  const storedPATCode = await loadFromStorage("patCode");
 
   const updatedNumPRs = await Promise.all(
     activeNumPRs.map(async (repo) => {
       const repoName = repo.name;
       const owner = repoOwner;
       const currentNumPRs = repo.numActivePRs;
+      let results: any;
 
-      const response = await request(`GET /repos/${owner}/${repoName}/pulls`, {
-        owner: owner,
-        repo: repoName,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }).then((response) => response.data);
+      if (!storedPATCode) {
+        // unauthenticated request
+
+        results = await request(`GET /repos/${owner}/${repoName}/pulls`, {
+          owner: owner,
+          repo: repoName,
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }).then((response) => response.data);
+      } else {
+        // authenticated request
+
+        const requestWithAuth = request.defaults({
+          headers: {
+            authorization: `token ${storedPATCode}`,
+          },
+        });
+
+        let response = await requestWithAuth(
+          `GET /repos/${owner}/${repoName}/pulls`
+        );
+        results = response.data;
+      }
 
       // update number of PRs for repo if number changed
       let updatedNumPRs: number = currentNumPRs;
-      if (currentNumPRs !== response.length) {
-        updatedNumPRs = response.length;
+      if (currentNumPRs !== results.length) {
+        updatedNumPRs = results.length;
       }
 
-      console.log("github prs fetched:", response);
+      console.log("github prs fetched:", results);
 
       return {
         name: repoName,
@@ -83,6 +100,9 @@ async function handleSubmitUserName({
     console.warn("No username entered, no repos fetched");
     return;
   }
+
+  // save PAT Code to chrome extension storage on submission, need to set up safe storage of this
+  saveToStorage("patCode", patCode);
 
   await handleFetchUserRepos(username, patCode).then((results) => {
     if (!results) {
@@ -108,26 +128,32 @@ async function handleFetchUserRepos(
   let results: any;
 
   if (patCode === undefined) {
+    console.log("patCode is not defined", patCode);
     results = await fetch(
       `https://api.github.com/users/${username}/repos`
     ).then((response) => response.json());
   } else {
-    const octokit = new Octokit({ auth: patCode });
-
-    results = await octokit.request("GET /users/{username}/repos", {
-      username: username,
+    console.log("patCode is defined", patCode);
+    const requestWithAuth = request.defaults({
       headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
+        authorization: `token ${patCode}`,
       },
     });
+
+    let response = await requestWithAuth(`GET /users/${username}/repos`);
+
+    results = response.data;
+    console.log("results:", results);
   }
 
   if (results?.length > 0) {
     const relevantDetails = results.map((repo: any) => {
-      let shortenedDesc = repo.description;
+      let shortenedDesc = "";
 
-      if (repo.description.length > 150) {
+      if (repo.description && repo.description.length > 150) {
         shortenedDesc = repo.description.slice(0, 150) + "...";
+      } else if (repo.description) {
+        shortenedDesc = repo.description;
       }
 
       return {
