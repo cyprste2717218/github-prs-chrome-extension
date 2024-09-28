@@ -45,7 +45,7 @@ const StepOneComponent = ({ setHasPAT, setStep }: StepOneComponentProps) => {
         </div>
         <div className="mt-4 text-center text-sm">
           <a
-            href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic"
+            href="https://github.com/cyprste2717218/github-prs-chrome-extension/tree/dev#authenticated-approach"
             target="_blank"
           >
             Follow the readme here

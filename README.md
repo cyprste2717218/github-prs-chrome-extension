@@ -33,7 +33,7 @@ To be completed
 
 2). Choose the 'Enter Github Username and PAT' option
 
-3). Generate a Personal Access Token (classic) <a target="_blank" href="https://github.com/cyprste2717218/github-prs-chrome-extension/tree/dev#authenticated-approach">following Github's guide here (opens new tab)</a>
+3). Generate a Personal Access Token (classic) <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic">following Github's guide here (opens new tab)</a>
 
 4). Enter your Github Username and Personal Access Token and submit
 
