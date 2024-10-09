@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 
 const prettierProcess = spawn(
   "prettier",
-  ["--write", "src/**/*.{js,jsx,ts,tsx}"],
+  ["--check", "src/**/*.{js,jsx,ts,tsx}"],
   {
     shell: true,
     stdio: "inherit",
