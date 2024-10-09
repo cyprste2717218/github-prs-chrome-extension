@@ -6,10 +6,7 @@ import { saveToStorage } from "../../public/background.ts";
 import { HeaderProps, TitleProps } from "@/models/HeaderComponentModels.ts";
 
 // To-do: move this props into own ts alias
-const TitleComponent = ({
-  currentStep,
-  hasPAT,
-}: TitleProps): JSX.Element => {
+const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
   let stepTitle = "";
 
   switch (currentStep) {
