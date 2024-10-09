@@ -55,12 +55,12 @@ const HeaderComponent = ({
     >;
   };
 
-  const buttonStateBundle = {
+  /*   const buttonStateBundle = {
     setStepState: setStepState,
     setPAT: setPAT,
     setActiveNumPRs: setActiveNumPRs,
     currentStep: currentStep,
-  };
+  }; */
 
   const handleStepChange = ({ currentStep }: HandleStepChangeProps) => {
     setStepState(currentStep - 1);
