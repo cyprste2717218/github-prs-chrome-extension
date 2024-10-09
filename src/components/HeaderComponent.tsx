@@ -55,6 +55,13 @@ const HeaderComponent = ({
     >;
   };
 
+  const buttonStateBundle = {
+    setStepState: setStepState,
+    setPAT: setPAT,
+    setActiveNumPRs: setActiveNumPRs,
+    currentStep: currentStep,
+  };
+
   const handleStepChange = ({ currentStep }: HandleStepChangeProps) => {
     setStepState(currentStep - 1);
     saveToStorage("step", currentStep - 1);
