@@ -1,31 +1,15 @@
 import ButtonCustom from "./ButtonCustom";
 import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
 import { updatePRDetails } from "@/utilities/repoDetailUtilities";
-import { ActiveNumPRs } from "@/models/RepoCardModels";
 import "../App.css";
 import { saveToStorage } from "../../public/background.ts";
-
-type HeaderProps = {
-  setStepState: React.Dispatch<React.SetStateAction<number>>;
-  setRepoDetails: React.Dispatch<
-    React.SetStateAction<RepoCardComponentDetails[] | null>
-  >;
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
-  currentStep: number;
-  activeNumPRs: ActiveNumPRs[];
-  repoOwner: string;
-  hasPAT: string | undefined;
-};
+import { HeaderProps, TitleProps } from "@/models/HeaderComponentModels.ts";
 
 // To-do: move this props into own ts alias
 const TitleComponent = ({
   currentStep,
   hasPAT,
-}: {
-  currentStep: number;
-  hasPAT: string | undefined;
-}): JSX.Element => {
+}: TitleProps): JSX.Element => {
   let stepTitle = "";
 
   switch (currentStep) {
