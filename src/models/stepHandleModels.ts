@@ -17,6 +17,7 @@ type HandleStepCommonProps = {
   currentStep: number;
 };
 
+// To-do: set this to work with either HandleStepBackProps or HandleStepForwardProps
 type HandleStepChangeProps = (HandleStepBackProps & HandleStepForwardProps) &
   StepOperationType;
 

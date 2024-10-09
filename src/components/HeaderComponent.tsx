@@ -1,8 +1,6 @@
+import { handleStepChange } from "@/utilities/setUpUtilities";
 import ButtonCustom from "./ButtonCustom";
-import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
-import { updatePRDetails } from "@/utilities/repoDetailUtilities";
 import "../App.css";
-import { saveToStorage } from "../../public/background.ts";
 import { HeaderProps, TitleProps } from "@/models/HeaderComponentModels.ts";
 
 const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
@@ -40,7 +38,6 @@ const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
 
 const HeaderComponent = ({
   setStepState,
-  setRepoDetails,
   setActiveNumPRs,
   setPAT,
   currentStep,
@@ -48,53 +45,15 @@ const HeaderComponent = ({
   repoOwner,
   hasPAT,
 }: HeaderProps): JSX.Element => {
-  type HandleStepChangeProps = {
-    currentStep: number;
-    setRepoDetails: React.Dispatch<
-      React.SetStateAction<RepoCardComponentDetails[] | null>
-    >;
-  };
-
-  /*   const buttonStateBundle = {
+  // To-do: make separate bundles for props for respective back and next button types
+  const buttonStateBundle = {
     setStepState: setStepState,
     setPAT: setPAT,
     setActiveNumPRs: setActiveNumPRs,
     currentStep: currentStep,
-  }; */
-
-  const handleStepChange = ({ currentStep }: HandleStepChangeProps) => {
-    setStepState(currentStep - 1);
-    saveToStorage("step", currentStep - 1);
-
-    if (currentStep === 2) {
-      setPAT(undefined);
-      saveToStorage("patCode", undefined); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
-    }
-
-    if (currentStep === 2 || currentStep === 3) {
-      setActiveNumPRs([]);
-      saveToStorage("activeNumPRs", []);
-    }
-
-    if (currentStep === 1) {
-      setPAT(undefined);
-    }
+    repoOwner: repoOwner,
+    activeNumPRs: activeNumPRs,
   };
-
-  async function handleClick() {
-    if (activeNumPRs.length !== 0) {
-      console.log("activeNumPRs array is not empty");
-      updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
-      saveToStorage("activeNumPRs", activeNumPRs);
-    } else {
-      console.log("activeNumPRs array is empty");
-    }
-
-    if (currentStep === 3) {
-      setStepState(currentStep + 1);
-      saveToStorage("step", currentStep + 1);
-    }
-  }
 
   return (
     <div
@@ -109,7 +68,12 @@ const HeaderComponent = ({
         <div style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}>
           <ButtonCustom
             type="back"
-            setStep={() => handleStepChange({ currentStep, setRepoDetails })}
+            setStep={() =>
+              handleStepChange({
+                ...buttonStateBundle,
+                stepOperation: "stepBack",
+              })
+            }
             currentStep={currentStep}
           />
         </div>
@@ -139,7 +103,12 @@ const HeaderComponent = ({
         <div style={{ marginLeft: "60px" }}>
           <ButtonCustom
             type="next"
-            onClick={handleClick}
+            onClick={() =>
+              handleStepChange({
+                ...buttonStateBundle,
+                stepOperation: "stepFoward",
+              })
+            }
             activeNumPRs={activeNumPRs}
           />
         </div>
