@@ -19,7 +19,6 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { Badge } from "./ui/badge";
-import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { ChevronsUpDown } from "lucide-react";
@@ -236,17 +235,18 @@ const PreviewCardComponent = ({
       </Collapsible>
       <Card>
         <div>
-          <Checkbox
-            aria-checked={repoChecked}
-            id={`check${name}`}
+          <input
+            type="checkbox"
             onClick={handleClick}
-          />
+          >
+          </input>
           <label
             htmlFor={`check${name}`}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           ></label>
         </div>
       </Card>
+      
     </div>
   );
 };
