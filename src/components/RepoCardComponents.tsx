@@ -235,18 +235,13 @@ const PreviewCardComponent = ({
       </Collapsible>
       <Card>
         <div>
-          <input
-            type="checkbox"
-            onClick={handleClick}
-          >
-          </input>
+          <input type="checkbox" onClick={handleClick}></input>
           <label
             htmlFor={`check${name}`}
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           ></label>
         </div>
       </Card>
-      
     </div>
   );
 };
