@@ -25,6 +25,7 @@ import { ChevronsUpDown } from "lucide-react";
 
 import { useState } from "react";
 import { Github } from "lucide-react";
+import CheckBoxCustom from "./CheckBoxCustom";
 
 const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
   if (name === "" && numPRs === -1) {
@@ -234,13 +235,11 @@ const PreviewCardComponent = ({
         </Card>
       </Collapsible>
       <Card>
-        <div>
-          <input type="checkbox" onClick={handleClick}></input>
-          <label
-            htmlFor={`check${name}`}
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          ></label>
-        </div>
+        <CheckBoxCustom
+          repoChecked={repoChecked}
+          handleClick={handleClick}
+          name={name}
+        />
       </Card>
     </div>
   );
