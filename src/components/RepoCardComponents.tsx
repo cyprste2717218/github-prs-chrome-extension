@@ -234,7 +234,13 @@ const PreviewCardComponent = ({
           </CollapsibleContent>
         </Card>
       </Collapsible>
-      <Card>
+      <Card
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
         <CheckBoxCustom
           repoChecked={repoChecked}
           handleClick={handleClick}
