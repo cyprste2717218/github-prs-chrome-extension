@@ -9,6 +9,8 @@ type HandleStepBackProps = {
 type HandleStepForwardProps = {
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
+  initialValuePAT: "" | undefined;
+  setHasPAT: React.Dispatch<React.SetStateAction<"" | undefined>>;
 } & HandleStepCommonProps;
 
 type HandleStepCommonProps = {
