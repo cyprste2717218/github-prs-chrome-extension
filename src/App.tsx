@@ -76,6 +76,7 @@ function App() {
         step={step}
         activeNumPRs={activeNumPRs}
         hasPAT={PAT}
+        repoOwner={username}
       />
     </>
   );

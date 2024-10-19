@@ -14,11 +14,16 @@ type StepComponentProps = {
   step: number;
   activeNumPRs: ActiveNumPRs[];
   hasPAT: string | undefined;
+  repoOwner: string;
 };
 
 type StepOneComponentProps = {
   setHasPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  currentStep: number;
+  repoOwner: string;
+  activeNumPRs: ActiveNumPRs[];
 };
 
 type StepTwoComponentProps = {

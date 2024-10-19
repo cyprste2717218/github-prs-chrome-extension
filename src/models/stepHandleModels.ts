@@ -1,6 +1,6 @@
 import type { ActiveNumPRs } from "@/models/RepoCardModels";
 
-type StepOperationType = { stepOperation: "stepBack" | "stepFoward" };
+type StepOperationType = { stepOperation: "stepBack" | "stepForward" };
 
 type HandleStepBackProps = {
   setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -9,8 +9,8 @@ type HandleStepBackProps = {
 type HandleStepForwardProps = {
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
-  initialValuePAT: "" | undefined;
-  setHasPAT: React.Dispatch<React.SetStateAction<"" | undefined>>;
+  initialValuePAT: string | undefined;
+  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
 } & HandleStepCommonProps;
 
 type HandleStepCommonProps = {

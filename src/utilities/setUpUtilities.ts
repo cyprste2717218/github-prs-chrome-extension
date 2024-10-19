@@ -33,7 +33,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   const {
     setStepState,
     setActiveNumPRs,
-    setHasPAT,
+    setPAT,
     repoOwner,
     currentStep,
     activeNumPRs,
@@ -48,7 +48,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   }
 
   if (newStep === 2) {
-    setHasPAT(initialValuePAT);
+    setPAT(initialValuePAT);
   }
 
   if (activeNumPRs.length !== 0) {
@@ -78,7 +78,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
   const nextButtonOperationsProps = {
     setStepState: props.setStepState,
     setActiveNumPRs: props.setActiveNumPRs,
-    setHasPAT: props.setHasPAT,
+    setPAT: props.setPAT,
     repoOwner: props.repoOwner,
     activeNumPRs: props.activeNumPRs,
     currentStep: props.currentStep,
@@ -89,7 +89,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     case "stepBack":
       handleStepBack(backButtonOperationProps);
       break;
-    case "stepFoward":
+    case "stepForward":
       handleStepForward(nextButtonOperationsProps);
       break;
     default:

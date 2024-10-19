@@ -17,30 +17,51 @@ import type {
 import "../App.css";
 import { saveToStorage } from "../../public/background.ts";
 import InputCustom from "./InputCustom.tsx";
+import { handleStepChange } from "@/utilities/setUpUtilities.ts";
 
-const StepOneComponent = ({ setHasPAT, setStep }: StepOneComponentProps) => {
-  function handleUsernamePATButtonClick() {
-    setHasPAT("");
-    setStep(2);
-  }
-
-  function handleUsernameButtonClick() {
-    setStep(2);
-    setHasPAT(undefined);
-  }
+const StepOneComponent = ({
+  setHasPAT,
+  setStep,
+  setActiveNumPRs,
+  currentStep,
+  repoOwner,
+  activeNumPRs,
+}: StepOneComponentProps) => {
+  const buttonStateBundle = {
+    setStepState: setStep,
+    setPAT: setHasPAT,
+    setActiveNumPRs: setActiveNumPRs,
+    currentStep: currentStep,
+    repoOwner: repoOwner,
+    activeNumPRs: activeNumPRs,
+  };
 
   return (
     <>
       <div>
         <div
           style={{ marginBottom: "10px" }}
-          onClick={handleUsernameButtonClick}
+          onClick={() =>
+            handleStepChange({
+              ...buttonStateBundle,
+              stepOperation: "stepForward",
+              initialValuePAT: undefined,
+            })
+          }
         >
           <ButtonCustom type="username" />
         </div>
         <Separator className="my-4" />
 
-        <div onClick={() => handleUsernamePATButtonClick()}>
+        <div
+          onClick={() =>
+            handleStepChange({
+              ...buttonStateBundle,
+              stepOperation: "stepForward",
+              initialValuePAT: "",
+            })
+          }
+        >
           <ButtonCustom type="usernameWithPAT" />
         </div>
         <div className="mt-4 text-center text-sm">
@@ -163,13 +184,21 @@ const StepComponent = ({
   step,
   activeNumPRs,
   hasPAT,
+  repoOwner,
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
   switch (step) {
     case 1:
       CurrentStepUI = (
-        <StepOneComponent setStep={setStep} setHasPAT={setHasPAT} />
+        <StepOneComponent
+          setStep={setStep}
+          setHasPAT={setHasPAT}
+          setActiveNumPRs={setActiveNumPRs}
+          currentStep={step}
+          repoOwner={repoOwner}
+          activeNumPRs={activeNumPRs}
+        />
       );
       break;
 

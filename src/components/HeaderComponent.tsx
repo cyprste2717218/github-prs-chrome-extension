@@ -72,6 +72,7 @@ const HeaderComponent = ({
               handleStepChange({
                 ...buttonStateBundle,
                 stepOperation: "stepBack",
+                initialValuePAT: currentStep === 3 ? undefined : hasPAT,
               })
             }
             currentStep={currentStep}
@@ -106,7 +107,8 @@ const HeaderComponent = ({
             onClick={() =>
               handleStepChange({
                 ...buttonStateBundle,
-                stepOperation: "stepFoward",
+                stepOperation: "stepForward",
+                initialValuePAT: hasPAT,
               })
             }
             activeNumPRs={activeNumPRs}
