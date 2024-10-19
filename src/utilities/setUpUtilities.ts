@@ -11,21 +11,23 @@ const handleStepBack = (props: HandleStepBackProps) => {
   const { setStepState, setPAT, setActiveNumPRs, setUsername, currentStep } =
     props;
 
-  const newStep = currentStep - 1;
-  // check decrementing step isn't out of bounds
-  if (newStep < 1) {
+  let newStep = currentStep - 1;
+
+  if (currentStep === 3) {
+    newStep = 1;
+  } else if (newStep < 1) {
+    // check decrementing step isn't out of bounds
     return;
   }
 
-  if (newStep === 2) {
+  if (newStep === 1) {
+    setActiveNumPRs([]);
     setPAT(undefined);
     setUsername("");
-    saveToStorage("patCode", undefined); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
-  }
 
-  if (newStep === 2 || newStep === 3) {
-    setActiveNumPRs([]);
     saveToStorage("activeNumPRs", []);
+    saveToStorage("patCode", undefined); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
+    saveToStorage("username", "");
   }
 
   // set step to new decremented value
