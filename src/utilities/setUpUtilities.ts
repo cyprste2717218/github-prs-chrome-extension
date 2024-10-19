@@ -8,8 +8,14 @@ import type {
 } from "@/models/stepHandleModels.ts";
 
 const handleStepBack = (props: HandleStepBackProps) => {
-  const { setStepState, setPAT, setActiveNumPRs, setUsername, currentStep } =
-    props;
+  const {
+    setStepState,
+    setPAT,
+    setActiveNumPRs,
+    setRepoDetails,
+    setUsername,
+    currentStep,
+  } = props;
 
   let newStep = currentStep - 1;
 
@@ -22,10 +28,12 @@ const handleStepBack = (props: HandleStepBackProps) => {
 
   if (newStep === 1) {
     setActiveNumPRs([]);
+    setRepoDetails(null);
     setPAT(undefined);
     setUsername("");
 
     saveToStorage("activeNumPRs", []);
+    saveToStorage("repoDetails", null);
     saveToStorage("patCode", undefined); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
     saveToStorage("username", "");
   }
@@ -67,7 +75,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     saveToStorage("patCode", initialValuePAT);
   }
 
-  if (newStep === 4) {
+  if (newStep === 4 || newStep === 3) {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
       updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
@@ -89,6 +97,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
   const backButtonOperationProps = {
     setStepState: props.setStepState,
     setActiveNumPRs: props.setActiveNumPRs,
+    setRepoDetails: props.setRepoDetails,
     setPAT: props.setPAT,
     setUsername: props.setUsername,
     currentStep: props.currentStep,

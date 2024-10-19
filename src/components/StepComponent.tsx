@@ -23,6 +23,7 @@ const StepOneComponent = ({
   setStep,
   setActiveNumPRs,
   setUsername,
+  setRepoDetails,
   currentStep,
   repoOwner,
   activeNumPRs,
@@ -32,6 +33,7 @@ const StepOneComponent = ({
     setPAT: setHasPAT,
     setActiveNumPRs: setActiveNumPRs,
     setUsername: setUsername,
+    setRepoDetails: setRepoDetails,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
@@ -206,6 +208,7 @@ const StepComponent = ({
           setHasPAT={setHasPAT}
           setActiveNumPRs={setActiveNumPRs}
           setUsername={setUsername}
+          setRepoDetails={setRepoDetails}
           currentStep={step}
           repoOwner={repoOwner}
           activeNumPRs={activeNumPRs}

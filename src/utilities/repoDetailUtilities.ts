@@ -92,7 +92,6 @@ async function updatePRDetails({
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
   setRepoDetails,
-  setStep,
   username,
   patCode,
 }: RepoDetailUtilities) {
@@ -101,18 +100,13 @@ async function handleSubmitUserName({
     return;
   }
 
-  // save PAT Code to chrome extension storage on submission, need to set up safe storage of this
-  saveToStorage("patCode", patCode);
-
   await handleFetchUserRepos(username, patCode).then((results) => {
     if (!results) {
       return;
     }
     setRepoDetails(results);
-    setStep(3);
     // @ts-ignore
     saveToStorage("repoDetails", results);
-    saveToStorage("step", 3);
   });
 }
 

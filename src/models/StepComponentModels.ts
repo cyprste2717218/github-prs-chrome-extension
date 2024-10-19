@@ -22,6 +22,9 @@ type StepOneComponentProps = {
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
   currentStep: number;
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];

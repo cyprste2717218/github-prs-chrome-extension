@@ -125,20 +125,20 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     setPAT: setPAT,
     setActiveNumPRs: setActiveNumPRs,
     setUsername: setUsername,
+    setRepoDetails: setRepoDetails,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
   };
 
-  const handleSubmitButtonPress = () => {
+  async function handleSubmitButtonPress() {
+    await handleSubmitUserName({ username, patCode, setRepoDetails, setStep });
     handleStepChange({
       ...buttonStateBundle,
       stepOperation: "stepForward",
       initialValuePAT: patCode,
     });
-
-    handleSubmitUserName({ username, patCode, setRepoDetails, setStep });
-  };
+  }
 
   let isDisabled: boolean;
 

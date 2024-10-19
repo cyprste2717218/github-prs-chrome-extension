@@ -1,10 +1,16 @@
-import type { ActiveNumPRs } from "@/models/RepoCardModels";
+import type {
+  ActiveNumPRs,
+  RepoCardComponentDetails,
+} from "@/models/RepoCardModels";
 
 type StepOperationType = { stepOperation: "stepBack" | "stepForward" };
 
 type HandleStepBackProps = {
   setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {
