@@ -4,6 +4,7 @@ type StepOperationType = { stepOperation: "stepBack" | "stepForward" };
 
 type HandleStepBackProps = {
   setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {

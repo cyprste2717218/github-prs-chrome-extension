@@ -22,6 +22,7 @@ const StepOneComponent = ({
   setHasPAT,
   setStep,
   setActiveNumPRs,
+  setUsername,
   currentStep,
   repoOwner,
   activeNumPRs,
@@ -30,6 +31,7 @@ const StepOneComponent = ({
     setStepState: setStep,
     setPAT: setHasPAT,
     setActiveNumPRs: setActiveNumPRs,
+    setUsername: setUsername,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
@@ -149,6 +151,7 @@ const StepTwoComponent = ({
             setStep={setStep}
             setPAT={setPAT}
             setActiveNumPRs={setActiveNumPRs}
+            setUsername={setUsername}
           />
         </div>
       </div>
@@ -202,6 +205,7 @@ const StepComponent = ({
           setStep={setStep}
           setHasPAT={setHasPAT}
           setActiveNumPRs={setActiveNumPRs}
+          setUsername={setUsername}
           currentStep={step}
           repoOwner={repoOwner}
           activeNumPRs={activeNumPRs}

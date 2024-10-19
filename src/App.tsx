@@ -58,6 +58,7 @@ function App() {
         setStepState={setStep}
         setRepoDetails={setRepoDetails}
         setActiveNumPRs={setActiveNumPRs}
+        setUsername={setUsername}
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}

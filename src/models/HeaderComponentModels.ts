@@ -1,5 +1,6 @@
 import { ActiveNumPRs } from "@/models/RepoCardModels";
 import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
+import React from "react";
 
 type HeaderProps = {
   setStepState: React.Dispatch<React.SetStateAction<number>>;
@@ -8,6 +9,7 @@ type HeaderProps = {
   >;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
   currentStep: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;

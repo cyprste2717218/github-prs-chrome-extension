@@ -8,18 +8,18 @@ import type {
 } from "@/models/stepHandleModels.ts";
 
 const handleStepBack = (props: HandleStepBackProps) => {
-  const { setStepState, setPAT, setActiveNumPRs, currentStep } = props;
+  const { setStepState, setPAT, setActiveNumPRs, setUsername, currentStep } =
+    props;
 
   const newStep = currentStep - 1;
   // check decrementing step isn't out of bounds
-  if (!(newStep < 1)) {
-    setStepState(newStep);
+  if (newStep < 1) {
+    return;
   }
-
-  saveToStorage("step", newStep);
 
   if (newStep === 2) {
     setPAT(undefined);
+    setUsername("");
     saveToStorage("patCode", undefined); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
   }
 
@@ -27,6 +27,10 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setActiveNumPRs([]);
     saveToStorage("activeNumPRs", []);
   }
+
+  // set step to new decremented value
+  setStepState(newStep);
+  saveToStorage("step", newStep);
 };
 
 const handleStepForward = (props: HandleStepForwardProps) => {
@@ -43,8 +47,8 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   const newStep = currentStep + 1;
 
   // check incrementing step isn't out of bounds
-  if (!(newStep > 4)) {
-    setStepState(newStep);
+  if (newStep > 4) {
+    return;
   }
 
   if (newStep === 2) {
@@ -63,6 +67,9 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   } else {
     console.log("activeNumPRs array is empty");
   }
+
+  // set step to new incremented value
+  setStepState(newStep);
 };
 
 const handleStepChange = (props: HandleStepChangeProps) => {
@@ -73,6 +80,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setStepState: props.setStepState,
     setActiveNumPRs: props.setActiveNumPRs,
     setPAT: props.setPAT,
+    setUsername: props.setUsername,
     currentStep: props.currentStep,
   };
 

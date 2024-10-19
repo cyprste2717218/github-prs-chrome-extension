@@ -21,6 +21,7 @@ type StepOneComponentProps = {
   setHasPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
   currentStep: number;
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];

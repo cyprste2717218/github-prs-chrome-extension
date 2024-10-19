@@ -32,6 +32,7 @@ type SubmitButtonProps = ButtonProps<{
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
   currentStep: number;
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
