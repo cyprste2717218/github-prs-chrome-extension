@@ -9,7 +9,13 @@ import type {
 
 const handleStepBack = (props: HandleStepBackProps) => {
   const { setStepState, setPAT, setActiveNumPRs, currentStep } = props;
-  setStepState(currentStep - 1);
+
+  const newStep = currentStep - 1;
+  // check decrementing step isn't out of bounds
+  if (!(newStep < 1)) {
+    setStepState(newStep);
+  }
+
   saveToStorage("step", currentStep - 1);
 
   if (currentStep === 2) {
@@ -35,6 +41,13 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     currentStep,
     activeNumPRs,
   } = props;
+
+  const newStep = currentStep + 1;
+
+  // check incrementing step isn't out of bounds
+  if (!(newStep > 4)) {
+    setStepState(newStep);
+  }
 
   if (activeNumPRs.length !== 0) {
     console.log("activeNumPRs array is not empty");
