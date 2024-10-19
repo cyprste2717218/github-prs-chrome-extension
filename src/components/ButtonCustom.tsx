@@ -21,6 +21,7 @@ import {
   ArrowRight,
   KeyRound,
 } from "lucide-react";
+import { handleStepChange } from "@/utilities/setUpUtilities";
 
 const LinkButton: React.FC<LinkButtonProps> = ({ text, url }) => (
   <a href={url}>
@@ -110,9 +111,33 @@ const NextButton: React.FC<NextButtonProps> = ({ onClick, activeNumPRs }) => {
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   setRepoDetails,
   setStep,
+  setPAT,
+  setActiveNumPRs,
+  currentStep,
+  repoOwner,
+  activeNumPRs,
   username,
   patCode,
 }) => {
+  const buttonStateBundle = {
+    setStepState: setStep,
+    setPAT: setPAT,
+    setActiveNumPRs: setActiveNumPRs,
+    currentStep: currentStep,
+    repoOwner: repoOwner,
+    activeNumPRs: activeNumPRs,
+  };
+
+  const handleSubmitButtonPress = () => {
+    handleStepChange({
+      ...buttonStateBundle,
+      stepOperation: "stepForward",
+      initialValuePAT: patCode,
+    });
+
+    handleSubmitUserName({ username, patCode, setRepoDetails, setStep });
+  };
+
   let isDisabled: boolean;
 
   if (patCode !== undefined) {
@@ -124,9 +149,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   return (
     <Button
       variant="outline"
-      onClick={() =>
-        handleSubmitUserName({ username, patCode, setRepoDetails, setStep })
-      }
+      onClick={handleSubmitButtonPress}
       className="primary-foreground"
       disabled={isDisabled}
     >

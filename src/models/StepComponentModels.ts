@@ -33,6 +33,8 @@ type StepTwoComponentProps = {
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  activeNumPRs: ActiveNumPRs[];
   username: string;
   currentStep: number;
   repoDetails: RepoCardComponentDetails[] | null;

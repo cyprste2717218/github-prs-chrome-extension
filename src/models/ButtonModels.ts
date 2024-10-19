@@ -26,12 +26,18 @@ type RefreshButtonProps = ButtonProps<{
 }>;
 
 type SubmitButtonProps = ButtonProps<{
-  username: string;
-  patCode?: string;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  currentStep: number;
+  repoOwner: string;
+  activeNumPRs: ActiveNumPRs[];
+  username: string;
+  patCode?: string;
+  initialValuePAT: string | undefined;
 }>;
 
 type BackButtonProps = ButtonProps<{

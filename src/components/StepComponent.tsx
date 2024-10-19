@@ -15,7 +15,6 @@ import type {
 } from "@/models/StepComponentModels";
 
 import "../App.css";
-import { saveToStorage } from "../../public/background.ts";
 import InputCustom from "./InputCustom.tsx";
 import { handleStepChange } from "@/utilities/setUpUtilities.ts";
 
@@ -81,14 +80,16 @@ const StepOneComponent = ({
 const StepTwoComponent = ({
   setUsername,
   setRepoDetails,
+  setActiveNumPRs,
   setStep,
   setPAT,
+  currentStep,
   username,
+  activeNumPRs,
   PAT,
 }: StepTwoComponentProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event?.target?.value);
-    saveToStorage("username", username);
   };
 
   const handlePATChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -140,8 +141,14 @@ const StepTwoComponent = ({
             type="submit"
             username={username}
             patCode={PAT}
+            currentStep={currentStep}
+            repoOwner={username}
+            activeNumPRs={activeNumPRs}
+            initialValuePAT={PAT}
             setRepoDetails={setRepoDetails}
             setStep={setStep}
+            setPAT={setPAT}
+            setActiveNumPRs={setActiveNumPRs}
           />
         </div>
       </div>
@@ -205,11 +212,13 @@ const StepComponent = ({
     case 2:
       CurrentStepUI = (
         <StepTwoComponent
-          username={username}
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
           setStep={setStep}
           setPAT={setHasPAT}
+          setActiveNumPRs={setActiveNumPRs}
+          activeNumPRs={activeNumPRs}
+          username={username}
           repoDetails={repoDetails}
           currentStep={step}
           PAT={hasPAT}
