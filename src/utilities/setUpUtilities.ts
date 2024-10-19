@@ -59,15 +59,17 @@ const handleStepForward = (props: HandleStepForwardProps) => {
 
   if (newStep === 3) {
     saveToStorage("username", repoOwner);
-    saveToStorage("step", newStep);
+    saveToStorage("patCode", initialValuePAT);
   }
 
-  if (activeNumPRs.length !== 0) {
-    console.log("activeNumPRs array is not empty");
-    updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
-    saveToStorage("activeNumPRs", activeNumPRs);
-  } else {
-    console.log("activeNumPRs array is empty");
+  if (newStep === 4) {
+    if (activeNumPRs.length !== 0) {
+      console.log("activeNumPRs array is not empty");
+      updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+      saveToStorage("activeNumPRs", activeNumPRs);
+    } else {
+      console.log("activeNumPRs array is empty");
+    }
   }
 
   // set step to new incremented value
