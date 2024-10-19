@@ -72,6 +72,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
 
   // set step to new incremented value
   setStepState(newStep);
+  saveToStorage("step", newStep);
 };
 
 const handleStepChange = (props: HandleStepChangeProps) => {
