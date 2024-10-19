@@ -30,6 +30,11 @@ const handleStepBack = (props: HandleStepBackProps) => {
     saveToStorage("username", "");
   }
 
+  if (newStep === 3) {
+    setActiveNumPRs([]);
+    saveToStorage("activeNumPRs", []);
+  }
+
   // set step to new decremented value
   setStepState(newStep);
   saveToStorage("step", newStep);
