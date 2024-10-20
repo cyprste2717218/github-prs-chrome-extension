@@ -114,6 +114,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   setPAT,
   setActiveNumPRs,
   setUsername,
+  setNumPageResults,
   currentStep,
   repoOwner,
   activeNumPRs,
@@ -126,13 +127,20 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     setActiveNumPRs: setActiveNumPRs,
     setUsername: setUsername,
     setRepoDetails: setRepoDetails,
+    setNumPageResults: setNumPageResults,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
   };
 
   async function handleSubmitButtonPress() {
-    await handleSubmitUserName({ username, patCode, setRepoDetails, setStep });
+    await handleSubmitUserName({
+      username,
+      patCode,
+      setRepoDetails,
+      setStep,
+      setNumPageResults,
+    });
     handleStepChange({
       ...buttonStateBundle,
       stepOperation: "stepForward",

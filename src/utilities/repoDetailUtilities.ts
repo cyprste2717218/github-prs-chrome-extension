@@ -11,6 +11,7 @@ type RepoDetailUtilities = {
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   username: string;
   patCode: string | null;
 };
@@ -92,6 +93,7 @@ async function updatePRDetails({
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
   setRepoDetails,
+  setNumPageResults,
   username,
   patCode,
 }: RepoDetailUtilities) {
@@ -100,17 +102,20 @@ async function handleSubmitUserName({
     return;
   }
 
-  await handleFetchUserRepos(username, patCode).then((results) => {
-    if (!results) {
-      return;
+  await handleFetchUserRepos(setNumPageResults, username, patCode).then(
+    (results) => {
+      if (!results) {
+        return;
+      }
+      setRepoDetails(results);
+      // @ts-ignore
+      saveToStorage("repoDetails", results);
     }
-    setRepoDetails(results);
-    // @ts-ignore
-    saveToStorage("repoDetails", results);
-  });
+  );
 }
 
 async function handleFetchUserRepos(
+  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>,
   username: string,
   patCode: string | null
 ): Promise<RepoCardComponentDetails[] | undefined> {
@@ -119,13 +124,71 @@ async function handleFetchUserRepos(
     return;
   }
 
-  let results: any;
+  let parsedResults: any;
+  let response: any;
+
+  async function checkResponseHeaders(response: any) {
+    function extractLastPageNumber(linkHeader: string) {
+      // Remove the "link: " prefix if present
+      const cleanHeader = linkHeader.startsWith("link: ")
+        ? linkHeader.slice(6)
+        : linkHeader;
+
+      // Split the string into individual link entries
+      const linkEntries = cleanHeader.split(", ");
+      console.log("linkEntries:", linkEntries);
+      // Parse each entry into an object
+
+      const lastNumber = linkEntries.map((entry) => {
+        const matches = entry.match(/page=(\d+).*rel="last"/);
+        console.log("matches:", matches);
+        if (matches) {
+          return parseInt(matches[1], 10);
+        }
+        return null;
+      });
+
+      if (lastNumber[1] !== null) {
+        return lastNumber[1];
+      } else {
+        throw new Error(
+          "Couldn't retrieve number of last page of paginated results"
+        );
+      }
+    }
+
+    let lastValidPageNumber: number;
+
+    // accesing and checking states of response headers
+    const headers = response.headers;
+
+    // checking for paginated response from 'link' header presence
+    if (headers.has("link")) {
+      const linkHeader = headers.get("link");
+      console.log("linkHeader:", linkHeader);
+
+      try {
+        lastValidPageNumber = extractLastPageNumber(linkHeader);
+        setNumPageResults(lastValidPageNumber);
+        console.log("lastValidPageNumber:", lastValidPageNumber);
+
+        return lastValidPageNumber;
+      } catch (error) {
+        console.error(
+          "Error: couldn't retrieve number of last page of paginated results"
+        );
+      }
+    }
+  }
 
   if (patCode === null) {
     console.log("patCode is not defined", patCode);
-    results = await fetch(
-      `https://api.github.com/users/${username}/repos`
-    ).then((response) => response.json());
+    response = await fetch(`https://api.github.com/users/${username}/repos`);
+
+    await checkResponseHeaders(response);
+
+    // parse results
+    parsedResults = await response.json();
   } else {
     console.log("patCode is defined", patCode);
     const requestWithAuth = request.defaults({
@@ -134,14 +197,17 @@ async function handleFetchUserRepos(
       },
     });
 
-    let response = await requestWithAuth(`GET /users/${username}/repos`);
+    response = await requestWithAuth(`GET /users/${username}/repos`);
+    await checkResponseHeaders(response);
 
-    results = response.data;
-    console.log("results:", results);
+    // parse results
+    parsedResults = response.data;
+
+    console.log("results:", parsedResults);
   }
 
-  if (results?.length > 0) {
-    const relevantDetails = results.map((repo: any) => {
+  if (parsedResults?.length > 0) {
+    const relevantDetails = parsedResults.map((repo: any) => {
       let shortenedDesc = "";
 
       if (repo.description && repo.description.length > 150) {

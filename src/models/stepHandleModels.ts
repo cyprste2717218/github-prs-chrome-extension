@@ -10,6 +10,7 @@ type HandleStepBackProps = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {

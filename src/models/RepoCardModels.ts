@@ -33,6 +33,8 @@ type DisplayRepoCardProps = {
 type GeneratedRepoCardsProps = {
   repoDetails: RepoCardComponentDetails[] | null;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  numPageResults: number | null;
   activeNumPRs: ActiveNumPRs[];
   step: number;
 };

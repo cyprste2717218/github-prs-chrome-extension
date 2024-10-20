@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, SetStateAction } from "react";
 import {
   ActiveNumPRs,
   RepoCardComponentDetails,
@@ -24,10 +24,10 @@ import { Separator } from "./ui/separator";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
+  //PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-  PaginationNext,
+  // PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { ChevronsUpDown } from "lucide-react";
@@ -260,10 +260,45 @@ const PreviewCardComponent = ({
   );
 };
 
+// move ts inline definitions here elsewhere
+const PaginationElements = ({
+  numPageResults,
+}: {
+  setNumPageResults: React.Dispatch<SetStateAction<number | null>>;
+  numPageResults: number | null;
+}) => {
+  const generatePaginationElements = () => {
+    if (!numPageResults) return;
+    <PaginationItem>
+      <PaginationPrevious href="#" />
+    </PaginationItem>;
+
+    let paginationElements = [];
+
+    for (let i = 0; i < numPageResults; i++) {
+      paginationElements.push(
+        <PaginationItem>
+          <PaginationLink href="#">{i + 1}</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return paginationElements;
+  };
+
+  return (
+    <Pagination>
+      <PaginationContent>{generatePaginationElements()}</PaginationContent>
+    </Pagination>
+  );
+};
+
 const GeneratedPreviewRepoCards = ({
+  setActiveNumPRs,
+  setNumPageResults,
   repoDetails,
   step,
-  setActiveNumPRs,
+  numPageResults,
   activeNumPRs,
 }: GeneratedRepoCardsProps): JSX.Element => {
   if (!repoDetails) {
@@ -284,22 +319,10 @@ const GeneratedPreviewRepoCards = ({
           activeNumPRs={activeNumPRs}
         />
       ))}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <PaginationElements
+        setNumPageResults={setNumPageResults}
+        numPageResults={numPageResults}
+      />
     </>
   );
 };

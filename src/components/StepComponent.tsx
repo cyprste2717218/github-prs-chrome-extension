@@ -24,6 +24,7 @@ const StepOneComponent = ({
   setActiveNumPRs,
   setUsername,
   setRepoDetails,
+  setNumPageResults,
   currentStep,
   repoOwner,
   activeNumPRs,
@@ -34,6 +35,7 @@ const StepOneComponent = ({
     setActiveNumPRs: setActiveNumPRs,
     setUsername: setUsername,
     setRepoDetails: setRepoDetails,
+    setNumPageResults: setNumPageResults,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
@@ -87,6 +89,7 @@ const StepTwoComponent = ({
   setActiveNumPRs,
   setStep,
   setPAT,
+  setNumPageResults,
   currentStep,
   username,
   activeNumPRs,
@@ -154,6 +157,7 @@ const StepTwoComponent = ({
             setPAT={setPAT}
             setActiveNumPRs={setActiveNumPRs}
             setUsername={setUsername}
+            setNumPageResults={setNumPageResults}
           />
         </div>
       </div>
@@ -164,15 +168,19 @@ const StepTwoComponent = ({
 const StepThreeComponent = ({
   repoDetails,
   setActiveNumPRs,
+  setNumPageResults,
   activeNumPRs,
   step,
+  numPageResults,
 }: StepThreeComponentProps) => {
   return (
     <GeneratedPreviewRepoCards
       setActiveNumPRs={setActiveNumPRs}
+      setNumPageResults={setNumPageResults}
       activeNumPRs={activeNumPRs}
       repoDetails={repoDetails}
       step={step}
+      numPageResults={numPageResults}
     />
   );
 };
@@ -191,12 +199,14 @@ const StepComponent = ({
   setActiveNumPRs,
   setHasPAT,
   setStep,
+  setNumPageResults,
   username,
   repoDetails,
   step,
   activeNumPRs,
   hasPAT,
   repoOwner,
+  numPageResults,
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
@@ -209,6 +219,7 @@ const StepComponent = ({
           setActiveNumPRs={setActiveNumPRs}
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
+          setNumPageResults={setNumPageResults}
           currentStep={step}
           repoOwner={repoOwner}
           activeNumPRs={activeNumPRs}
@@ -224,6 +235,7 @@ const StepComponent = ({
           setStep={setStep}
           setPAT={setHasPAT}
           setActiveNumPRs={setActiveNumPRs}
+          setNumPageResults={setNumPageResults}
           activeNumPRs={activeNumPRs}
           username={username}
           repoDetails={repoDetails}
@@ -237,6 +249,8 @@ const StepComponent = ({
       CurrentStepUI = (
         <StepThreeComponent
           setActiveNumPRs={setActiveNumPRs}
+          setNumPageResults={setNumPageResults}
+          numPageResults={numPageResults}
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}
           step={step}

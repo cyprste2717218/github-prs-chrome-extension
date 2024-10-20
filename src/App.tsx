@@ -21,6 +21,7 @@ function App() {
   >(null);
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
   const [PAT, setPAT] = useState<string | null>(null);
+  const [numPageResults, setNumPageResults] = useState<number | null>(null);
 
   useEffect(() => {
     // @ts-ignore
@@ -60,11 +61,12 @@ function App() {
         setRepoDetails={setRepoDetails}
         setActiveNumPRs={setActiveNumPRs}
         setUsername={setUsername}
+        setNumPageResults={setNumPageResults}
+        setPAT={setPAT}
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}
         hasPAT={PAT}
-        setPAT={setPAT}
       />
 
       <StepComponent
@@ -73,12 +75,14 @@ function App() {
         setStep={setStep}
         setActiveNumPRs={setActiveNumPRs}
         setHasPAT={setPAT}
+        setNumPageResults={setNumPageResults}
         username={username}
         repoDetails={repoDetails}
         step={step}
         activeNumPRs={activeNumPRs}
         hasPAT={PAT}
         repoOwner={username}
+        numPageResults={numPageResults}
       />
     </>
   );

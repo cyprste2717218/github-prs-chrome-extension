@@ -14,6 +14,7 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setActiveNumPRs,
     setRepoDetails,
     setUsername,
+    setNumPageResults,
     currentStep,
     initialValuePAT,
   } = props;
@@ -32,11 +33,13 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setRepoDetails(null);
     setPAT(initialValuePAT);
     setUsername("");
+    setNumPageResults(null);
 
     saveToStorage("activeNumPRs", []);
     saveToStorage("repoDetails", null);
     saveToStorage("patCode", initialValuePAT); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
     saveToStorage("username", "");
+    saveToStorage("numPageResults", null);
   }
 
   if (newStep === 3) {
@@ -102,6 +105,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setRepoDetails: props.setRepoDetails,
     setPAT: props.setPAT,
     setUsername: props.setUsername,
+    setNumPageResults: props.setNumPageResults,
     currentStep: props.currentStep,
     initialValuePAT: props.initialValuePAT,
   };
