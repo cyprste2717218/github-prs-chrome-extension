@@ -50,6 +50,11 @@ function App() {
       console.log("PAT:", result.patCode);
     });
 
+    // @ts-ignore
+    chrome.storage.local.get("numPageResults", (result) => {
+      setNumPageResults(JSON.parse(result.numPageResults));
+    });
+
     //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", loadFromStorage("step"));
   }, []);

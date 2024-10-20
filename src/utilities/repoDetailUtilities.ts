@@ -185,6 +185,7 @@ async function handleFetchUserRepos(
       try {
         lastValidPageNumber = extractLastPageNumber(linkHeader);
         setNumPageResults(lastValidPageNumber);
+        saveToStorage("numPageResults", lastValidPageNumber);
         console.log("lastValidPageNumber:", lastValidPageNumber);
 
         return lastValidPageNumber;
@@ -281,9 +282,6 @@ async function handleChangePageResults({
     patCode,
     resultPageNum,
   });
-
-  saveToStorage("repoDetails", null);
-  saveToStorage("numPageResults", null);
 }
 
 export {
