@@ -2,3 +2,5 @@ echo "pre-commit hook started (husky)"
 echo "-------------------------------"
 echo "checking and altering code to match prettier formatting rules "
 npm run run-pretty
+echo "running npm packages audit"
+npm audit
