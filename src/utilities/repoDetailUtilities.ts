@@ -176,24 +176,31 @@ async function handleFetchUserRepos(
 
     // accesing and checking states of response headers
     const headers = response.headers;
+    console.log("headers:", headers);
+    console.log("full response:", response);
 
     // checking for paginated response from 'link' header presence
-    if (headers.has("link")) {
-      const linkHeader = headers.get("link");
+    let linkHeader: string;
+
+    try {
+      linkHeader = headers.get("link");
       console.log("linkHeader:", linkHeader);
+    } catch (error) {
+      console.log("error:", error);
+      linkHeader = headers.link;
+    }
 
-      try {
-        lastValidPageNumber = extractLastPageNumber(linkHeader);
-        setNumPageResults(lastValidPageNumber);
-        saveToStorage("numPageResults", lastValidPageNumber);
-        console.log("lastValidPageNumber:", lastValidPageNumber);
+    try {
+      lastValidPageNumber = extractLastPageNumber(linkHeader);
+      setNumPageResults(lastValidPageNumber);
+      saveToStorage("numPageResults", lastValidPageNumber);
+      console.log("lastValidPageNumber:", lastValidPageNumber);
 
-        return lastValidPageNumber;
-      } catch (error) {
-        console.error(
-          "Error: couldn't retrieve number of last page of paginated results"
-        );
-      }
+      return lastValidPageNumber;
+    } catch (error) {
+      console.error(
+        "Error: couldn't retrieve number of last page of paginated results"
+      );
     }
   }
 
@@ -218,6 +225,7 @@ async function handleFetchUserRepos(
     response = await requestWithAuth(
       `GET /users/${username}/repos?page=${resultPageNum}`
     );
+
     await checkResponseHeaders(response);
 
     // parse results

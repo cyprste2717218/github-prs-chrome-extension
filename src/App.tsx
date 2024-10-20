@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import HeaderComponent from "./components/HeaderComponent";
 import StepComponent from "./components/StepComponent";
+import WarningModal from "./components/WarningModal";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
@@ -92,6 +93,8 @@ function App() {
         repoOwner={username}
         numPageResults={numPageResults}
       />
+
+      {displayWarning && <WarningModal setDisplayWarning={setDisplayWarning} />}
     </>
   );
 }
