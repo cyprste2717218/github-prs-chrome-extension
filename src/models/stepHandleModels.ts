@@ -11,6 +11,7 @@ type HandleStepBackProps = {
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {

@@ -25,6 +25,7 @@ const StepOneComponent = ({
   setUsername,
   setRepoDetails,
   setNumPageResults,
+  setDisplayWarning,
   currentStep,
   repoOwner,
   activeNumPRs,
@@ -36,6 +37,7 @@ const StepOneComponent = ({
     setUsername: setUsername,
     setRepoDetails: setRepoDetails,
     setNumPageResults: setNumPageResults,
+    setDisplayWarning: setDisplayWarning,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
@@ -90,6 +92,7 @@ const StepTwoComponent = ({
   setStep,
   setPAT,
   setNumPageResults,
+  setDisplayWarning,
   currentStep,
   username,
   activeNumPRs,
@@ -158,6 +161,7 @@ const StepTwoComponent = ({
             setActiveNumPRs={setActiveNumPRs}
             setUsername={setUsername}
             setNumPageResults={setNumPageResults}
+            setDisplayWarning={setDisplayWarning}
           />
         </div>
       </div>
@@ -206,6 +210,7 @@ const StepComponent = ({
   setHasPAT,
   setStep,
   setNumPageResults,
+  setDisplayWarning,
   username,
   repoDetails,
   step,
@@ -226,6 +231,7 @@ const StepComponent = ({
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
           setNumPageResults={setNumPageResults}
+          setDisplayWarning={setDisplayWarning}
           currentStep={step}
           repoOwner={repoOwner}
           activeNumPRs={activeNumPRs}
@@ -242,6 +248,7 @@ const StepComponent = ({
           setPAT={setHasPAT}
           setActiveNumPRs={setActiveNumPRs}
           setNumPageResults={setNumPageResults}
+          setDisplayWarning={setDisplayWarning}
           activeNumPRs={activeNumPRs}
           username={username}
           repoDetails={repoDetails}

@@ -15,6 +15,7 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setRepoDetails,
     setUsername,
     setNumPageResults,
+    setDisplayWarning,
     currentStep,
     initialValuePAT,
   } = props;
@@ -43,6 +44,9 @@ const handleStepBack = (props: HandleStepBackProps) => {
   }
 
   if (newStep === 3) {
+    // check navigation to previous step is intended
+    setDisplayWarning(true);
+
     setActiveNumPRs([]);
     saveToStorage("activeNumPRs", []);
   }
@@ -106,6 +110,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setPAT: props.setPAT,
     setUsername: props.setUsername,
     setNumPageResults: props.setNumPageResults,
+    setDisplayWarning: props.setDisplayWarning,
     currentStep: props.currentStep,
     initialValuePAT: props.initialValuePAT,
   };

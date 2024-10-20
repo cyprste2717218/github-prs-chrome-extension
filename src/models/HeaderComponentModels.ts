@@ -11,6 +11,7 @@ type HeaderProps = {
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   currentStep: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;

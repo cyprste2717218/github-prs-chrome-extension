@@ -10,6 +10,7 @@ type StepComponentProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setHasPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   username: string;
   repoDetails: RepoCardComponentDetails[] | null;
   step: number;
@@ -28,6 +29,7 @@ type StepOneComponentProps = {
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   currentStep: number;
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
@@ -42,6 +44,7 @@ type StepTwoComponentProps = {
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   activeNumPRs: ActiveNumPRs[];
   username: string;
   currentStep: number;

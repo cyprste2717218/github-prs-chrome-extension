@@ -22,6 +22,7 @@ function App() {
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
   const [PAT, setPAT] = useState<string | null>(null);
   const [numPageResults, setNumPageResults] = useState<number | null>(null);
+  const [displayWarning, setDisplayWarning] = useState<boolean>(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -68,6 +69,7 @@ function App() {
         setUsername={setUsername}
         setNumPageResults={setNumPageResults}
         setPAT={setPAT}
+        setDisplayWarning={setDisplayWarning}
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}
@@ -81,6 +83,7 @@ function App() {
         setActiveNumPRs={setActiveNumPRs}
         setHasPAT={setPAT}
         setNumPageResults={setNumPageResults}
+        setDisplayWarning={setDisplayWarning}
         username={username}
         repoDetails={repoDetails}
         step={step}
