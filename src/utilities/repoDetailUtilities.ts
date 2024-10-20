@@ -10,10 +10,10 @@ type RepoDetailUtilities = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   username: string;
   patCode: string | null;
+  resultPageNum?: number;
 };
 
 type SubmitPRDetailsProps = {
@@ -28,6 +28,16 @@ type HandleRefreshProps = {
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;
+};
+
+type HandleChangePageResultsProps = {
+  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
+  username: string;
+  patCode: string | null;
+  resultPageNum: number;
 };
 
 async function updatePRDetails({
@@ -96,28 +106,33 @@ async function handleSubmitUserName({
   setNumPageResults,
   username,
   patCode,
+  resultPageNum = 1,
 }: RepoDetailUtilities) {
   if (!username) {
     console.warn("No username entered, no repos fetched");
     return;
   }
 
-  await handleFetchUserRepos(setNumPageResults, username, patCode).then(
-    (results) => {
-      if (!results) {
-        return;
-      }
-      setRepoDetails(results);
-      // @ts-ignore
-      saveToStorage("repoDetails", results);
+  await handleFetchUserRepos(
+    setNumPageResults,
+    username,
+    patCode,
+    resultPageNum
+  ).then((results) => {
+    if (!results) {
+      return;
     }
-  );
+    setRepoDetails(results);
+    // @ts-ignore
+    saveToStorage("repoDetails", results);
+  });
 }
 
 async function handleFetchUserRepos(
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>,
   username: string,
-  patCode: string | null
+  patCode: string | null,
+  resultPageNum: number
 ): Promise<RepoCardComponentDetails[] | undefined> {
   if (!username) {
     console.warn("No username entered");
@@ -183,7 +198,9 @@ async function handleFetchUserRepos(
 
   if (patCode === null) {
     console.log("patCode is not defined", patCode);
-    response = await fetch(`https://api.github.com/users/${username}/repos`);
+    response = await fetch(
+      `https://api.github.com/users/${username}/repos?page=${resultPageNum}`
+    );
 
     await checkResponseHeaders(response);
 
@@ -197,7 +214,9 @@ async function handleFetchUserRepos(
       },
     });
 
-    response = await requestWithAuth(`GET /users/${username}/repos`);
+    response = await requestWithAuth(
+      `GET /users/${username}/repos?page=${resultPageNum}`
+    );
     await checkResponseHeaders(response);
 
     // parse results
@@ -245,9 +264,32 @@ async function handleRefresh({
   }
 }
 
+async function handleChangePageResults({
+  setNumPageResults,
+  setRepoDetails,
+  username,
+  patCode,
+  resultPageNum = 1,
+}: HandleChangePageResultsProps) {
+  // reset details stored
+  setRepoDetails(null);
+
+  await handleSubmitUserName({
+    setRepoDetails,
+    setNumPageResults,
+    username,
+    patCode,
+    resultPageNum,
+  });
+
+  saveToStorage("repoDetails", null);
+  saveToStorage("numPageResults", null);
+}
+
 export {
   handleFetchUserRepos,
   handleSubmitUserName,
   handleRefresh,
+  handleChangePageResults,
   updatePRDetails,
 };

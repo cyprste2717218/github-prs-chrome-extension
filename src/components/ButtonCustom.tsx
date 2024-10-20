@@ -138,7 +138,6 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       username,
       patCode,
       setRepoDetails,
-      setStep,
       setNumPageResults,
     });
     handleStepChange({

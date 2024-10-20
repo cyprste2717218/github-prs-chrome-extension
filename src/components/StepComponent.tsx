@@ -169,9 +169,12 @@ const StepThreeComponent = ({
   repoDetails,
   setActiveNumPRs,
   setNumPageResults,
+  setRepoDetails,
   activeNumPRs,
   step,
   numPageResults,
+  username,
+  patCode,
 }: StepThreeComponentProps) => {
   return (
     <GeneratedPreviewRepoCards
@@ -181,6 +184,9 @@ const StepThreeComponent = ({
       repoDetails={repoDetails}
       step={step}
       numPageResults={numPageResults}
+      setRepoDetails={setRepoDetails}
+      username={username}
+      patCode={patCode}
     />
   );
 };
@@ -250,6 +256,9 @@ const StepComponent = ({
         <StepThreeComponent
           setActiveNumPRs={setActiveNumPRs}
           setNumPageResults={setNumPageResults}
+          setRepoDetails={setRepoDetails}
+          username={username}
+          patCode={hasPAT}
           numPageResults={numPageResults}
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}

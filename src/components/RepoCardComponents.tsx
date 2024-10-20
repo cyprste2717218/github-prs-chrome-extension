@@ -1,4 +1,4 @@
-import { Fragment, SetStateAction } from "react";
+import React, { Fragment, SetStateAction } from "react";
 import {
   ActiveNumPRs,
   RepoCardComponentDetails,
@@ -26,15 +26,16 @@ import {
   PaginationContent,
   //PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
   // PaginationNext,
-  PaginationPrevious,
+  //PaginationPrevious,
+  PaginationLink,
 } from "@/components/ui/pagination";
 import { ChevronsUpDown } from "lucide-react";
 
 import { useState } from "react";
 import { Github } from "lucide-react";
 import CheckBoxCustom from "./CheckBoxCustom";
+import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
 
 const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
   if (name === "" && numPRs === -1) {
@@ -263,22 +264,43 @@ const PreviewCardComponent = ({
 // move ts inline definitions here elsewhere
 const PaginationElements = ({
   numPageResults,
+  setNumPageResults,
+  setRepoDetails,
+  username,
+  patCode,
 }: {
   setNumPageResults: React.Dispatch<SetStateAction<number | null>>;
   numPageResults: number | null;
+  setRepoDetails: React.Dispatch<
+    SetStateAction<RepoCardComponentDetails[] | null>
+  >;
+  username: string;
+  patCode: string | null;
 }) => {
   const generatePaginationElements = () => {
     if (!numPageResults) return;
     <PaginationItem>
-      <PaginationPrevious href="#" />
+      <PaginationLink href="#">1</PaginationLink>
     </PaginationItem>;
 
     let paginationElements = [];
 
     for (let i = 0; i < numPageResults; i++) {
+      let resultPageNum = i + 1;
+
       paginationElements.push(
-        <PaginationItem>
-          <PaginationLink href="#">{i + 1}</PaginationLink>
+        <PaginationItem
+          onClick={() =>
+            handleChangePageResults({
+              setNumPageResults,
+              setRepoDetails,
+              username,
+              patCode,
+              resultPageNum,
+            })
+          }
+        >
+          <PaginationLink>{i + 1}</PaginationLink>
         </PaginationItem>
       );
     }
@@ -296,6 +318,9 @@ const PaginationElements = ({
 const GeneratedPreviewRepoCards = ({
   setActiveNumPRs,
   setNumPageResults,
+  setRepoDetails,
+  username,
+  patCode,
   repoDetails,
   step,
   numPageResults,
@@ -322,6 +347,9 @@ const GeneratedPreviewRepoCards = ({
       <PaginationElements
         setNumPageResults={setNumPageResults}
         numPageResults={numPageResults}
+        setRepoDetails={setRepoDetails}
+        username={username}
+        patCode={patCode}
       />
     </>
   );
