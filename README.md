@@ -17,31 +17,30 @@ To be completed
 
 ## How to Use
 
-# Unauthenticated Approach
+1). [Download the extension]('') from the chrome web store or [load an unpacked build]() of the extension
 
-1). [Download the extension]('') from the chrome web store
-
+![](public/README%20Set%20Up%20Screenshots/step1.png)
+<br><br>
 2). Choose the 'Enter Github Username' option
+<br>
+![](public/README%20Set%20Up%20Screenshots/step2-unauthenticated.png)
+<br>
+Alternatively, choose the 'Enter Github Username and PAT' to make authenticated requests, [this approach is discussed here]('')
+<br><br>
+![](public/README%20Set%20Up%20Screenshots/step2-authenticated.png)
 
 3). Select the Repositories You Wish to Track
+<span>
+![](public/README%20Set%20Up%20Screenshots/step3.png)
+![](public/README%20Set%20Up%20Screenshots/step3a.png)
+</span>
 
-4). Voila!
+4). Voila! If you want to refresh your pull request repo details, press the refresh button
+![](public/README%20Set%20Up%20Screenshots/step4.png)
 
 # Authenticated Approach
 
-1). [Download the extension]('') from the chrome web store
-
-2). Choose the 'Enter Github Username and PAT' option
-
-3). Generate a Personal Access Token (classic) <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic">following Github's guide here (opens new tab)</a>
-
-4). Enter your Github Username and Personal Access Token and submit
-
-5). Select the Repositories You Wish to Track
-
-6). Voila!
-
-To-do: include screenshots of extension at each step
+You can generate a Personal Access Token (classic) with no additional permissions <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic">following Github's guide here (opens new tab)</a>
 
 ## FAQ/Gotchas
 
