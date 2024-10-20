@@ -37,6 +37,7 @@ const PATInput: React.FC<PATInputProps> = ({ PAT, handlePATChange }) => {
       className="placeholder"
       type="text"
       placeholder="e.g. X62837..."
+      // @ts-ignore
       value={PAT}
       onChange={(e) => handlePATChange(e)}
     ></Input>

@@ -48,7 +48,7 @@ const StepOneComponent = ({
             handleStepChange({
               ...buttonStateBundle,
               stepOperation: "stepForward",
-              initialValuePAT: undefined,
+              initialValuePAT: null,
             })
           }
         >
@@ -124,7 +124,7 @@ const StepTwoComponent = ({
           />
         </div>
         <div style={{ marginTop: "10px" }}>
-          {PAT !== undefined && (
+          {PAT !== null && (
             <>
               <div style={{ margin: "5px", textAlign: "left" }}>
                 <Label htmlFor="githubPAT">

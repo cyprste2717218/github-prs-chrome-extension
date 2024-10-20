@@ -20,7 +20,7 @@ function App() {
     RepoCardComponentDetails[] | null
   >(null);
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
-  const [PAT, setPAT] = useState<string | undefined>(undefined);
+  const [PAT, setPAT] = useState<string | null>(null);
 
   useEffect(() => {
     // @ts-ignore
@@ -46,6 +46,7 @@ function App() {
     // @ts-ignore
     chrome.storage.local.get("patCode", (result) => {
       setPAT(JSON.parse(result.patCode));
+      console.log("PAT:", result.patCode);
     });
 
     //setChromeExtensionWindowSize()

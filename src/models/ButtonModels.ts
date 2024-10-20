@@ -30,15 +30,15 @@ type SubmitButtonProps = ButtonProps<{
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
-  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   currentStep: number;
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
   username: string;
-  patCode?: string;
-  initialValuePAT: string | undefined;
+  patCode: string | null;
+  initialValuePAT: string | null;
 }>;
 
 type BackButtonProps = ButtonProps<{

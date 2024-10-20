@@ -76,7 +76,7 @@ const HeaderComponent = ({
               handleStepChange({
                 ...buttonStateBundle,
                 stepOperation: "stepBack",
-                initialValuePAT: currentStep === 3 ? undefined : hasPAT,
+                initialValuePAT: currentStep === 3 ? null : hasPAT,
               })
             }
             currentStep={currentStep}

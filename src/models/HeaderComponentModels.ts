@@ -8,17 +8,17 @@ type HeaderProps = {
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   currentStep: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
-  hasPAT: string | undefined;
+  hasPAT: string | null;
 };
 
 type TitleProps = {
   currentStep: number;
-  hasPAT: string | undefined;
+  hasPAT: string | null;
 };
 
 export type { HeaderProps, TitleProps };

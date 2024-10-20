@@ -12,7 +12,7 @@ type RepoDetailUtilities = {
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   username: string;
-  patCode?: string;
+  patCode: string | null;
 };
 
 type SubmitPRDetailsProps = {
@@ -112,7 +112,7 @@ async function handleSubmitUserName({
 
 async function handleFetchUserRepos(
   username: string,
-  patCode?: string
+  patCode: string | null
 ): Promise<RepoCardComponentDetails[] | undefined> {
   if (!username) {
     console.warn("No username entered");
@@ -121,7 +121,7 @@ async function handleFetchUserRepos(
 
   let results: any;
 
-  if (patCode === undefined) {
+  if (patCode === null) {
     console.log("patCode is not defined", patCode);
     results = await fetch(
       `https://api.github.com/users/${username}/repos`

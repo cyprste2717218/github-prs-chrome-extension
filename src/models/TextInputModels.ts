@@ -16,7 +16,7 @@ type UsernameInputProps = TextInputProps<{
 }>;
 
 type PATInputProps = TextInputProps<{
-  PAT: string;
+  PAT: string | null;
   handlePATChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }>;
 

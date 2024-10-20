@@ -6,7 +6,6 @@ import type {
 type StepOperationType = { stepOperation: "stepBack" | "stepForward" };
 
 type HandleStepBackProps = {
-  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
@@ -16,14 +15,14 @@ type HandleStepBackProps = {
 type HandleStepForwardProps = {
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
-  initialValuePAT: string | undefined;
-  setPAT: React.Dispatch<React.SetStateAction<string | undefined>>;
 } & HandleStepCommonProps;
 
 type HandleStepCommonProps = {
   setStepState: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   currentStep: number;
+  initialValuePAT: string | null;
 };
 
 // To-do: set this to work with either HandleStepBackProps or HandleStepForwardProps

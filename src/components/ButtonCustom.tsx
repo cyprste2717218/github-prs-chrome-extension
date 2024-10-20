@@ -142,7 +142,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
   let isDisabled: boolean;
 
-  if (patCode !== undefined) {
+  if (patCode !== null) {
     isDisabled = username.length === 0 || patCode.length === 0;
   } else {
     isDisabled = username.length === 0;
