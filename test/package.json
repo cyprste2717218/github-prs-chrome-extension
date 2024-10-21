@@ -6,6 +6,6 @@
 		"puppeteer": "^23.6.0"
 	},
 	"scripts": {
-		"start": "jest ."
+		"start": "npm run --prefix .. build && jest ."
 	  }
 }
