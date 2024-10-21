@@ -2,7 +2,7 @@
 
 # Github PR Tracker Chrome Extension
 
-![screenshot showing chrome extension tracking a number of repos](public/github_social_preview.png)
+![screenshot showing chrome extension tracking a number of repos](image/github_social_preview.png)
 <br><br>
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
@@ -23,24 +23,24 @@ To be completed
 
 1). [Download the extension]('') from the chrome web store or [load an unpacked build]() of the extension
 
-![](public/README%20Set%20Up%20Screenshots/step1.png)
+![](image/README%20Set%20Up%20Screenshots/step1.png)
 <br><br>
 2). Choose the 'Enter Github Username' option
 <br>
-![](public/README%20Set%20Up%20Screenshots/step2-unauthenticated.png)
+![](image/README%20Set%20Up%20Screenshots/step2-unauthenticated.png)
 <br>
 Alternatively, choose the 'Enter Github Username and PAT' to make authenticated requests, [this approach is discussed here]('')
 <br><br>
-![](public/README%20Set%20Up%20Screenshots/step2-authenticated.png)
+![](image/README%20Set%20Up%20Screenshots/step2-authenticated.png)
 
 3). Select the Repositories You Wish to Track
 <span>
-![](public/README%20Set%20Up%20Screenshots/step3.png)
-![](public/README%20Set%20Up%20Screenshots/step3a.png)
+![](image/README%20Set%20Up%20Screenshots/step3.png)
+![](image/README%20Set%20Up%20Screenshots/step3a.png)
 </span>
 
 4). Voila! If you want to refresh your pull request repo details, press the refresh button
-![](public/README%20Set%20Up%20Screenshots/step4.png)
+![](image/README%20Set%20Up%20Screenshots/step4.png)
 
 # Authenticated Approach
 
