@@ -29,10 +29,11 @@ it('User can enter github/org username, choose repos to track and view the track
 	await page.goto(extensionUrl, {waitUntil: ['domcontentloaded', "networkidle2"]});
 
 	const Heading = await page.$eval('h1', (e => e.innerText));
-
-	
 	expect(Heading).toEqual('Welcome to Github PR Tracker!');
 
+	// check username entry button is present in display for user to click
+	const UsernameEntryButton = await page.$eval('#username-entry-button', (e => e.innerText));
+	expect(UsernameEntryButton).toEqual('Enter Github Username');
 
 })
 

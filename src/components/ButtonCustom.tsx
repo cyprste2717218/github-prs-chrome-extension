@@ -31,7 +31,7 @@ const LinkButton: React.FC<LinkButtonProps> = ({ text, url }) => (
 
 const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
   return (
-    <Button className="w-full">
+    <Button id="username-pat-entry-button" className="w-full">
       <KeyRound className={`h-4 w-4`} />
       Enter Github Username and PAT
     </Button>
@@ -40,7 +40,7 @@ const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
 
 const UsernameButton: React.FC<UsernameButtonProps> = ({}) => {
   return (
-    <Button variant="outline" className="w-full">
+    <Button id="username-entry-button" variant="outline" className="w-full">
       Enter Github Username
     </Button>
   );
