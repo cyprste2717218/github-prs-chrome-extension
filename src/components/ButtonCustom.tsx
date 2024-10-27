@@ -159,6 +159,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
   return (
     <Button
+      id="submit-button"
       variant="outline"
       onClick={handleSubmitButtonPress}
       className="primary-foreground"

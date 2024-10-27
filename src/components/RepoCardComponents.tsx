@@ -175,7 +175,7 @@ const PreviewCardComponent = ({
   }
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
+    <div id={`previewCard-${name}`} style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
       <Collapsible open={cardExpanded} onOpenChange={setCardExpanded}>
         <Card className="w-[400px]">
           <CardHeader>
