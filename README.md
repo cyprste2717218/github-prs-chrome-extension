@@ -2,7 +2,6 @@
 
 # Github PR Tracker Chrome Extension
 
-
 ![screenshot showing chrome extension tracking a number of repos](public/github_social_preview.png)
 
 <br><br>
@@ -16,10 +15,6 @@ Chrome extension that displays the number of open pull requests across tracked r
 Built in React with TypeScript using Vite, utilising [shadcn/ui](https://ui.shadcn.com) components using tailwind on the frontend.
 
 To-do: include link to chrome web store listing when out here
-
-## About/Further Info
-
-To be completed
 
 ## How to Use
 
@@ -47,6 +42,18 @@ Alternatively, choose the 'Enter Github Username and PAT' to make authenticated 
 # Authenticated Approach
 
 You can generate a Personal Access Token (classic) with no additional permissions <a target="_blank" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic">following Github's guide here (opens new tab)</a>
+
+# Local Setup
+
+1). Install Node Package Manager (bundled with node) and clone the repository
+
+2). Navigate into the repository directory and install dependencies with `npm install`
+
+3). Run `npm run build`
+
+4). In Chrome, go to chrome://extensions and enable "Developer mode" in the top-right corner.
+
+5). Click the "<em>Load unpacked</em>" button and select the generated `dist/` directory
 
 ## FAQ/Gotchas
 
