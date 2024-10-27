@@ -5,14 +5,15 @@ const EXTENSION_PATH = path.join(process.cwd(), '../dist');
 const EXTENSION_ID = 'ifihfononohiajgdcakilbjemapgbkpe';
 
 let browser;
+let puppeteerArgs = [
+	`--disable-extensions-except=${EXTENSION_PATH}`,
+	`--load-extension=${EXTENSION_PATH}`
+];
 
 beforeEach(async () => {
 	browser = await puppeteer.launch({
 	  headless: false,
-	  args: [
-		`--disable-extensions-except=${EXTENSION_PATH}`,
-		`--load-extension=${EXTENSION_PATH}`
-	  ]
+	  args: puppeteerArgs,
 	});
   });
   
