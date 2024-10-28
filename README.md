@@ -18,7 +18,10 @@ To-do: include link to chrome web store listing when out here
 
 ## How to Use
 
-![](image/demo.gif)
+<div align="center">
+	<img src="image/demo.gif" width="550" />
+</div>
+<br>
 
 1). [Download the extension]('') from the chrome web store or [load an unpacked build](#local-setup) of the extension
 
