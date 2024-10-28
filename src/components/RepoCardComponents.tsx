@@ -24,10 +24,7 @@ import { Separator } from "./ui/separator";
 import {
   Pagination,
   PaginationContent,
-  //PaginationEllipsis,
   PaginationItem,
-  // PaginationNext,
-  //PaginationPrevious,
   PaginationLink,
 } from "@/components/ui/pagination";
 import { ChevronsUpDown } from "lucide-react";
@@ -37,7 +34,11 @@ import { Github } from "lucide-react";
 import CheckBoxCustom from "./CheckBoxCustom";
 import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
 
-const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
+const DisplayCardComponent = ({
+  name,
+  numPRs,
+  githubUsername,
+}: DisplayRepoCardProps) => {
   if (name === "" && numPRs === -1) {
     //To-do: improve this 'null' logic handling - temporary measure for now
     return <Fragment></Fragment>;
@@ -48,30 +49,41 @@ const DisplayCardComponent = ({ name, numPRs }: DisplayRepoCardProps) => {
     cardName = name.slice(0, 27) + "...";
   }
   return (
-    <Card className="w-[200px] h-[200px]" style={{ margin: "5px" }}>
-      <CardHeader style={{ height: "100px" }}>
-        <CardTitle>{cardName}</CardTitle>
-      </CardHeader>
-      <CardContent style={{ height: "100px" }}>
-        <div style={{ marginBottom: "auto", marginTop: "auto" }}>
-          <div className="text-4xl font-semibold">{numPRs}</div>
-          <div>Open PRs</div>
-        </div>
-      </CardContent>
-    </Card>
+    <a
+      href={`https://github.com/${githubUsername}/${cardName}`}
+      target="_blank"
+    >
+      <Card
+        className="w-[200px] h-[200px] shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out"
+        style={{ margin: "5px" }}
+      >
+        <CardHeader style={{ height: "100px" }}>
+          <CardTitle>{cardName}</CardTitle>
+        </CardHeader>
+        <CardContent style={{ height: "100px" }}>
+          <div style={{ marginBottom: "auto", marginTop: "auto" }}>
+            <div className="text-4xl font-semibold">{numPRs}</div>
+            <div>Open PRs</div>
+          </div>
+        </CardContent>
+      </Card>
+    </a>
   );
 };
 
 const GeneratedDisplayRepoCards = ({
   activeNumPRs,
+  githubUsername,
 }: {
   activeNumPRs: ActiveNumPRs[];
+  githubUsername: string;
 }) => {
   type RepoRowProps = {
     repoOneName: string;
     repoTwoName: string;
     repoOneNumPRs: number;
     repoTwoNumPRs: number;
+    githubUsername: string;
   };
 
   const RepoRow = ({
@@ -79,6 +91,7 @@ const GeneratedDisplayRepoCards = ({
     repoTwoName,
     repoOneNumPRs,
     repoTwoNumPRs,
+    githubUsername,
   }: RepoRowProps) => {
     return (
       <div
@@ -88,8 +101,16 @@ const GeneratedDisplayRepoCards = ({
           flexDirection: "row",
         }}
       >
-        <DisplayCardComponent name={repoOneName} numPRs={repoOneNumPRs} />
-        <DisplayCardComponent name={repoTwoName} numPRs={repoTwoNumPRs} />
+        <DisplayCardComponent
+          name={repoOneName}
+          numPRs={repoOneNumPRs}
+          githubUsername={githubUsername}
+        />
+        <DisplayCardComponent
+          name={repoTwoName}
+          numPRs={repoTwoNumPRs}
+          githubUsername={githubUsername}
+        />
       </div>
     );
   };
@@ -113,6 +134,7 @@ const GeneratedDisplayRepoCards = ({
           repoTwoNumPRs={
             isIndexOutOfRange() ? -1 : activeNumPRs[i + 1].numActivePRs
           }
+          githubUsername={githubUsername}
         />
       );
     }

@@ -68,6 +68,7 @@ type StepThreeComponentProps = {
 
 type StepFourComponentProps = {
   activeNumPRs: ActiveNumPRs[];
+  githubUsername: string;
 };
 
 export type {

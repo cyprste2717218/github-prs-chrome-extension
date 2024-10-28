@@ -195,10 +195,16 @@ const StepThreeComponent = ({
   );
 };
 
-const StepFourComponent = ({ activeNumPRs }: StepFourComponentProps) => {
+const StepFourComponent = ({
+  activeNumPRs,
+  githubUsername,
+}: StepFourComponentProps) => {
   return (
     <>
-      <GeneratedDisplayRepoCards activeNumPRs={activeNumPRs} />
+      <GeneratedDisplayRepoCards
+        githubUsername={githubUsername}
+        activeNumPRs={activeNumPRs}
+      />
     </>
   );
 };
@@ -275,7 +281,12 @@ const StepComponent = ({
       break;
 
     case 4:
-      CurrentStepUI = <StepFourComponent activeNumPRs={activeNumPRs} />;
+      CurrentStepUI = (
+        <StepFourComponent
+          githubUsername={username}
+          activeNumPRs={activeNumPRs}
+        />
+      );
   }
 
   return CurrentStepUI;

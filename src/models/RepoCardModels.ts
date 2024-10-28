@@ -29,6 +29,7 @@ type PreviewRepoCardProps = {
 } & RepoPropsShared;
 
 type DisplayRepoCardProps = {
+  githubUsername: string;
   numPRs: number;
 } & RepoPropsShared;
 
