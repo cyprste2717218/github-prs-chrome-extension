@@ -18,7 +18,7 @@ To-do: include link to chrome web store listing when out here
 
 ## How to Use
 
-1). [Download the extension]('') from the chrome web store or [load an unpacked build]() of the extension
+1). [Download the extension]('') from the chrome web store or [load an unpacked build](#local-setup) of the extension
 
 ![](image/README%20Set%20Up%20Screenshots/step1.png)
 <br><br>
