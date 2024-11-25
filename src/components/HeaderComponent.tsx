@@ -12,9 +12,9 @@ const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
       break;
     case 2:
       if (hasPAT !== null) {
-        stepTitle = "Enter Your Github PAT and Username";
+        stepTitle = "Enter Your PAT and the Github Username/Org Name to Track";
       } else {
-        stepTitle = "Enter Your Github Username";
+        stepTitle = "Enter the Github Username/Org Name to Track";
       }
       break;
     case 3:
