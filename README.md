@@ -18,26 +18,18 @@ To-do: include link to chrome web store listing when out here
 
 ## How to Use
 
+<div align="center">
+	<img src="image/demo.gif" width="550" />
+</div>
+<br>
+
 1). [Download the extension]('') from the chrome web store or [load an unpacked build](#local-setup) of the extension
 
-![](image/README%20Set%20Up%20Screenshots/step1.png)
-<br><br>
-2). Choose the 'Enter Github Username' option
-<br>
-![](image/README%20Set%20Up%20Screenshots/step2-unauthenticated.png)
-<br>
-Alternatively, choose the 'Enter Github Username and PAT' to make authenticated requests, [this approach is discussed here]('')
-<br><br>
-![](image/README%20Set%20Up%20Screenshots/step2-authenticated.png)
+2). Choose the 'Enter Github Username' option, alternatively you can choose the 'Enter Github Username and PAT' to make authenticated requests, [this approach is discussed here]('')
 
 3). Select the Repositories You Wish to Track
-<span>
-![](image/README%20Set%20Up%20Screenshots/step3.png)
-![](image/README%20Set%20Up%20Screenshots/step3a.png)
-</span>
 
 4). Voila! If you want to refresh your pull request repo details, press the refresh button
-![](image/README%20Set%20Up%20Screenshots/step4.png)
 
 # Authenticated Approach
 
