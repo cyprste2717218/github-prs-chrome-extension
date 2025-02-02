@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 const { User } = require("lucide-react");
 
-const EXTENSION_PATH = path.join(process.cwd(), "/dist");
+const EXTENSION_PATH = path.resolve(process.cwd(), "..", "..", "dist");
 const EXTENSION_ID = "ifihfononohiajgdcakilbjemapgbkpe";
 
 let browser;
@@ -60,7 +60,7 @@ it("User can enter github/org username, choose repos to track and view the track
   const SubTitleHeading = await page.$eval("h2", (e) => e.innerText);
   expect(SubTitleHeading).toEqual("Enter the Github Username/Org Name to Track");
 
-  const previewCards = await page.$$('[id^="previewCard-"]');
-  await page.waitForTimeout(3000);
+  await page.waitForNetworkIdle();
+  const previewCards = await page.$$('[id^="previewCard-"]');  
   expect(previewCards.length).toBeGreaterThanOrEqual(5);
 });
