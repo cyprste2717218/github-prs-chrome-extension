@@ -71,6 +71,16 @@ it("User can enter github/org username, choose repos to track and view the track
   await page.click("#checkbetween-meals")
   await page.click("#checkbookworm")
 
+  // click next button
+
+  await page.click("#next-button")
+
+  // checking extension changes to step 3 UI after pressing the next button
+  const SubTitleHeading2 = await page.$eval("h2", (e) => e.innerText);
+  expect(SubTitleHeading2).toEqual("Your Repositories");
+
+  const displayCards = await page.$$('[id^="displayCard-"]');  
+  expect(displayCards.length).toBeGreaterThanOrEqual(4);
 
 
 });

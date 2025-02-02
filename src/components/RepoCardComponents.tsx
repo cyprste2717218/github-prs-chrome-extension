@@ -56,6 +56,7 @@ const DisplayCardComponent = ({
       <Card
         className="w-[200px] h-[200px] shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out"
         style={{ margin: "5px" }}
+        id={`displayCard-${cardName}`}
       >
         <CardHeader style={{ height: "100px" }}>
           <CardTitle>{cardName}</CardTitle>

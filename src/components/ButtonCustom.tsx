@@ -97,6 +97,7 @@ const NextButton: React.FC<NextButtonProps> = ({ onClick, activeNumPRs }) => {
       variant="outline"
       onClick={onClick}
       className="primary-foreground"
+      id="next-button"
     >
       <p style={{ paddingRight: "2px" }}>Next</p>
       <div style={{ marginTop: "auto", marginBottom: "auto" }}>
