@@ -72,7 +72,6 @@ it("User can enter github/org username, choose repos to track and view the track
   await page.click("#checkbookworm")
 
   // click next button
-
   await page.click("#next-button")
 
   // checking extension changes to step 3 UI after pressing the next button
