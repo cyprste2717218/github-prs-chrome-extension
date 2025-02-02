@@ -18,4 +18,7 @@ jobs:
       - name: Run prettier, build extension and run tests
         run: npm run run-pretty
         run: npm test
+      - name: Do NPM dep audit
+        run: npm audit
+      
         
