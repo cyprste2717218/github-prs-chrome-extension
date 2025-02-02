@@ -120,7 +120,7 @@ const StepTwoComponent = ({
         <div>
           <Separator className="my-4" />
           <div style={{ margin: "5px", textAlign: "left" }}>
-            <Label htmlFor="username">Your Github Username</Label>
+            <Label htmlFor="username">Github Username/Org Name</Label>
           </div>
 
           <InputCustom
