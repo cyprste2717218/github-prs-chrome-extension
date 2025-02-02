@@ -38,7 +38,7 @@ it("User can enter github/org username, choose repos to track and view the track
     "#username-entry-button",
     (e) => e.innerText
   );
-  expect(UsernameEntryButton).toEqual("Enter Github Username");
+  expect(UsernameEntryButton).toEqual("Enter Github Username/Org Name");
 
   // checking extension changes to step 2 UI after pressing the Username entry button
   await page.click("#username-entry-button");
@@ -58,7 +58,7 @@ it("User can enter github/org username, choose repos to track and view the track
   // user selects repos from list of displayed preview repos for tracking
 
   const SubTitleHeading = await page.$eval("h2", (e) => e.innerText);
-  expect(SubTitleHeading).toEqual("Enter Your Github Username");
+  expect(SubTitleHeading).toEqual("Enter the Github Username/Org Name to Track");
 
   const previewCards = await page.$$('[id^="previewCard-"]');
   await page.waitForTimeout(3000);
