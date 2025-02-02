@@ -13,7 +13,7 @@
     "run-pretty": "node src/utilities/scripts/runFormatter.js",
     "preview": "vite preview",
     "prepare": "husky",
-    "test": "xo"
+    "test": "jest test ."
   },
   "dependencies": {
     "@octokit/core": "^6.1.2",
@@ -28,6 +28,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "fast-glob": "^3.3.2",
+    "jest": "^29.7.0",
     "lucide-react": "^0.439.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

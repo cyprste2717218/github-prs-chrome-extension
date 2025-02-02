@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 const { User } = require("lucide-react");
 
-const EXTENSION_PATH = path.join(process.cwd(), "../../dist");
+const EXTENSION_PATH = path.join(process.cwd(), "/dist");
 const EXTENSION_ID = "ifihfononohiajgdcakilbjemapgbkpe";
 
 let browser;
