@@ -15,7 +15,8 @@
     "prepare": "husky",
     "test": "npm run build && npm run test:unit && npm run test:e2e",
     "test:unit": "jest --testMatch \"**/*.unit.test.js\"",
-    "test:e2e": "jest --testMatch \"**/*.e2e.test.js\""
+    "test:it": "jest --testMatch \"**/*.it.test.js\"",
+    "test:end": "jest --testMatch \"**/*.end.test.js\""
   },
   "dependencies": {
     "@octokit/core": "^6.1.2",
