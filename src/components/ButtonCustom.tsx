@@ -31,7 +31,7 @@ const LinkButton: React.FC<LinkButtonProps> = ({ text, url }) => (
 
 const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
   return (
-    <Button className="w-full h-18">
+    <Button id="username-pat-entry-button" className="w-full h-18">
       <KeyRound className={`h-4 w-4`} />
       Enter Github Username/Org Name <br></br> and PAT
     </Button>
@@ -40,7 +40,7 @@ const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
 
 const UsernameButton: React.FC<UsernameButtonProps> = ({}) => {
   return (
-    <Button variant="outline" className="w-full">
+    <Button id="username-entry-button" variant="outline" className="w-full">
       Enter Github Username/Org Name
     </Button>
   );
@@ -97,6 +97,7 @@ const NextButton: React.FC<NextButtonProps> = ({ onClick, activeNumPRs }) => {
       variant="outline"
       onClick={onClick}
       className="primary-foreground"
+      id="next-button"
     >
       <p style={{ paddingRight: "2px" }}>Next</p>
       <div style={{ marginTop: "auto", marginBottom: "auto" }}>
@@ -159,6 +160,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
   return (
     <Button
+      id="submit-button"
       variant="outline"
       onClick={handleSubmitButtonPress}
       className="primary-foreground"
