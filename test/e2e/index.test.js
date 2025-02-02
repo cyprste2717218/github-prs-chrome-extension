@@ -63,4 +63,14 @@ it("User can enter github/org username, choose repos to track and view the track
   await page.waitForNetworkIdle();
   const previewCards = await page.$$('[id^="previewCard-"]');  
   expect(previewCards.length).toBeGreaterThanOrEqual(5);
+
+  // checking four initial repositories for tracking, will need to make this more robust
+
+  await page.click("#checkakd")  
+  await page.click("#checkAx")
+  await page.click("#checkbetween-meals")
+  await page.click("#checkbookworm")
+
+
+
 });
