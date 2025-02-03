@@ -15,8 +15,9 @@ jobs:
           node-version: "18.17.0"
       - name: Install dependencies
         run: npm ci
-      - name: Run prettier, build extension and run tests
+      - name: Run prettier
         run: npm run-pretty
+      - name: Build extension and run tests
         run: npm test
       - name: Do NPM dep audit
         run: npm audit
