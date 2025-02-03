@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run prettier
-        run: npm run-pretty
+        run: npm run run-pretty
       - name: Build extension and run tests
         run: npm test
       - name: Do NPM dep audit
