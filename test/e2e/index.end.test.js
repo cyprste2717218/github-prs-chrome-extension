@@ -16,7 +16,7 @@ let puppeteerArgs = [
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: puppeteerArgs,
   });
 });
