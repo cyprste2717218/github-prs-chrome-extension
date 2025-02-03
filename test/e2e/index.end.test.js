@@ -16,8 +16,11 @@ let puppeteerArgs = [
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
-    headless: true,
+    headless: "new",
     args: puppeteerArgs,
+    executablePath: process.env.GITHUB_ACTIONS
+      ? '/usr/bin/google-chrome'
+      : undefined,
   });
 });
 
