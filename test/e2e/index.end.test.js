@@ -8,6 +8,10 @@ let browser;
 let puppeteerArgs = [
   `--disable-extensions-except=${EXTENSION_PATH}`,
   `--load-extension=${EXTENSION_PATH}`,
+  '--no-sandbox',
+  '--disable-setuid-sandbox',
+  '--disable-dev-shm-usage',
+  '--disable-gpu'
 ];
 
 beforeEach(async () => {
