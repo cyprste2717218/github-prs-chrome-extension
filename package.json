@@ -13,7 +13,7 @@
     "run-pretty": "node src/utilities/scripts/runFormatter.js",
     "preview": "vite preview",
     "prepare": "husky",
-    "test": "npm run build && npm run test:e2e",
+    "test": "npm run build && npm run test:end",
     "test:unit": "jest --testMatch \"**/*.unit.test.js\"",
     "test:it": "jest --testMatch \"**/*.it.test.js\"",
     "test:end": "jest --testMatch \"**/*.end.test.js\""
