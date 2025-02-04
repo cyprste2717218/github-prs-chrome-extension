@@ -57,28 +57,28 @@ it("User can enter github/org username, choose repos to track and view the track
   // user selects repos from list of displayed preview repos for tracking
 
   const SubTitleHeading = await page.$eval("h2", (e) => e.innerText);
-  expect(SubTitleHeading).toEqual("Enter the Github Username/Org Name to Track");
+  expect(SubTitleHeading).toEqual(
+    "Enter the Github Username/Org Name to Track"
+  );
 
   await page.waitForNetworkIdle();
-  const previewCards = await page.$$('[id^="previewCard-"]');  
+  const previewCards = await page.$$('[id^="previewCard-"]');
   expect(previewCards.length).toBeGreaterThanOrEqual(5);
 
   // checking four initial repositories for tracking, will need to make this more robust
 
-  await page.click("#checkakd")  
-  await page.click("#checkAx")
-  await page.click("#checkbetween-meals")
-  await page.click("#checkbookworm")
+  await page.click("#checkakd");
+  await page.click("#checkAx");
+  await page.click("#checkbetween-meals");
+  await page.click("#checkbookworm");
 
   // click next button
-  await page.click("#next-button")
+  await page.click("#next-button");
 
   // checking extension changes to step 3 UI after pressing the next button
   const SubTitleHeading2 = await page.$eval("h2", (e) => e.innerText);
   expect(SubTitleHeading2).toEqual("Your Repositories");
 
-  const displayCards = await page.$$('[id^="displayCard-"]');  
+  const displayCards = await page.$$('[id^="displayCard-"]');
   expect(displayCards.length).toBeGreaterThanOrEqual(4);
-
-
 });
