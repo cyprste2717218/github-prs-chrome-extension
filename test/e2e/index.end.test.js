@@ -8,19 +8,12 @@ let browser;
 let puppeteerArgs = [
   `--disable-extensions-except=${EXTENSION_PATH}`,
   `--load-extension=${EXTENSION_PATH}`,
-  '--no-sandbox',
-  '--disable-setuid-sandbox',
-  '--disable-dev-shm-usage',
-  '--disable-gpu'
 ];
 
 beforeEach(async () => {
   browser = await puppeteer.launch({
     headless: "new",
     args: puppeteerArgs,
-    executablePath: process.env.GITHUB_ACTIONS
-      ? '/usr/bin/google-chrome'
-      : undefined,
   });
 });
 
