@@ -1,5 +1,5 @@
 import { handleStepChange } from "@/utilities/setUpUtilities";
-import { handleToggleAllSelectedRepos } from "@/utilities/repoDetailUtilities"
+import { handleToggleAllSelectedRepos } from "@/utilities/repoDetailUtilities";
 import ButtonCustom from "./ButtonCustom";
 import CheckBoxCustom from "./CheckBoxCustom";
 import "../App.css";
@@ -51,12 +51,11 @@ const HeaderComponent = ({
   activeNumPRs,
   repoOwner,
   hasPAT,
-  allReposToggled
+  allReposToggled,
 }: HeaderProps): JSX.Element => {
-  
   function toggleAllSelectedRepos() {
-    setReposToggled(!allReposToggled)
-    handleToggleAllSelectedRepos({})
+    setReposToggled(!allReposToggled);
+    handleToggleAllSelectedRepos({});
   }
 
   // To-do: make separate bundles for props for respective back and next button types
@@ -84,7 +83,9 @@ const HeaderComponent = ({
         }}
       >
         {(currentStep === 2 || currentStep === 3 || currentStep === 4) && (
-          <div style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}>
+          <div
+            style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}
+          >
             <ButtonCustom
               type="back"
               setStep={() =>
@@ -135,15 +136,16 @@ const HeaderComponent = ({
           </div>
         )}
       </div>
-      <div style={{display: "flex", justifyContent: "flex-end"}}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <p>Select All</p>
-        <CheckBoxCustom handleClick={toggleAllSelectedRepos} repoChecked={allReposToggled} name={'-ToggleAll'} />
+        <CheckBoxCustom
+          handleClick={toggleAllSelectedRepos}
+          repoChecked={allReposToggled}
+          name={"-ToggleAll"}
+        />
       </div>
     </div>
-  
   );
 };
-
-
 
 export default HeaderComponent;

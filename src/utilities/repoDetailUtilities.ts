@@ -40,9 +40,7 @@ type HandleChangePageResultsProps = {
   resultPageNum: number;
 };
 
-type HandleToggleAllSelectedRepos = {
-
-}
+type HandleToggleAllSelectedRepos = {};
 
 async function updatePRDetails({
   setActiveNumPRs,
@@ -296,13 +294,7 @@ async function handleChangePageResults({
   });
 }
 
-async function handleToggleAllSelectedRepos({
-
-}: HandleToggleAllSelectedRepos) {
-  
-}
-
-
+async function handleToggleAllSelectedRepos({}: HandleToggleAllSelectedRepos) {}
 
 export {
   handleFetchUserRepos,
@@ -310,5 +302,5 @@ export {
   handleRefresh,
   handleChangePageResults,
   updatePRDetails,
-  handleToggleAllSelectedRepos
+  handleToggleAllSelectedRepos,
 };
