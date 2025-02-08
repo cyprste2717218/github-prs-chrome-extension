@@ -55,12 +55,14 @@ const HeaderComponent = ({
   repoDetails,
 }: HeaderProps): JSX.Element => {
   async function toggleAllSelectedRepos() {
-
     if (repoDetails !== null) {
       setReposToggled(!allReposToggled);
-      await handleToggleAllSelectedRepos({allReposToggled, setRepoDetails, repoDetails});
+      await handleToggleAllSelectedRepos({
+        allReposToggled,
+        setRepoDetails,
+        repoDetails,
+      });
     }
-  
   }
 
   // To-do: make separate bundles for props for respective back and next button types
