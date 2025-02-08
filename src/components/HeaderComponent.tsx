@@ -136,14 +136,16 @@ const HeaderComponent = ({
           </div>
         )}
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <p>Select All</p>
-        <CheckBoxCustom
-          handleClick={toggleAllSelectedRepos}
-          repoChecked={allReposToggled}
-          name={"-ToggleAll"}
-        />
-      </div>
+      {currentStep === 3 && (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <p>Select All</p>
+          <CheckBoxCustom
+            handleClick={toggleAllSelectedRepos}
+            repoChecked={allReposToggled}
+            name={"-ToggleAll"}
+          />
+        </div>
+      )}
     </div>
   );
 };
