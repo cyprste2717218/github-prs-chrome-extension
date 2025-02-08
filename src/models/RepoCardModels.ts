@@ -6,6 +6,7 @@ type RepoCardComponentDetails = {
   language: string;
   step: number;
   clone_url: string;
+  isRepoChecked: boolean;
   topics: string[];
 };
 
@@ -24,6 +25,7 @@ type PreviewRepoCardProps = {
   topics: string[];
   step: number;
   clone_url: string;
+  isRepoChecked: boolean;
   activeNumPRs: ActiveNumPRs[];
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
 } & RepoPropsShared;

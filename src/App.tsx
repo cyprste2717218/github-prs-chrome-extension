@@ -24,6 +24,7 @@ function App() {
   const [PAT, setPAT] = useState<string | null>(null);
   const [numPageResults, setNumPageResults] = useState<number | null>(null);
   const [displayWarning, setDisplayWarning] = useState<boolean>(false);
+  const [reposToggled, setReposToggled] = useState<boolean>(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -53,6 +54,11 @@ function App() {
     });
 
     // @ts-ignore
+    chrome.storage.local.get("reposToggled", (result) => {
+      setReposToggled(JSON.parse(result.reposToggled));
+    });
+
+    // @ts-ignore
     chrome.storage.local.get("numPageResults", (result) => {
       setNumPageResults(JSON.parse(result.numPageResults));
     });
@@ -75,6 +81,8 @@ function App() {
         currentStep={step}
         repoOwner={username}
         hasPAT={PAT}
+        allReposToggled={reposToggled}
+        setReposToggled={setReposToggled}
       />
 
       <StepComponent

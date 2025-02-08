@@ -159,10 +159,11 @@ const PreviewCardComponent = ({
   language,
   topics,
   clone_url,
+  isRepoChecked,
   activeNumPRs,
   setActiveNumPRs,
 }: PreviewRepoCardProps): JSX.Element => {
-  const [repoChecked, setRepoChecked] = useState<boolean>(false);
+  const [repoChecked, setRepoChecked] = useState<boolean>(isRepoChecked);
   const [cardExpanded, setCardExpanded] = useState<boolean>(false);
 
   async function handleClick() {
@@ -366,6 +367,7 @@ const GeneratedPreviewRepoCards = ({
           topics={repo.topics}
           step={step}
           clone_url={repo.clone_url}
+          isRepoChecked={repo.isRepoChecked}
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}
         />
