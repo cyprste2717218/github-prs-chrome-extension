@@ -81,6 +81,7 @@ function App() {
         currentStep={step}
         repoOwner={username}
         hasPAT={PAT}
+        repoDetails={repoDetails}
         allReposToggled={reposToggled}
         setReposToggled={setReposToggled}
       />

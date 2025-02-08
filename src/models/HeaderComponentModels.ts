@@ -18,6 +18,7 @@ type HeaderProps = {
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
   hasPAT: string | null;
+  repoDetails: RepoCardComponentDetails[] | null;
 };
 
 type TitleProps = {
