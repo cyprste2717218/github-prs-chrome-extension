@@ -3,7 +3,8 @@ import { handleToggleAllSelectedRepos } from "@/utilities/repoDetailUtilities";
 import ButtonCustom from "./ButtonCustom";
 import CheckBoxCustom from "./CheckBoxCustom";
 import "../App.css";
-import { HeaderProps, TitleProps } from "@/models/HeaderComponentModels.ts";
+import { HeaderProps, TitleProps, SelectAllButtonProps } from "@/models/HeaderComponentModels.ts";
+import { useState } from "react";
 
 const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
   let stepTitle = "";
@@ -54,16 +55,7 @@ const HeaderComponent = ({
   allReposToggled,
   repoDetails,
 }: HeaderProps): JSX.Element => {
-  async function toggleAllSelectedRepos() {
-    if (repoDetails !== null) {
-      setReposToggled(!allReposToggled);
-      await handleToggleAllSelectedRepos({
-        allReposToggled,
-        setRepoDetails,
-        repoDetails,
-      });
-    }
-  }
+
 
   // To-do: make separate bundles for props for respective back and next button types
   const buttonStateBundle = {
@@ -144,17 +136,39 @@ const HeaderComponent = ({
         )}
       </div>
       {currentStep === 3 && (
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <p>Select All</p>
-          <CheckBoxCustom
-            handleClick={toggleAllSelectedRepos}
-            repoChecked={allReposToggled}
-            name={"-ToggleAll"}
-          />
-        </div>
+        <SelectAllButton allReposToggled={allReposToggled} repoDetails={repoDetails} activeNumPRs={activeNumPRs} setReposToggled={setReposToggled} setActiveNumPRs={setActiveNumPRs} setRepoDetails={setRepoDetails} />
       )}
     </div>
   );
 };
+
+const SelectAllButton = ({ allReposToggled, repoDetails, activeNumPRs, setActiveNumPRs, setRepoDetails }: SelectAllButtonProps): JSX.Element => {
+
+  const [allReposSelected, setAllReposSelected] = useState<boolean>(allReposToggled);
+
+  async function toggleAllSelectedRepos() {
+    if (repoDetails !== null) {
+      setAllReposSelected(!allReposSelected);
+      await handleToggleAllSelectedRepos({
+        allReposSelected,
+        setRepoDetails,
+        setActiveNumPRs,
+        activeNumPRs,
+        repoDetails,
+      });
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      <p>Select All</p>
+      <CheckBoxCustom
+        handleClick={toggleAllSelectedRepos}
+        repoChecked={allReposSelected}
+        name={"-ToggleAll"}
+      />
+    </div>
+  );
+}
 
 export default HeaderComponent;

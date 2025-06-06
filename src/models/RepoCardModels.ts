@@ -27,6 +27,7 @@ type PreviewRepoCardProps = {
   clone_url: string;
   isRepoChecked: boolean;
   activeNumPRs: ActiveNumPRs[];
+  allReposToggled: boolean;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
 } & RepoPropsShared;
 
@@ -47,6 +48,7 @@ type GeneratedRepoCardsProps = {
   numPageResults: number | null;
   activeNumPRs: ActiveNumPRs[];
   step: number;
+  reposToggled: boolean;
 };
 
 export type {

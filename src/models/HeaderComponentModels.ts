@@ -26,4 +26,13 @@ type TitleProps = {
   hasPAT: string | null;
 };
 
-export type { HeaderProps, TitleProps };
+type SelectAllButtonProps = {
+  allReposToggled: boolean;
+  repoDetails: RepoCardComponentDetails[] | null;
+  activeNumPRs: ActiveNumPRs[];
+  setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[] | null>>;
+};
+
+export type { HeaderProps, TitleProps, SelectAllButtonProps };

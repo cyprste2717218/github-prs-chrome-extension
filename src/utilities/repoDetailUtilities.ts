@@ -44,8 +44,10 @@ type HandleToggleAllSelectedReposProps = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   repoDetails: RepoCardComponentDetails[];
-  allReposToggled: boolean;
+  activeNumPRs: ActiveNumPRs[];
+  allReposSelected: boolean;
 };
 
 async function updatePRDetails({
@@ -302,24 +304,44 @@ async function handleChangePageResults({
 
 async function handleToggleAllSelectedRepos({
   setRepoDetails,
-  allReposToggled,
+  setActiveNumPRs,
+  allReposSelected,
   repoDetails,
 }: HandleToggleAllSelectedReposProps) {
   console.log("gets to here");
   const currentRepoArrDetails = repoDetails;
-  let updatedToggledRepos: React.SetStateAction<
-    RepoCardComponentDetails[] | null
-  > = [];
+  let updatedOriginalRepoDetails: RepoCardComponentDetails[] = [];
+  let updatedToggledRepos: ActiveNumPRs[] = [];
 
-  updatedToggledRepos = currentRepoArrDetails.map(
+  console.log("allReposToggled:", allReposSelected);
+
+  // update all in-memory repos isRepoChecked to true or false
+  updatedOriginalRepoDetails = currentRepoArrDetails.map(
     (repo: RepoCardComponentDetails) => ({
       ...repo,
-      isRepoChecked: allReposToggled,
+      isRepoChecked: allReposSelected,
     })
   );
 
-  setRepoDetails(updatedToggledRepos);
+  console.log("updatedOriginalRepoDetails:", updatedOriginalRepoDetails);
+
+  if (!allReposSelected) {
+    // transform repo information to form required for activeNumPRs array
+    updatedToggledRepos = updatedOriginalRepoDetails.map(
+      (repo: RepoCardComponentDetails) => ({
+        name: repo.name,
+        numActivePRs: 0,
+      })
+    );
+  }
+
+  console.log("updatedToggledRepos:", updatedToggledRepos);
+
+  setRepoDetails(updatedOriginalRepoDetails);
+  setActiveNumPRs(updatedToggledRepos);
 }
+
+
 
 export {
   handleFetchUserRepos,

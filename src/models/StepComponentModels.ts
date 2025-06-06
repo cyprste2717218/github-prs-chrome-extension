@@ -18,6 +18,7 @@ type StepComponentProps = {
   hasPAT: string | null;
   repoOwner: string;
   numPageResults: number | null;
+  reposToggled: boolean;
 };
 
 type StepOneComponentProps = {
@@ -64,6 +65,7 @@ type StepThreeComponentProps = {
   repoDetails: RepoCardComponentDetails[] | null;
   username: string;
   patCode: string | null;
+  reposToggled: boolean;
 };
 
 type StepFourComponentProps = {

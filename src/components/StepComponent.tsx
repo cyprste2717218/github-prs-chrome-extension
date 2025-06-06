@@ -179,6 +179,7 @@ const StepThreeComponent = ({
   numPageResults,
   username,
   patCode,
+  reposToggled
 }: StepThreeComponentProps) => {
   return (
     <GeneratedPreviewRepoCards
@@ -191,6 +192,7 @@ const StepThreeComponent = ({
       setRepoDetails={setRepoDetails}
       username={username}
       patCode={patCode}
+      reposToggled={reposToggled}
     />
   );
 };
@@ -224,6 +226,8 @@ const StepComponent = ({
   hasPAT,
   repoOwner,
   numPageResults,
+  reposToggled
+
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
@@ -276,6 +280,7 @@ const StepComponent = ({
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}
           step={step}
+          reposToggled={reposToggled}
         />
       );
       break;

@@ -161,6 +161,7 @@ const PreviewCardComponent = ({
   clone_url,
   isRepoChecked,
   activeNumPRs,
+  allReposToggled,
   setActiveNumPRs,
 }: PreviewRepoCardProps): JSX.Element => {
   const [repoChecked, setRepoChecked] = useState<boolean>(isRepoChecked);
@@ -175,13 +176,13 @@ const PreviewCardComponent = ({
     let updatedRepoDetails: ActiveNumPRs[] = [];
 
     if (repoChecked) {
-      // logic for repo not tracked
+      // logic for repo when click sets it to not be tracked, i.e. when checkbox is not marked
 
       updatedRepoDetails = currentRepoDetails.filter(
         (repo) => repo.name !== name
       );
     } else {
-      // logic for repo when is tracked
+      // logic for repo when click sets it to be tracked, i.e. when checkbox is marked
 
       const existingRepo = currentRepoDetails.find(
         (repo) => repo.name === name
@@ -197,6 +198,15 @@ const PreviewCardComponent = ({
 
     setActiveNumPRs(updatedRepoDetails);
   }
+
+
+
+  const isAllReposToggledDefined = allReposToggled === undefined ? false : true;
+  console.log("isAllReposToggledDefined:", isAllReposToggledDefined);
+
+  const checkboxValue: boolean = isAllReposToggledDefined && !allReposToggled ? repoChecked : allReposToggled
+  console.log("checkboxValue:", checkboxValue);
+  console.log("repoChecked:", repoChecked);
 
   return (
     <div
@@ -279,7 +289,7 @@ const PreviewCardComponent = ({
         }}
       >
         <CheckBoxCustom
-          repoChecked={repoChecked}
+          repoChecked={checkboxValue}
           handleClick={handleClick}
           name={name}
         />
@@ -352,6 +362,7 @@ const GeneratedPreviewRepoCards = ({
   step,
   numPageResults,
   activeNumPRs,
+  reposToggled
 }: GeneratedRepoCardsProps): JSX.Element => {
   if (!repoDetails) {
     return <h3>No Repos found for provided username</h3>;
@@ -368,6 +379,7 @@ const GeneratedPreviewRepoCards = ({
           step={step}
           clone_url={repo.clone_url}
           isRepoChecked={repo.isRepoChecked}
+          allReposToggled={reposToggled}
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}
         />

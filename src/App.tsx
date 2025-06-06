@@ -101,6 +101,7 @@ function App() {
         hasPAT={PAT}
         repoOwner={username}
         numPageResults={numPageResults}
+        reposToggled={reposToggled}
       />
 
       {displayWarning && <WarningModal setDisplayWarning={setDisplayWarning} />}
