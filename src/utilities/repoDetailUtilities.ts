@@ -341,8 +341,6 @@ async function handleToggleAllSelectedRepos({
   setActiveNumPRs(updatedToggledRepos);
 }
 
-
-
 export {
   handleFetchUserRepos,
   handleSubmitUserName,

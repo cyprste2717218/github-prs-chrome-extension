@@ -3,7 +3,11 @@ import { handleToggleAllSelectedRepos } from "@/utilities/repoDetailUtilities";
 import ButtonCustom from "./ButtonCustom";
 import CheckBoxCustom from "./CheckBoxCustom";
 import "../App.css";
-import { HeaderProps, TitleProps, SelectAllButtonProps } from "@/models/HeaderComponentModels.ts";
+import {
+  HeaderProps,
+  TitleProps,
+  SelectAllButtonProps,
+} from "@/models/HeaderComponentModels.ts";
 import { useState } from "react";
 
 const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
@@ -55,8 +59,6 @@ const HeaderComponent = ({
   allReposToggled,
   repoDetails,
 }: HeaderProps): JSX.Element => {
-
-
   // To-do: make separate bundles for props for respective back and next button types
   const buttonStateBundle = {
     setStepState: setStepState,
@@ -136,15 +138,28 @@ const HeaderComponent = ({
         )}
       </div>
       {currentStep === 3 && (
-        <SelectAllButton allReposToggled={allReposToggled} repoDetails={repoDetails} activeNumPRs={activeNumPRs} setReposToggled={setReposToggled} setActiveNumPRs={setActiveNumPRs} setRepoDetails={setRepoDetails} />
+        <SelectAllButton
+          allReposToggled={allReposToggled}
+          repoDetails={repoDetails}
+          activeNumPRs={activeNumPRs}
+          setReposToggled={setReposToggled}
+          setActiveNumPRs={setActiveNumPRs}
+          setRepoDetails={setRepoDetails}
+        />
       )}
     </div>
   );
 };
 
-const SelectAllButton = ({ allReposToggled, repoDetails, activeNumPRs, setActiveNumPRs, setRepoDetails }: SelectAllButtonProps): JSX.Element => {
-
-  const [allReposSelected, setAllReposSelected] = useState<boolean>(allReposToggled);
+const SelectAllButton = ({
+  allReposToggled,
+  repoDetails,
+  activeNumPRs,
+  setActiveNumPRs,
+  setRepoDetails,
+}: SelectAllButtonProps): JSX.Element => {
+  const [allReposSelected, setAllReposSelected] =
+    useState<boolean>(allReposToggled);
 
   async function toggleAllSelectedRepos() {
     if (repoDetails !== null) {
@@ -169,6 +184,6 @@ const SelectAllButton = ({ allReposToggled, repoDetails, activeNumPRs, setActive
       />
     </div>
   );
-}
+};
 
 export default HeaderComponent;

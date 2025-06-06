@@ -32,7 +32,9 @@ type SelectAllButtonProps = {
   activeNumPRs: ActiveNumPRs[];
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setRepoDetails: React.Dispatch<React.SetStateAction<RepoCardComponentDetails[] | null>>;
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
 };
 
 export type { HeaderProps, TitleProps, SelectAllButtonProps };

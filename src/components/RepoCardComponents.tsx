@@ -199,12 +199,13 @@ const PreviewCardComponent = ({
     setActiveNumPRs(updatedRepoDetails);
   }
 
-
-
   const isAllReposToggledDefined = allReposToggled === undefined ? false : true;
   console.log("isAllReposToggledDefined:", isAllReposToggledDefined);
 
-  const checkboxValue: boolean = isAllReposToggledDefined && !allReposToggled ? repoChecked : allReposToggled
+  const checkboxValue: boolean =
+    isAllReposToggledDefined && !allReposToggled
+      ? repoChecked
+      : allReposToggled;
   console.log("checkboxValue:", checkboxValue);
   console.log("repoChecked:", repoChecked);
 
@@ -362,7 +363,7 @@ const GeneratedPreviewRepoCards = ({
   step,
   numPageResults,
   activeNumPRs,
-  reposToggled
+  reposToggled,
 }: GeneratedRepoCardsProps): JSX.Element => {
   if (!repoDetails) {
     return <h3>No Repos found for provided username</h3>;

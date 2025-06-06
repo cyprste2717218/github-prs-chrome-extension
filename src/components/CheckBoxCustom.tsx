@@ -5,7 +5,6 @@ const CheckBoxCustom = ({
   handleClick,
   name,
 }: CheckBoxCustomProps) => {
-
   return (
     <div style={{ width: "50px" }}>
       <input
