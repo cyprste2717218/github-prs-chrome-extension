@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/pagination";
 import { ChevronsUpDown } from "lucide-react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Github } from "lucide-react";
 import CheckBoxCustom from "./CheckBoxCustom";
 import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
@@ -44,22 +44,29 @@ const DisplayCardComponent = ({
     return <Fragment></Fragment>;
   }
 
-  let cardName = name;
-  if (name.length > 27) {
-    cardName = name.slice(0, 27) + "...";
+  function getDisplayCardNameForLength(fullRepoName: string): string {
+    if (fullRepoName.length > 27) {
+      return fullRepoName.slice(0, 27) + "...";
+    } else {
+      return fullRepoName;
+    }
   }
+
+  const cardNameForURL: string = name;
+  const displayCardName: string = getDisplayCardNameForLength(name);
+
   return (
     <a
-      href={`https://github.com/${githubUsername}/${cardName}`}
+      href={`https://github.com/${githubUsername}/${cardNameForURL}`}
       target="_blank"
     >
       <Card
         className="w-[200px] h-[200px] shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out"
         style={{ margin: "5px" }}
-        id={`displayCard-${cardName}`}
+        id={`displayCard-${displayCardName}`}
       >
         <CardHeader style={{ height: "100px" }}>
-          <CardTitle>{cardName}</CardTitle>
+          <CardTitle>{displayCardName}</CardTitle>
         </CardHeader>
         <CardContent style={{ height: "100px" }}>
           <div style={{ marginBottom: "auto", marginTop: "auto" }}>
@@ -159,23 +166,32 @@ const PreviewCardComponent = ({
   language,
   topics,
   clone_url,
-  isRepoChecked,
   activeNumPRs,
   allReposToggled,
   setActiveNumPRs,
 }: PreviewRepoCardProps): JSX.Element => {
-  const [repoChecked, setRepoChecked] = useState<boolean>(isRepoChecked);
+  const [repoChecked, setRepoChecked] = useState<boolean>(allReposToggled);
   const [cardExpanded, setCardExpanded] = useState<boolean>(false);
+  const [lastToggleState, setLastToggleState] =
+    useState<boolean>(allReposToggled);
+
+  useEffect(() => {
+    if (lastToggleState !== allReposToggled) {
+      setRepoChecked(allReposToggled);
+      setLastToggleState(allReposToggled);
+    }
+  }, [allReposToggled, lastToggleState]);
 
   async function handleClick() {
-    setRepoChecked(!repoChecked);
+    const newCheckedState = !repoChecked;
+    setRepoChecked(newCheckedState);
 
     // TODO: fix issue where repoChecked value is out of sync with value shown in UI
 
     const currentRepoDetails: ActiveNumPRs[] = [...activeNumPRs];
     let updatedRepoDetails: ActiveNumPRs[] = [];
 
-    if (repoChecked) {
+    if (newCheckedState) {
       // logic for repo when click sets it to not be tracked, i.e. when checkbox is not marked
 
       updatedRepoDetails = currentRepoDetails.filter(
@@ -188,9 +204,11 @@ const PreviewCardComponent = ({
         (repo) => repo.name === name
       );
 
+      // checking repo details aren't already present in arr storing tracked repos by mistake
       if (existingRepo) {
         return currentRepoDetails;
       } else {
+        // repo details confirmed to not be present already so adding details of repo
         const newRepo = { name: name, numActivePRs: 0 };
         updatedRepoDetails = [...currentRepoDetails, newRepo];
       }
@@ -199,15 +217,8 @@ const PreviewCardComponent = ({
     setActiveNumPRs(updatedRepoDetails);
   }
 
-  const isAllReposToggledDefined = allReposToggled === undefined ? false : true;
-  console.log("isAllReposToggledDefined:", isAllReposToggledDefined);
-
-  const checkboxValue: boolean =
-    isAllReposToggledDefined && !allReposToggled
-      ? repoChecked
-      : allReposToggled;
-  console.log("checkboxValue:", checkboxValue);
-  console.log("repoChecked:", repoChecked);
+  console.log(`allReposToggled: ${name}`, allReposToggled);
+  console.log(`repoChecked: ${name}`, repoChecked);
 
   return (
     <div
@@ -290,7 +301,7 @@ const PreviewCardComponent = ({
         }}
       >
         <CheckBoxCustom
-          repoChecked={checkboxValue}
+          repoChecked={repoChecked}
           handleClick={handleClick}
           name={name}
         />
@@ -379,7 +390,6 @@ const GeneratedPreviewRepoCards = ({
           topics={repo.topics}
           step={step}
           clone_url={repo.clone_url}
-          isRepoChecked={repo.isRepoChecked}
           allReposToggled={reposToggled}
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}

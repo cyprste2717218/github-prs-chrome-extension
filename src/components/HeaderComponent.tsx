@@ -8,7 +8,6 @@ import {
   TitleProps,
   SelectAllButtonProps,
 } from "@/models/HeaderComponentModels.ts";
-import { useState } from "react";
 
 const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
   let stepTitle = "";
@@ -157,15 +156,13 @@ const SelectAllButton = ({
   activeNumPRs,
   setActiveNumPRs,
   setRepoDetails,
+  setReposToggled,
 }: SelectAllButtonProps): JSX.Element => {
-  const [allReposSelected, setAllReposSelected] =
-    useState<boolean>(allReposToggled);
-
   async function toggleAllSelectedRepos() {
     if (repoDetails !== null) {
-      setAllReposSelected(!allReposSelected);
+      setReposToggled(!allReposToggled);
       await handleToggleAllSelectedRepos({
-        allReposSelected,
+        allReposToggled,
         setRepoDetails,
         setActiveNumPRs,
         activeNumPRs,
@@ -179,7 +176,7 @@ const SelectAllButton = ({
       <p>Select All</p>
       <CheckBoxCustom
         handleClick={toggleAllSelectedRepos}
-        repoChecked={allReposSelected}
+        repoChecked={allReposToggled}
         name={"-ToggleAll"}
       />
     </div>

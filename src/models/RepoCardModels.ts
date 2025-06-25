@@ -25,7 +25,6 @@ type PreviewRepoCardProps = {
   topics: string[];
   step: number;
   clone_url: string;
-  isRepoChecked: boolean;
   activeNumPRs: ActiveNumPRs[];
   allReposToggled: boolean;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
