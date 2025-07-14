@@ -89,6 +89,8 @@ const PreviewCardComponent = ({
     handleToggleRepo({ name, newCheckedState, activeNumPRs, setActiveNumPRs });
   }
 
+  const separatorPresent = language || (topics && topics.length > 0);
+
   console.log(`allReposToggled: ${name}`, allReposToggled);
   console.log(`repoChecked: ${name}`, repoChecked);
 
@@ -148,8 +150,15 @@ const PreviewCardComponent = ({
                       )}
                     </div>
                   </div>
-                  <Separator orientation="vertical" />
-                  <div style={{ display: "flex", justifyContent: "left" }}>
+                  {separatorPresent && <Separator orientation="vertical" />}
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: `${separatorPresent ? "left" : "center"}`,
+                      marginRight: `${separatorPresent ? "" : "30px"}`,
+                    }}
+                  >
                     <a href={clone_url} target="_blank">
                       <Button variant="link">
                         <div style={{ padding: "10px" }}>
