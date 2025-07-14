@@ -8,6 +8,7 @@ import {
   TitleProps,
   SelectAllButtonProps,
 } from "@/models/HeaderComponentModels.ts";
+import { Button } from "./ui/button";
 
 const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
   let stepTitle = "";
@@ -34,7 +35,7 @@ const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <div>
-        <h2 className="steptitle" style={{ textAlign: "left" }}>
+        <h2 className="stepTitle" style={{ textAlign: "left" }}>
           {stepTitle}
         </h2>
       </div>
@@ -177,13 +178,61 @@ const SelectAllButton = ({
   );
 
   return (
-    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-      <p>Select All</p>
-      <CheckBoxCustom
-        handleClick={toggleAllSelectedRepos}
-        repoChecked={allReposToggled}
-        name={"-ToggleAll"}
-      />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        marginTop: "5px",
+        marginBottom: "5px",
+        marginRight: "10px",
+      }}
+    >
+      <Button
+        variant="secondary"
+        className="rounded shadow mb-5"
+        id="select-all-button"
+        onClick={toggleAllSelectedRepos}
+        style={{
+          paddingBottom: "15px",
+          paddingTop: "15px",
+          paddingRight: "5px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "row",
+            width: "100%",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <p className="adjacentButtonText">Select All</p>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              marginTop: "2px",
+              marginLeft: "10px",
+              marginRight: "0",
+            }}
+          >
+            <CheckBoxCustom
+              handleClick={toggleAllSelectedRepos}
+              repoChecked={allReposToggled}
+              name={"-ToggleAll"}
+            />
+          </div>
+        </div>
+      </Button>
     </div>
   );
 };
