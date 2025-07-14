@@ -1,79 +1,52 @@
 import { RepoCardComponentDetails } from "./RepoCardModels";
 import { ActiveNumPRs } from "./RepoCardModels";
 
-type StepComponentProps = {
-  setUsername: React.Dispatch<React.SetStateAction<string>>;
+type CommonProps = {
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setHasPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  currentStep: number;
+  activeNumPRs: ActiveNumPRs[];
+};
+
+type StepComponentProps = ChooseSetupOptProps &
+  GitDetailsEntryProps &
+  ChooseReposComponentProps &
+  DisplayTrackedReposProps;
+
+type ChooseSetupOptProps = {
+  setPAT: React.Dispatch<React.SetStateAction<string | null>>;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
   username: string;
-  repoDetails: RepoCardComponentDetails[] | null;
-  step: number;
-  activeNumPRs: ActiveNumPRs[];
-  hasPAT: string | null;
-  repoOwner: string;
-  numPageResults: number | null;
-  reposToggled: boolean;
-};
-
-type ChooseSetupOptProps = {
-  setHasPAT: React.Dispatch<React.SetStateAction<string | null>>;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setUsername: React.Dispatch<React.SetStateAction<string>>;
-  setRepoDetails: React.Dispatch<
-    React.SetStateAction<RepoCardComponentDetails[] | null>
-  >;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
-  setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
-  setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
-  currentStep: number;
-  repoOwner: string;
-  activeNumPRs: ActiveNumPRs[];
-};
+} & CommonProps;
 
 type GitDetailsEntryProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
-  setRepoDetails: React.Dispatch<
-    React.SetStateAction<RepoCardComponentDetails[] | null>
-  >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
-  activeNumPRs: ActiveNumPRs[];
   username: string;
-  currentStep: number;
   repoDetails: RepoCardComponentDetails[] | null;
-  PAT: string | null;
-};
+  patCode: string | null;
+} & CommonProps;
 
 type ChooseReposComponentProps = {
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
-  setRepoDetails: React.Dispatch<
-    React.SetStateAction<RepoCardComponentDetails[] | null>
-  >;
   numPageResults: number | null;
-  activeNumPRs: ActiveNumPRs[];
-  step: number;
   repoDetails: RepoCardComponentDetails[] | null;
   username: string;
   patCode: string | null;
   reposToggled: boolean;
-};
+} & CommonProps;
 
 type DisplayTrackedReposProps = {
   activeNumPRs: ActiveNumPRs[];
-  githubUsername: string;
+  username: string;
 };
 
 export type {

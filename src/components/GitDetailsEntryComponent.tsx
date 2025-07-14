@@ -17,7 +17,7 @@ const GitDetailsEntryComponent = ({
   currentStep,
   username,
   activeNumPRs,
-  PAT,
+  patCode,
 }: GitDetailsEntryProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUsername(event?.target?.value);
@@ -51,7 +51,7 @@ const GitDetailsEntryComponent = ({
           />
         </div>
         <div style={{ marginTop: "10px" }}>
-          {PAT !== null && (
+          {patCode !== null && (
             <>
               <div style={{ margin: "5px", textAlign: "left" }}>
                 <Label htmlFor="githubPAT">
@@ -61,7 +61,7 @@ const GitDetailsEntryComponent = ({
 
               <InputCustom
                 type="PAT"
-                PAT={PAT}
+                PAT={patCode}
                 handlePATChange={handlePATChange}
               />
             </>
@@ -71,11 +71,11 @@ const GitDetailsEntryComponent = ({
           <ButtonCustom
             type="submit"
             username={username}
-            patCode={PAT}
+            patCode={patCode}
             currentStep={currentStep}
             repoOwner={username}
             activeNumPRs={activeNumPRs}
-            initialValuePAT={PAT}
+            initialValuePAT={patCode}
             setRepoDetails={setRepoDetails}
             setStep={setStep}
             setPAT={setPAT}

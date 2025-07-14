@@ -91,16 +91,15 @@ function App() {
         setRepoDetails={setRepoDetails}
         setStep={setStep}
         setActiveNumPRs={setActiveNumPRs}
-        setHasPAT={setPAT}
+        setPAT={setPAT}
         setNumPageResults={setNumPageResults}
         setDisplayWarning={setDisplayWarning}
         setReposToggled={setReposToggled}
         username={username}
         repoDetails={repoDetails}
-        step={step}
+        currentStep={step}
         activeNumPRs={activeNumPRs}
-        hasPAT={PAT}
-        repoOwner={username}
+        patCode={PAT}
         numPageResults={numPageResults}
         reposToggled={reposToggled}
       />

@@ -10,36 +10,35 @@ const StepComponent = ({
   setUsername,
   setRepoDetails,
   setActiveNumPRs,
-  setHasPAT,
+  setPAT,
   setStep,
   setNumPageResults,
   setDisplayWarning,
   setReposToggled,
   username,
   repoDetails,
-  step,
+  currentStep,
   activeNumPRs,
-  hasPAT,
-  repoOwner,
+  patCode,
   numPageResults,
   reposToggled,
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
-  switch (step) {
+  switch (currentStep) {
     case 1:
       CurrentStepUI = (
         <ChooseSetupOptComponent
           setStep={setStep}
-          setHasPAT={setHasPAT}
+          setPAT={setPAT}
           setActiveNumPRs={setActiveNumPRs}
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
           setNumPageResults={setNumPageResults}
           setDisplayWarning={setDisplayWarning}
           setReposToggled={setReposToggled}
-          currentStep={step}
-          repoOwner={repoOwner}
+          currentStep={currentStep}
+          username={username}
           activeNumPRs={activeNumPRs}
         />
       );
@@ -51,7 +50,7 @@ const StepComponent = ({
           setUsername={setUsername}
           setRepoDetails={setRepoDetails}
           setStep={setStep}
-          setPAT={setHasPAT}
+          setPAT={setPAT}
           setActiveNumPRs={setActiveNumPRs}
           setNumPageResults={setNumPageResults}
           setDisplayWarning={setDisplayWarning}
@@ -59,8 +58,8 @@ const StepComponent = ({
           activeNumPRs={activeNumPRs}
           username={username}
           repoDetails={repoDetails}
-          currentStep={step}
-          PAT={hasPAT}
+          currentStep={currentStep}
+          patCode={patCode}
         />
       );
       break;
@@ -72,11 +71,11 @@ const StepComponent = ({
           setNumPageResults={setNumPageResults}
           setRepoDetails={setRepoDetails}
           username={username}
-          patCode={hasPAT}
+          patCode={patCode}
           numPageResults={numPageResults}
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}
-          step={step}
+          currentStep={currentStep}
           reposToggled={reposToggled}
         />
       );
@@ -85,7 +84,7 @@ const StepComponent = ({
     case 4:
       CurrentStepUI = (
         <DisplayTrackedReposComponent
-          githubUsername={username}
+          username={username}
           activeNumPRs={activeNumPRs}
         />
       );

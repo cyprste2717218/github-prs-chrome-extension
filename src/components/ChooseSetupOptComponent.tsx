@@ -4,7 +4,7 @@ import { Separator } from "./ui/separator";
 import { ChooseSetupOptProps } from "@/models/StepComponentModels";
 
 const ChooseSetupOptComponent = ({
-  setHasPAT,
+  setPAT,
   setStep,
   setActiveNumPRs,
   setUsername,
@@ -13,12 +13,12 @@ const ChooseSetupOptComponent = ({
   setDisplayWarning,
   setReposToggled,
   currentStep,
-  repoOwner,
+  username,
   activeNumPRs,
 }: ChooseSetupOptProps) => {
   const buttonStateBundle = {
     setStepState: setStep,
-    setPAT: setHasPAT,
+    setPAT: setPAT,
     setActiveNumPRs: setActiveNumPRs,
     setUsername: setUsername,
     setRepoDetails: setRepoDetails,
@@ -26,7 +26,7 @@ const ChooseSetupOptComponent = ({
     setDisplayWarning: setDisplayWarning,
     setReposToggled: setReposToggled,
     currentStep: currentStep,
-    repoOwner: repoOwner,
+    repoOwner: username,
     activeNumPRs: activeNumPRs,
   };
 

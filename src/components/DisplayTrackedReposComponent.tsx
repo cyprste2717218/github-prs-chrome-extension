@@ -3,12 +3,12 @@ import AllTrackedRepoCards from "./repo-cards/AllTrackedRepoCards";
 
 const DisplayTrackedReposComponent = ({
   activeNumPRs,
-  githubUsername,
+  username,
 }: DisplayTrackedReposProps) => {
   return (
     <>
       <AllTrackedRepoCards
-        githubUsername={githubUsername}
+        githubUsername={username}
         activeNumPRs={activeNumPRs}
       />
     </>

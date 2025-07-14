@@ -8,7 +8,7 @@ const ChooseReposComponent = ({
   setNumPageResults,
   setRepoDetails,
   activeNumPRs,
-  step,
+  currentStep,
   numPageResults,
   username,
   patCode,
@@ -21,7 +21,7 @@ const ChooseReposComponent = ({
         setNumPageResults={setNumPageResults}
         activeNumPRs={activeNumPRs}
         repoDetails={repoDetails}
-        step={step}
+        step={currentStep}
         numPageResults={numPageResults}
         setRepoDetails={setRepoDetails}
         username={username}
