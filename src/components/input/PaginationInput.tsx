@@ -52,12 +52,35 @@ const PaginationInput = ({
       );
     }
 
-    return paginationElements;
+    const rows = [];
+    for (let i = 0; i < paginationElements.length; i += 10) {
+      rows.push(paginationElements.slice(i, i + 10));
+    }
+
+    return rows;
   };
 
+  const paginationRows = generatePaginationElements();
+
   return (
-    <Pagination>
-      <PaginationContent>{generatePaginationElements()}</PaginationContent>
+    <Pagination
+      style={{ display: "flex", flexDirection: "column" }}
+      className="w-[400px]"
+    >
+      {paginationRows ? (
+        paginationRows.map((paginationRow, rowIndex) => (
+          <PaginationContent
+            key={`row-${rowIndex}`}
+            style={{ marginBottom: "10px" }}
+          >
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {paginationRow.map((element) => element)}
+            </div>
+          </PaginationContent>
+        ))
+      ) : (
+        <></>
+      )}
     </Pagination>
   );
 };
