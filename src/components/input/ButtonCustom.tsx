@@ -12,8 +12,8 @@ import {
   UsernameWithPATButtonProps,
   UsernameButtonProps,
   LinkButtonProps,
-} from "@/models/ButtonModels";
-import { Button } from "./ui/button";
+} from "@/models/InputModels";
+import { Button } from "../ui/button";
 import {
   RefreshCw,
   ChevronRight,

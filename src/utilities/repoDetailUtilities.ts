@@ -315,8 +315,6 @@ async function handleToggleRepo({
   activeNumPRs,
   setActiveNumPRs,
 }: HandleToggleSingleRepoProps): Promise<void> {
-  // TODO: fix issue where repoChecked value is out of sync with value shown in UI
-
   const currentRepoDetails: ActiveNumPRs[] = [...activeNumPRs];
   let updatedRepoDetails: ActiveNumPRs[] = [];
 

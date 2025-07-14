@@ -1,9 +1,7 @@
 import { ChangeEvent } from "react";
-import {
-  GeneratedDisplayRepoCards,
-  GeneratedPreviewRepoCards,
-} from "./RepoCardComponents";
-import ButtonCustom from "./ButtonCustom";
+import AllPreviewRepoCards from "./repo-cards/AllPreviewRepoCards.tsx";
+import AllTrackedRepoCards from "./repo-cards/AllTrackedRepoCards.tsx";
+import ButtonCustom from "./input/ButtonCustom.tsx";
 import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator.tsx";
 import type {
@@ -15,8 +13,9 @@ import type {
 } from "@/models/StepComponentModels";
 
 import "../App.css";
-import InputCustom from "./InputCustom.tsx";
+import InputCustom from "./input/TextInputCustom.tsx";
 import { handleStepChange } from "@/utilities/setUpUtilities.ts";
+import PaginationInput from "./input/PaginationInput.tsx";
 
 const StepOneComponent = ({
   setHasPAT,
@@ -186,18 +185,27 @@ const StepThreeComponent = ({
   reposToggled,
 }: StepThreeComponentProps) => {
   return (
-    <GeneratedPreviewRepoCards
-      setActiveNumPRs={setActiveNumPRs}
-      setNumPageResults={setNumPageResults}
-      activeNumPRs={activeNumPRs}
-      repoDetails={repoDetails}
-      step={step}
-      numPageResults={numPageResults}
-      setRepoDetails={setRepoDetails}
-      username={username}
-      patCode={patCode}
-      reposToggled={reposToggled}
-    />
+    <>
+      <AllPreviewRepoCards
+        setActiveNumPRs={setActiveNumPRs}
+        setNumPageResults={setNumPageResults}
+        activeNumPRs={activeNumPRs}
+        repoDetails={repoDetails}
+        step={step}
+        numPageResults={numPageResults}
+        setRepoDetails={setRepoDetails}
+        username={username}
+        patCode={patCode}
+        reposToggled={reposToggled}
+      />
+      <PaginationInput
+        setNumPageResults={setNumPageResults}
+        numPageResults={numPageResults}
+        setRepoDetails={setRepoDetails}
+        username={username}
+        patCode={patCode}
+      />
+    </>
   );
 };
 
@@ -207,7 +215,7 @@ const StepFourComponent = ({
 }: StepFourComponentProps) => {
   return (
     <>
-      <GeneratedDisplayRepoCards
+      <AllTrackedRepoCards
         githubUsername={githubUsername}
         activeNumPRs={activeNumPRs}
       />

@@ -30,12 +30,7 @@ type PreviewRepoCardProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
 } & RepoPropsShared;
 
-type DisplayRepoCardProps = {
-  githubUsername: string;
-  numPRs: number;
-} & RepoPropsShared;
-
-type GeneratedRepoCardsProps = {
+type AllPreviewRepoCardsProps = {
   repoDetails: RepoCardComponentDetails[] | null;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
@@ -50,10 +45,30 @@ type GeneratedRepoCardsProps = {
   reposToggled: boolean;
 };
 
+type TrackedRepoCardProps = {
+  githubUsername: string;
+  numPRs: number;
+} & RepoPropsShared;
+
+type AllTrackedRepoCardProps = {
+  activeNumPRs: ActiveNumPRs[];
+  githubUsername: string;
+};
+
+type TrackedRepoRowProps = {
+  repoOneName: string;
+  repoTwoName: string;
+  repoOneNumPRs: number;
+  repoTwoNumPRs: number;
+  githubUsername: string;
+};
+
 export type {
   RepoCardComponentDetails,
   ActiveNumPRs,
   PreviewRepoCardProps,
-  DisplayRepoCardProps,
-  GeneratedRepoCardsProps,
+  AllPreviewRepoCardsProps,
+  TrackedRepoCardProps,
+  AllTrackedRepoCardProps,
+  TrackedRepoRowProps,
 };

@@ -63,6 +63,17 @@ type LinkButtonProps = ButtonProps<{
   url: string;
 }>;
 
+type SelectAllButtonProps = {
+  allReposToggled: boolean;
+  repoDetails: RepoCardComponentDetails[] | null;
+  activeNumPRs: ActiveNumPRs[];
+  setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
+};
+
 export type {
   RefreshButtonProps,
   SubmitButtonProps,
@@ -72,4 +83,5 @@ export type {
   UsernameWithPATButtonProps,
   UsernameButtonProps,
   LinkButtonProps,
+  SelectAllButtonProps,
 };

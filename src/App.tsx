@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import HeaderComponent from "./components/HeaderComponent";
+import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
 import WarningModal from "./components/WarningModal";
 import type {
