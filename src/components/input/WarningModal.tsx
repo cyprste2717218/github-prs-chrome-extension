@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 type WarningModalProps = {
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
 };

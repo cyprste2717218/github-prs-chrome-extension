@@ -16,6 +16,7 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setUsername,
     setNumPageResults,
     setDisplayWarning,
+    setReposToggled,
     currentStep,
     initialValuePAT,
   } = props;
@@ -46,9 +47,11 @@ const handleStepBack = (props: HandleStepBackProps) => {
   if (newStep === 3) {
     // check navigation to previous step is intended
     setDisplayWarning(true);
-
+    setReposToggled(false);
     setActiveNumPRs([]);
+
     saveToStorage("activeNumPRs", []);
+    saveToStorage("reposToggled", false);
   }
 
   // set step to new decremented value
@@ -111,6 +114,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setUsername: props.setUsername,
     setNumPageResults: props.setNumPageResults,
     setDisplayWarning: props.setDisplayWarning,
+    setReposToggled: props.setReposToggled,
     currentStep: props.currentStep,
     initialValuePAT: props.initialValuePAT,
   };

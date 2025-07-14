@@ -35,6 +35,7 @@ type SubmitButtonProps = ButtonProps<{
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
+  setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
   currentStep: number;
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
@@ -62,6 +63,17 @@ type LinkButtonProps = ButtonProps<{
   url: string;
 }>;
 
+type SelectAllButtonProps = {
+  allReposToggled: boolean;
+  repoDetails: RepoCardComponentDetails[] | null;
+  activeNumPRs: ActiveNumPRs[];
+  setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
+};
+
 export type {
   RefreshButtonProps,
   SubmitButtonProps,
@@ -71,4 +83,5 @@ export type {
   UsernameWithPATButtonProps,
   UsernameButtonProps,
   LinkButtonProps,
+  SelectAllButtonProps,
 };

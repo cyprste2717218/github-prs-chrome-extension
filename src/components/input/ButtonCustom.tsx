@@ -12,8 +12,8 @@ import {
   UsernameWithPATButtonProps,
   UsernameButtonProps,
   LinkButtonProps,
-} from "@/models/ButtonModels";
-import { Button } from "./ui/button";
+} from "@/models/InputModels";
+import { Button } from "../ui/button";
 import {
   RefreshCw,
   ChevronRight,
@@ -117,6 +117,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   setUsername,
   setNumPageResults,
   setDisplayWarning,
+  setReposToggled,
   currentStep,
   repoOwner,
   activeNumPRs,
@@ -131,6 +132,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     setRepoDetails: setRepoDetails,
     setNumPageResults: setNumPageResults,
     setDisplayWarning: setDisplayWarning,
+    setReposToggled: setReposToggled,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,

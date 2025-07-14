@@ -40,6 +40,23 @@ type HandleChangePageResultsProps = {
   resultPageNum: number;
 };
 
+type HandleToggleSingleRepoProps = {
+  name: string;
+  newCheckedState: boolean;
+  activeNumPRs: ActiveNumPRs[];
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+};
+
+type HandleToggleAllSelectedReposProps = {
+  setRepoDetails: React.Dispatch<
+    React.SetStateAction<RepoCardComponentDetails[] | null>
+  >;
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  repoDetails: RepoCardComponentDetails[];
+  activeNumPRs: ActiveNumPRs[];
+  allReposToggled: boolean;
+};
+
 async function updatePRDetails({
   setActiveNumPRs,
   activeNumPRs,
@@ -292,10 +309,91 @@ async function handleChangePageResults({
   });
 }
 
+async function handleToggleRepo({
+  name,
+  newCheckedState,
+  activeNumPRs,
+  setActiveNumPRs,
+}: HandleToggleSingleRepoProps): Promise<void> {
+  const currentRepoDetails: ActiveNumPRs[] = [...activeNumPRs];
+  let updatedRepoDetails: ActiveNumPRs[] = [];
+
+  if (!newCheckedState) {
+    // logic for repo when click sets it to not be tracked, i.e. when checkbox is not marked
+    console.log(`Removing repo details for ${name} repo`);
+
+    updatedRepoDetails = currentRepoDetails.filter(
+      (repo) => repo.name !== name
+    );
+
+    console.log("All Repo Details After Remove:", updatedRepoDetails);
+  } else {
+    // logic for repo when click sets it to be tracked, i.e. when checkbox is marked
+
+    const existingRepo = currentRepoDetails.find((repo) => repo.name === name);
+
+    // checking repo details aren't already present in arr storing tracked repos by mistake
+    if (existingRepo) {
+      return;
+    } else {
+      // repo details confirmed to not be present already so adding details of repo
+
+      const newRepo = { name: name, numActivePRs: 0 };
+      console.log(`Adding repo details for ${name} repo`);
+
+      updatedRepoDetails = [...currentRepoDetails, newRepo];
+      console.log("All Repo Details After Add:", updatedRepoDetails);
+    }
+  }
+
+  setActiveNumPRs(updatedRepoDetails);
+}
+
+async function handleToggleAllRepos({
+  allReposToggled,
+  repoDetails,
+  setActiveNumPRs,
+  setRepoDetails,
+}: HandleToggleAllSelectedReposProps): Promise<void> {
+  console.log("gets to here");
+  const currentRepoArrDetails = repoDetails;
+  let updatedOriginalRepoDetails: RepoCardComponentDetails[] = [];
+  let updatedToggledRepos: ActiveNumPRs[] = [];
+
+  console.log("allReposToggled:", allReposToggled);
+
+  // update all in-memory repos isRepoChecked to true or false
+  updatedOriginalRepoDetails = currentRepoArrDetails.map(
+    (repo: RepoCardComponentDetails) => ({
+      ...repo,
+      isRepoChecked: allReposToggled,
+    })
+  );
+
+  console.log("updatedOriginalRepoDetails:", updatedOriginalRepoDetails);
+
+  if (!allReposToggled) {
+    // transform repo information to form required for activeNumPRs array
+    updatedToggledRepos = updatedOriginalRepoDetails.map(
+      (repo: RepoCardComponentDetails) => ({
+        name: repo.name,
+        numActivePRs: 0,
+      })
+    );
+  }
+
+  console.log("updatedToggledRepos:", updatedToggledRepos);
+
+  setRepoDetails(updatedOriginalRepoDetails);
+  setActiveNumPRs(updatedToggledRepos);
+}
+
 export {
   handleFetchUserRepos,
   handleSubmitUserName,
   handleRefresh,
   handleChangePageResults,
   updatePRDetails,
+  handleToggleAllRepos,
+  handleToggleRepo,
 };

@@ -12,6 +12,7 @@ type HandleStepBackProps = {
   >;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
+  setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {

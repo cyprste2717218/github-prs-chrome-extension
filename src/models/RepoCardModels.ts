@@ -1,14 +1,5 @@
 import { SetStateAction } from "react";
 
-type RepoCardComponentDetails = {
-  name: string;
-  description: string;
-  language: string;
-  step: number;
-  clone_url: string;
-  topics: string[];
-};
-
 type ActiveNumPRs = {
   name: string;
   numActivePRs: number;
@@ -18,39 +9,61 @@ type RepoPropsShared = {
   name: string;
 };
 
-type PreviewRepoCardProps = {
+type RepoDetails = {
   description: string;
   language: string;
-  topics: string[];
-  step: number;
   clone_url: string;
+  topics: string[];
+} & RepoPropsShared;
+
+type RepoCardComponentDetails = {
+  step: number;
+} & RepoDetails;
+
+type PreviewCardSharedProps = {
+  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-} & RepoPropsShared;
+  allReposToggled: boolean;
+};
 
-type DisplayRepoCardProps = {
-  githubUsername: string;
-  numPRs: number;
-} & RepoPropsShared;
+type PreviewRepoCardProps = PreviewCardSharedProps & RepoCardComponentDetails;
 
-type GeneratedRepoCardsProps = {
-  repoDetails: RepoCardComponentDetails[] | null;
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+type AllPreviewRepoCardsProps = {
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   setRepoDetails: React.Dispatch<
     SetStateAction<RepoCardComponentDetails[] | null>
   >;
+  repoDetails: RepoCardComponentDetails[] | null;
   username: string;
   patCode: string | null;
   numPageResults: number | null;
-  activeNumPRs: ActiveNumPRs[];
   step: number;
+} & PreviewCardSharedProps;
+
+type TrackedRepoCardProps = {
+  githubUsername: string;
+  numPRs: number;
+} & RepoPropsShared;
+
+type AllTrackedRepoCardProps = {
+  activeNumPRs: ActiveNumPRs[];
+  githubUsername: string;
+};
+
+type TrackedRepoRowProps = {
+  repoOneName: string;
+  repoTwoName: string;
+  repoOneNumPRs: number;
+  repoTwoNumPRs: number;
+  githubUsername: string;
 };
 
 export type {
   RepoCardComponentDetails,
   ActiveNumPRs,
   PreviewRepoCardProps,
-  DisplayRepoCardProps,
-  GeneratedRepoCardsProps,
+  AllPreviewRepoCardsProps,
+  TrackedRepoCardProps,
+  AllTrackedRepoCardProps,
+  TrackedRepoRowProps,
 };

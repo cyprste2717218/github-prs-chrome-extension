@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import HeaderComponent from "./components/HeaderComponent";
+import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
-import WarningModal from "./components/WarningModal";
+import WarningModal from "./components/input/WarningModal.tsx";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
@@ -24,6 +24,7 @@ function App() {
   const [PAT, setPAT] = useState<string | null>(null);
   const [numPageResults, setNumPageResults] = useState<number | null>(null);
   const [displayWarning, setDisplayWarning] = useState<boolean>(false);
+  const [reposToggled, setReposToggled] = useState<boolean>(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -53,6 +54,11 @@ function App() {
     });
 
     // @ts-ignore
+    chrome.storage.local.get("reposToggled", (result) => {
+      setReposToggled(JSON.parse(result.reposToggled));
+    });
+
+    // @ts-ignore
     chrome.storage.local.get("numPageResults", (result) => {
       setNumPageResults(JSON.parse(result.numPageResults));
     });
@@ -75,6 +81,9 @@ function App() {
         currentStep={step}
         repoOwner={username}
         hasPAT={PAT}
+        repoDetails={repoDetails}
+        allReposToggled={reposToggled}
+        setReposToggled={setReposToggled}
       />
 
       <StepComponent
@@ -82,16 +91,17 @@ function App() {
         setRepoDetails={setRepoDetails}
         setStep={setStep}
         setActiveNumPRs={setActiveNumPRs}
-        setHasPAT={setPAT}
+        setPAT={setPAT}
         setNumPageResults={setNumPageResults}
         setDisplayWarning={setDisplayWarning}
+        setReposToggled={setReposToggled}
         username={username}
         repoDetails={repoDetails}
-        step={step}
+        currentStep={step}
         activeNumPRs={activeNumPRs}
-        hasPAT={PAT}
-        repoOwner={username}
+        patCode={PAT}
         numPageResults={numPageResults}
+        allReposToggled={reposToggled}
       />
 
       {displayWarning && <WarningModal setDisplayWarning={setDisplayWarning} />}
