@@ -21,7 +21,7 @@ const StepComponent = ({
   activeNumPRs,
   patCode,
   numPageResults,
-  reposToggled,
+  allReposToggled,
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
@@ -76,7 +76,7 @@ const StepComponent = ({
           activeNumPRs={activeNumPRs}
           repoDetails={repoDetails}
           currentStep={currentStep}
-          reposToggled={reposToggled}
+          allReposToggled={allReposToggled}
         />
       );
       break;

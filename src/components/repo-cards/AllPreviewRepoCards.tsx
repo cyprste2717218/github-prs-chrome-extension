@@ -28,7 +28,7 @@ const AllPreviewRepoCards = ({
   repoDetails,
   step,
   activeNumPRs,
-  reposToggled,
+  allReposToggled,
 }: AllPreviewRepoCardsProps): JSX.Element => {
   if (!repoDetails) {
     return <h3>No Repos found for provided username</h3>;
@@ -44,7 +44,7 @@ const AllPreviewRepoCards = ({
           topics={repo.topics}
           step={step}
           clone_url={repo.clone_url}
-          allReposToggled={reposToggled}
+          allReposToggled={allReposToggled}
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}
         />

@@ -2,6 +2,11 @@ import { ActiveNumPRs } from "@/models/RepoCardModels";
 import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
 import React from "react";
 
+type TitleProps = {
+  currentStep: number;
+  hasPAT: string | null;
+};
+
 type HeaderProps = {
   setStepState: React.Dispatch<React.SetStateAction<number>>;
   setRepoDetails: React.Dispatch<
@@ -14,16 +19,9 @@ type HeaderProps = {
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
   allReposToggled: boolean;
-  currentStep: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
-  hasPAT: string | null;
   repoDetails: RepoCardComponentDetails[] | null;
-};
-
-type TitleProps = {
-  currentStep: number;
-  hasPAT: string | null;
-};
+} & TitleProps;
 
 export type { HeaderProps, TitleProps };

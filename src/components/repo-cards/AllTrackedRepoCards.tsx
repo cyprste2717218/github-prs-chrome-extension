@@ -10,35 +10,6 @@ const AllTrackedRepoCards = ({
   activeNumPRs,
   githubUsername,
 }: AllTrackedRepoCardProps) => {
-  const TrackedRepoRow = ({
-    repoOneName,
-    repoTwoName,
-    repoOneNumPRs,
-    repoTwoNumPRs,
-    githubUsername,
-  }: TrackedRepoRowProps) => {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "row",
-        }}
-      >
-        <TrackedCardComponent
-          name={repoOneName}
-          numPRs={repoOneNumPRs}
-          githubUsername={githubUsername}
-        />
-        <TrackedCardComponent
-          name={repoTwoName}
-          numPRs={repoTwoNumPRs}
-          githubUsername={githubUsername}
-        />
-      </div>
-    );
-  };
-
   if (!activeNumPRs) return <></>;
 
   const totalRepos = activeNumPRs.length;
@@ -70,6 +41,35 @@ const AllTrackedRepoCards = ({
         <Fragment>{card}</Fragment>
       ))}
     </>
+  );
+};
+
+const TrackedRepoRow = ({
+  repoOneName,
+  repoTwoName,
+  repoOneNumPRs,
+  repoTwoNumPRs,
+  githubUsername,
+}: TrackedRepoRowProps) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "row",
+      }}
+    >
+      <TrackedCardComponent
+        name={repoOneName}
+        numPRs={repoOneNumPRs}
+        githubUsername={githubUsername}
+      />
+      <TrackedCardComponent
+        name={repoTwoName}
+        numPRs={repoTwoNumPRs}
+        githubUsername={githubUsername}
+      />
+    </div>
   );
 };
 

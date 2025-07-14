@@ -41,7 +41,7 @@ type ChooseReposComponentProps = {
   repoDetails: RepoCardComponentDetails[] | null;
   username: string;
   patCode: string | null;
-  reposToggled: boolean;
+  allReposToggled: boolean;
 } & CommonProps;
 
 type DisplayTrackedReposProps = {

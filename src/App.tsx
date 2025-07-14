@@ -101,7 +101,7 @@ function App() {
         activeNumPRs={activeNumPRs}
         patCode={PAT}
         numPageResults={numPageResults}
-        reposToggled={reposToggled}
+        allReposToggled={reposToggled}
       />
 
       {displayWarning && <WarningModal setDisplayWarning={setDisplayWarning} />}

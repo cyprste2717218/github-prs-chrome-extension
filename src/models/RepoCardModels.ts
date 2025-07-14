@@ -1,15 +1,5 @@
 import { SetStateAction } from "react";
 
-type RepoCardComponentDetails = {
-  name: string;
-  description: string;
-  language: string;
-  step: number;
-  clone_url: string;
-  isRepoChecked: boolean;
-  topics: string[];
-};
-
 type ActiveNumPRs = {
   name: string;
   numActivePRs: number;
@@ -19,31 +9,36 @@ type RepoPropsShared = {
   name: string;
 };
 
-type PreviewRepoCardProps = {
+type RepoDetails = {
   description: string;
   language: string;
-  topics: string[];
-  step: number;
   clone_url: string;
-  activeNumPRs: ActiveNumPRs[];
-  allReposToggled: boolean;
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  topics: string[];
 } & RepoPropsShared;
 
-type AllPreviewRepoCardsProps = {
-  repoDetails: RepoCardComponentDetails[] | null;
+type RepoCardComponentDetails = {
+  step: number;
+} & RepoDetails;
+
+type PreviewCardSharedProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  activeNumPRs: ActiveNumPRs[];
+  allReposToggled: boolean;
+};
+
+type PreviewRepoCardProps = PreviewCardSharedProps & RepoCardComponentDetails;
+
+type AllPreviewRepoCardsProps = {
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   setRepoDetails: React.Dispatch<
     SetStateAction<RepoCardComponentDetails[] | null>
   >;
+  repoDetails: RepoCardComponentDetails[] | null;
   username: string;
   patCode: string | null;
   numPageResults: number | null;
-  activeNumPRs: ActiveNumPRs[];
   step: number;
-  reposToggled: boolean;
-};
+} & PreviewCardSharedProps;
 
 type TrackedRepoCardProps = {
   githubUsername: string;

@@ -12,7 +12,7 @@ const ChooseReposComponent = ({
   numPageResults,
   username,
   patCode,
-  reposToggled,
+  allReposToggled,
 }: ChooseReposComponentProps) => {
   return (
     <>
@@ -26,7 +26,7 @@ const ChooseReposComponent = ({
         setRepoDetails={setRepoDetails}
         username={username}
         patCode={patCode}
-        reposToggled={reposToggled}
+        allReposToggled={allReposToggled}
       />
       <PaginationInput
         setNumPageResults={setNumPageResults}
