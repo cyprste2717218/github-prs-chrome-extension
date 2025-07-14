@@ -26,6 +26,7 @@ const StepOneComponent = ({
   setRepoDetails,
   setNumPageResults,
   setDisplayWarning,
+  setReposToggled,
   currentStep,
   repoOwner,
   activeNumPRs,
@@ -38,6 +39,7 @@ const StepOneComponent = ({
     setRepoDetails: setRepoDetails,
     setNumPageResults: setNumPageResults,
     setDisplayWarning: setDisplayWarning,
+    setReposToggled: setReposToggled,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
@@ -93,6 +95,7 @@ const StepTwoComponent = ({
   setPAT,
   setNumPageResults,
   setDisplayWarning,
+  setReposToggled,
   currentStep,
   username,
   activeNumPRs,
@@ -162,6 +165,7 @@ const StepTwoComponent = ({
             setUsername={setUsername}
             setNumPageResults={setNumPageResults}
             setDisplayWarning={setDisplayWarning}
+            setReposToggled={setReposToggled}
           />
         </div>
       </div>
@@ -219,6 +223,7 @@ const StepComponent = ({
   setStep,
   setNumPageResults,
   setDisplayWarning,
+  setReposToggled,
   username,
   repoDetails,
   step,
@@ -241,6 +246,7 @@ const StepComponent = ({
           setRepoDetails={setRepoDetails}
           setNumPageResults={setNumPageResults}
           setDisplayWarning={setDisplayWarning}
+          setReposToggled={setReposToggled}
           currentStep={step}
           repoOwner={repoOwner}
           activeNumPRs={activeNumPRs}
@@ -258,6 +264,7 @@ const StepComponent = ({
           setActiveNumPRs={setActiveNumPRs}
           setNumPageResults={setNumPageResults}
           setDisplayWarning={setDisplayWarning}
+          setReposToggled={setReposToggled}
           activeNumPRs={activeNumPRs}
           username={username}
           repoDetails={repoDetails}

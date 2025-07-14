@@ -32,7 +32,10 @@ import { ChevronsUpDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Github } from "lucide-react";
 import CheckBoxCustom from "./CheckBoxCustom";
-import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
+import {
+  handleChangePageResults,
+  handleToggleRepo,
+} from "@/utilities/repoDetailUtilities";
 
 const DisplayCardComponent = ({
   name,
@@ -177,7 +180,15 @@ const PreviewCardComponent = ({
 
   useEffect(() => {
     if (lastToggleState !== allReposToggled) {
-      setRepoChecked(allReposToggled);
+      const newCheckedState = allReposToggled;
+      setRepoChecked(newCheckedState);
+
+      handleToggleRepo({
+        name,
+        newCheckedState,
+        activeNumPRs,
+        setActiveNumPRs,
+      });
       setLastToggleState(allReposToggled);
     }
   }, [allReposToggled, lastToggleState]);
@@ -185,36 +196,7 @@ const PreviewCardComponent = ({
   async function handleClick() {
     const newCheckedState = !repoChecked;
     setRepoChecked(newCheckedState);
-
-    // TODO: fix issue where repoChecked value is out of sync with value shown in UI
-
-    const currentRepoDetails: ActiveNumPRs[] = [...activeNumPRs];
-    let updatedRepoDetails: ActiveNumPRs[] = [];
-
-    if (newCheckedState) {
-      // logic for repo when click sets it to not be tracked, i.e. when checkbox is not marked
-
-      updatedRepoDetails = currentRepoDetails.filter(
-        (repo) => repo.name !== name
-      );
-    } else {
-      // logic for repo when click sets it to be tracked, i.e. when checkbox is marked
-
-      const existingRepo = currentRepoDetails.find(
-        (repo) => repo.name === name
-      );
-
-      // checking repo details aren't already present in arr storing tracked repos by mistake
-      if (existingRepo) {
-        return currentRepoDetails;
-      } else {
-        // repo details confirmed to not be present already so adding details of repo
-        const newRepo = { name: name, numActivePRs: 0 };
-        updatedRepoDetails = [...currentRepoDetails, newRepo];
-      }
-    }
-
-    setActiveNumPRs(updatedRepoDetails);
+    handleToggleRepo({ name, newCheckedState, activeNumPRs, setActiveNumPRs });
   }
 
   console.log(`allReposToggled: ${name}`, allReposToggled);

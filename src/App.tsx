@@ -94,6 +94,7 @@ function App() {
         setHasPAT={setPAT}
         setNumPageResults={setNumPageResults}
         setDisplayWarning={setDisplayWarning}
+        setReposToggled={setReposToggled}
         username={username}
         repoDetails={repoDetails}
         step={step}

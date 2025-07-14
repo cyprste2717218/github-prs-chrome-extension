@@ -1,5 +1,5 @@
 import { handleStepChange } from "@/utilities/setUpUtilities";
-import { handleToggleAllSelectedRepos } from "@/utilities/repoDetailUtilities";
+import { handleToggleAllRepos } from "@/utilities/repoDetailUtilities";
 import ButtonCustom from "./ButtonCustom";
 import CheckBoxCustom from "./CheckBoxCustom";
 import "../App.css";
@@ -67,6 +67,7 @@ const HeaderComponent = ({
     setRepoDetails: setRepoDetails,
     setNumPageResults: setNumPageResults,
     setDisplayWarning: setDisplayWarning,
+    setReposToggled: setReposToggled,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
@@ -161,7 +162,7 @@ const SelectAllButton = ({
   async function toggleAllSelectedRepos() {
     if (repoDetails !== null) {
       setReposToggled(!allReposToggled);
-      await handleToggleAllSelectedRepos({
+      await handleToggleAllRepos({
         allReposToggled,
         setRepoDetails,
         setActiveNumPRs,
@@ -170,6 +171,10 @@ const SelectAllButton = ({
       });
     }
   }
+  console.log(
+    "Select all button will receive repoChecked value: ",
+    allReposToggled
+  );
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end" }}>
