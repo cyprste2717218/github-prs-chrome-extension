@@ -30,44 +30,59 @@ const ChooseSetupOptComponent = ({
     activeNumPRs: activeNumPRs,
   };
 
+  const UsernameComponent = () => {
+    return (
+      <div
+        style={{ marginBottom: "10px" }}
+        onClick={() =>
+          handleStepChange({
+            ...buttonStateBundle,
+            stepOperation: "stepForward",
+            initialValuePAT: null,
+          })
+        }
+      >
+        <ButtonCustom type="username" />
+      </div>
+    );
+  };
+
+  const UsernameWithPATComponent = () => {
+    return (
+      <div
+        onClick={() =>
+          handleStepChange({
+            ...buttonStateBundle,
+            stepOperation: "stepForward",
+            initialValuePAT: "",
+          })
+        }
+      >
+        <ButtonCustom type="usernameWithPAT" />
+      </div>
+    );
+  };
+
+  const FollowReadMeComponent = () => {
+    return (
+      <div className="mt-4 text-center text-sm">
+        <a
+          href="https://github.com/cyprste2717218/github-prs-chrome-extension/tree/dev#authenticated-approach"
+          target="_blank"
+        >
+          Follow the readme here
+        </a>{" "}
+        to create a PAT (classic)
+      </div>
+    );
+  };
+
   return (
     <>
-      <div>
-        <div
-          style={{ marginBottom: "10px" }}
-          onClick={() =>
-            handleStepChange({
-              ...buttonStateBundle,
-              stepOperation: "stepForward",
-              initialValuePAT: null,
-            })
-          }
-        >
-          <ButtonCustom type="username" />
-        </div>
-        <Separator className="my-4" />
-
-        <div
-          onClick={() =>
-            handleStepChange({
-              ...buttonStateBundle,
-              stepOperation: "stepForward",
-              initialValuePAT: "",
-            })
-          }
-        >
-          <ButtonCustom type="usernameWithPAT" />
-        </div>
-        <div className="mt-4 text-center text-sm">
-          <a
-            href="https://github.com/cyprste2717218/github-prs-chrome-extension/tree/dev#authenticated-approach"
-            target="_blank"
-          >
-            Follow the readme here
-          </a>{" "}
-          to create a PAT (classic)
-        </div>
-      </div>
+      <UsernameComponent />
+      <Separator className="my-4" />
+      <UsernameWithPATComponent />
+      <FollowReadMeComponent />
     </>
   );
 };
