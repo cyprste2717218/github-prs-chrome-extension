@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
-import WarningModal from "./components/WarningModal";
+import WarningModal from "./components/input/WarningModal.tsx";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,

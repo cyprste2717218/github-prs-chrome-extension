@@ -22,7 +22,7 @@ type StepComponentProps = {
   reposToggled: boolean;
 };
 
-type StepOneComponentProps = {
+type ChooseSetupOptProps = {
   setHasPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
@@ -38,7 +38,7 @@ type StepOneComponentProps = {
   activeNumPRs: ActiveNumPRs[];
 };
 
-type StepTwoComponentProps = {
+type GitDetailsEntryProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
@@ -56,7 +56,7 @@ type StepTwoComponentProps = {
   PAT: string | null;
 };
 
-type StepThreeComponentProps = {
+type ChooseReposComponentProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
   setRepoDetails: React.Dispatch<
@@ -71,15 +71,15 @@ type StepThreeComponentProps = {
   reposToggled: boolean;
 };
 
-type StepFourComponentProps = {
+type DisplayTrackedReposProps = {
   activeNumPRs: ActiveNumPRs[];
   githubUsername: string;
 };
 
 export type {
   StepComponentProps,
-  StepOneComponentProps,
-  StepTwoComponentProps,
-  StepThreeComponentProps,
-  StepFourComponentProps,
+  ChooseSetupOptProps,
+  GitDetailsEntryProps,
+  ChooseReposComponentProps,
+  DisplayTrackedReposProps,
 };
