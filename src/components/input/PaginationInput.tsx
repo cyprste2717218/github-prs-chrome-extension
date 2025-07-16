@@ -19,6 +19,13 @@ const PaginationInput = ({
   username,
   patCode,
 }: PaginationInputProps) => {
+  const handleChangePageResultsProps = {
+    setNumPageResults,
+    setRepoDetails,
+    setActiveResultsPage,
+    username,
+    patCode,
+  };
   const generatePaginationElements = () => {
     if (!numPageResults) return;
 
@@ -42,7 +49,7 @@ const PaginationInput = ({
     }
 
     for (let i = startNum; i < maxPageNumToRender; i++) {
-      let currentResultPageNum = i + 1;
+      const currentResultPageNum = i + 1;
       const shouldSetActive =
         activeResultsPage === currentResultPageNum ? true : false;
 
@@ -66,13 +73,32 @@ const PaginationInput = ({
     return paginationElements;
   };
 
-  const handleChangePageResultsProps = {
-    setNumPageResults,
-    setRepoDetails,
-    setActiveResultsPage,
-    username,
-    patCode,
+  const fetchPaginationButtonProps = (buttonType: "prev" | "next") => {
+    let condition: boolean;
+    let newPageNum: number;
+
+    if (buttonType === "prev") {
+      condition = activeResultsPage <= 1;
+      newPageNum = prevResultsPage;
+    } else {
+      condition = activeResultsPage >= numPageResults;
+      newPageNum = nextResultsPage;
+    }
+
+    return {
+      "aria-disabled": condition,
+      tabIndex: condition ? -1 : undefined,
+      className: condition ? "pointer-events-none opacity-50" : undefined,
+      onClick: () =>
+        handleChangePageResults({
+          ...handleChangePageResultsProps,
+          currentResultPageNum: newPageNum,
+        }),
+    };
   };
+
+  const prevButtonProps = fetchPaginationButtonProps("prev");
+  const nextButtonProps = fetchPaginationButtonProps("next");
 
   const isMinPageResults = numPageResults && numPageResults > 6;
   const onLastResultsPage = activeResultsPage === numPageResults;
@@ -90,21 +116,7 @@ const PaginationInput = ({
           >
             <div style={{ display: "flex", flexDirection: "row" }}>
               <PaginationItem>
-                <PaginationPrevious
-                  aria-disabled={activeResultsPage === 1 ? true : false}
-                  tabIndex={activeResultsPage <= 1 ? -1 : undefined}
-                  className={
-                    activeResultsPage <= 1
-                      ? "pointer-events-none opacity-50"
-                      : undefined
-                  }
-                  onClick={() =>
-                    handleChangePageResults({
-                      ...handleChangePageResultsProps,
-                      currentResultPageNum: prevResultsPage,
-                    })
-                  }
-                />
+                <PaginationPrevious {...prevButtonProps} />
               </PaginationItem>
 
               {currentPaginationRow.map((element) => element)}
@@ -115,25 +127,7 @@ const PaginationInput = ({
                 )}
               </PaginationItem>
               <PaginationItem>
-                <PaginationNext
-                  aria-disabled={
-                    activeResultsPage >= numPageResults ? true : false
-                  }
-                  tabIndex={
-                    activeResultsPage >= numPageResults ? -1 : undefined
-                  }
-                  className={
-                    activeResultsPage >= numPageResults
-                      ? "pointer-events-none opacity-50"
-                      : undefined
-                  }
-                  onClick={() =>
-                    handleChangePageResults({
-                      ...handleChangePageResultsProps,
-                      currentResultPageNum: nextResultsPage,
-                    })
-                  }
-                />
+                <PaginationNext {...nextButtonProps} />
               </PaginationItem>
             </div>
           </PaginationContent>
