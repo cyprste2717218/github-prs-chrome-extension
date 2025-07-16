@@ -1,5 +1,3 @@
-import { RepoCardComponentDetails } from "@/models/RepoCardModels";
-import { SetStateAction } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -10,8 +8,8 @@ import {
   PaginationPrevious,
 } from "../ui/pagination";
 import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
+import { PaginationInputProps } from "@/models/InputModels";
 
-// move ts inline definitions here elsewhere
 const PaginationInput = ({
   setNumPageResults,
   setRepoDetails,
@@ -20,17 +18,7 @@ const PaginationInput = ({
   numPageResults,
   username,
   patCode,
-}: {
-  setNumPageResults: React.Dispatch<SetStateAction<number>>;
-  setRepoDetails: React.Dispatch<
-    SetStateAction<RepoCardComponentDetails[] | null>
-  >;
-  setActiveResultsPage: React.Dispatch<SetStateAction<number>>;
-  activeResultsPage: number;
-  numPageResults: number;
-  username: string;
-  patCode: string | null;
-}) => {
+}: PaginationInputProps) => {
   const generatePaginationElements = () => {
     if (!numPageResults) return;
 

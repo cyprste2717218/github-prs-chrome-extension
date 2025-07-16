@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 import { RepoCardComponentDetails } from "./RepoCardModels";
 import { ActiveNumPRs } from "./RepoCardModels";
 
@@ -74,6 +74,18 @@ type SelectAllButtonProps = {
   >;
 };
 
+type PaginationInputProps = {
+  setNumPageResults: React.Dispatch<SetStateAction<number>>;
+  setRepoDetails: React.Dispatch<
+    SetStateAction<RepoCardComponentDetails[] | null>
+  >;
+  setActiveResultsPage: React.Dispatch<SetStateAction<number>>;
+  activeResultsPage: number;
+  numPageResults: number;
+  username: string;
+  patCode: string | null;
+};
+
 export type {
   RefreshButtonProps,
   SubmitButtonProps,
@@ -84,4 +96,5 @@ export type {
   UsernameButtonProps,
   LinkButtonProps,
   SelectAllButtonProps,
+  PaginationInputProps,
 };
