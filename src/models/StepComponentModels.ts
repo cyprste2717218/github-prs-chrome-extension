@@ -6,7 +6,7 @@ type CommonProps = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   currentStep: number;
   activeNumPRs: ActiveNumPRs[];
 };
@@ -37,11 +37,13 @@ type GitDetailsEntryProps = {
 } & CommonProps;
 
 type ChooseReposComponentProps = {
-  numPageResults: number | null;
+  setActiveResultsPage: React.Dispatch<React.SetStateAction<number>>;
+  numPageResults: number;
   repoDetails: RepoCardComponentDetails[] | null;
   username: string;
   patCode: string | null;
   allReposToggled: boolean;
+  activeResultsPage: number;
 } & CommonProps;
 
 type DisplayTrackedReposProps = {

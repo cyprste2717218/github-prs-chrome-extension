@@ -3,19 +3,27 @@ import PaginationInput from "./input/PaginationInput";
 import { ChooseReposComponentProps } from "@/models/StepComponentModels";
 
 const ChooseReposComponent = ({
-  repoDetails,
   setActiveNumPRs,
   setNumPageResults,
   setRepoDetails,
+  setActiveResultsPage,
+  repoDetails,
   activeNumPRs,
   currentStep,
   numPageResults,
   username,
   patCode,
   allReposToggled,
+  activeResultsPage,
 }: ChooseReposComponentProps) => {
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+      }}
+    >
       <AllPreviewRepoCards
         setActiveNumPRs={setActiveNumPRs}
         setNumPageResults={setNumPageResults}
@@ -28,14 +36,18 @@ const ChooseReposComponent = ({
         patCode={patCode}
         allReposToggled={allReposToggled}
       />
-      <PaginationInput
-        setNumPageResults={setNumPageResults}
-        numPageResults={numPageResults}
-        setRepoDetails={setRepoDetails}
-        username={username}
-        patCode={patCode}
-      />
-    </>
+      <div style={{ marginLeft: "auto", marginRight: "auto" }}>
+        <PaginationInput
+          setNumPageResults={setNumPageResults}
+          setActiveResultsPage={setActiveResultsPage}
+          setRepoDetails={setRepoDetails}
+          numPageResults={numPageResults}
+          username={username}
+          patCode={patCode}
+          activeResultsPage={activeResultsPage}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -3,85 +3,170 @@ import { SetStateAction } from "react";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from "../ui/pagination";
 import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
 
 // move ts inline definitions here elsewhere
 const PaginationInput = ({
-  numPageResults,
   setNumPageResults,
   setRepoDetails,
+  setActiveResultsPage,
+  activeResultsPage,
+  numPageResults,
   username,
   patCode,
 }: {
-  setNumPageResults: React.Dispatch<SetStateAction<number | null>>;
-  numPageResults: number | null;
+  setNumPageResults: React.Dispatch<SetStateAction<number>>;
   setRepoDetails: React.Dispatch<
     SetStateAction<RepoCardComponentDetails[] | null>
   >;
+  setActiveResultsPage: React.Dispatch<SetStateAction<number>>;
+  activeResultsPage: number;
+  numPageResults: number;
   username: string;
   patCode: string | null;
 }) => {
   const generatePaginationElements = () => {
     if (!numPageResults) return;
-    <PaginationItem>
-      <PaginationLink href="#">1</PaginationLink>
-    </PaginationItem>;
 
     let paginationElements = [];
+    let maxPageNumToRender = numPageResults;
+    let startNum = 0;
 
-    for (let i = 0; i < numPageResults; i++) {
-      let resultPageNum = i + 1;
+    // throttling the number of pagination elements to generate at any one time
+    if (maxPageNumToRender > 6) {
+      maxPageNumToRender = 6;
+    }
+
+    if (activeResultsPage >= 4 && numPageResults > 6) {
+      startNum = activeResultsPage - 3;
+      maxPageNumToRender = activeResultsPage + 3;
+
+      if (numPageResults - 3 < activeResultsPage) {
+        startNum = numPageResults - 5;
+        maxPageNumToRender = numPageResults;
+      }
+    }
+
+    for (let i = startNum; i < maxPageNumToRender; i++) {
+      let currentResultPageNum = i + 1;
+      const shouldSetActive =
+        activeResultsPage === currentResultPageNum ? true : false;
 
       paginationElements.push(
-        <PaginationItem
-          onClick={() =>
-            handleChangePageResults({
-              setNumPageResults,
-              setRepoDetails,
-              username,
-              patCode,
-              resultPageNum,
-            })
-          }
-        >
-          <PaginationLink>{i + 1}</PaginationLink>
+        <PaginationItem>
+          <PaginationLink
+            onClick={() =>
+              handleChangePageResults({
+                ...handleChangePageResultsProps,
+                currentResultPageNum,
+              })
+            }
+            isActive={shouldSetActive}
+          >
+            {currentResultPageNum}
+          </PaginationLink>
         </PaginationItem>
       );
     }
 
-    const rows = [];
-    for (let i = 0; i < paginationElements.length; i += 10) {
-      rows.push(paginationElements.slice(i, i + 10));
-    }
-
-    return rows;
+    return paginationElements;
   };
 
-  const paginationRows = generatePaginationElements();
+  const handleChangePageResultsProps = {
+    setNumPageResults,
+    setRepoDetails,
+    setActiveResultsPage,
+    username,
+    patCode,
+  };
+
+  const isMinPageResults = numPageResults && numPageResults > 6;
+  const onLastResultsPage = activeResultsPage === numPageResults;
+  const prevResultsPage = activeResultsPage - 1;
+  const nextResultsPage = activeResultsPage + 1;
+  const currentPaginationRow = generatePaginationElements();
 
   return (
-    <Pagination
-      style={{ display: "flex", flexDirection: "column" }}
-      className="w-[400px]"
-    >
-      {paginationRows ? (
-        paginationRows.map((paginationRow, rowIndex) => (
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <Pagination className="w-[400px]">
+        {currentPaginationRow ? (
           <PaginationContent
-            key={`row-${rowIndex}`}
+            key={`current-repos-row`}
             style={{ marginBottom: "10px" }}
           >
             <div style={{ display: "flex", flexDirection: "row" }}>
-              {paginationRow.map((element) => element)}
+              <PaginationItem>
+                <PaginationPrevious
+                  aria-disabled={activeResultsPage === 1 ? true : false}
+                  tabIndex={activeResultsPage <= 1 ? -1 : undefined}
+                  className={
+                    activeResultsPage <= 1
+                      ? "pointer-events-none opacity-50"
+                      : undefined
+                  }
+                  onClick={() =>
+                    handleChangePageResults({
+                      ...handleChangePageResultsProps,
+                      currentResultPageNum: prevResultsPage,
+                    })
+                  }
+                />
+              </PaginationItem>
+
+              {currentPaginationRow.map((element) => element)}
+
+              <PaginationItem>
+                {isMinPageResults && !onLastResultsPage && (
+                  <PaginationEllipsis />
+                )}
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  aria-disabled={
+                    activeResultsPage >= numPageResults ? true : false
+                  }
+                  tabIndex={
+                    activeResultsPage >= numPageResults ? -1 : undefined
+                  }
+                  className={
+                    activeResultsPage >= numPageResults
+                      ? "pointer-events-none opacity-50"
+                      : undefined
+                  }
+                  onClick={() =>
+                    handleChangePageResults({
+                      ...handleChangePageResultsProps,
+                      currentResultPageNum: nextResultsPage,
+                    })
+                  }
+                />
+              </PaginationItem>
             </div>
           </PaginationContent>
-        ))
-      ) : (
-        <></>
-      )}
-    </Pagination>
+        ) : (
+          <PaginationContent
+            key={`current-repos-row`}
+            style={{ marginBottom: "10px" }}
+          >
+            <PaginationItem>
+              <PaginationPrevious />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink>1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext />
+            </PaginationItem>
+          </PaginationContent>
+        )}
+      </Pagination>
+    </div>
   );
 };
 

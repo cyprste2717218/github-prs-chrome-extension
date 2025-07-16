@@ -29,14 +29,14 @@ type PreviewCardSharedProps = {
 type PreviewRepoCardProps = PreviewCardSharedProps & RepoCardComponentDetails;
 
 type AllPreviewRepoCardsProps = {
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setRepoDetails: React.Dispatch<
     SetStateAction<RepoCardComponentDetails[] | null>
   >;
   repoDetails: RepoCardComponentDetails[] | null;
   username: string;
   patCode: string | null;
-  numPageResults: number | null;
+  numPageResults: number;
   step: number;
 } & PreviewCardSharedProps;
 

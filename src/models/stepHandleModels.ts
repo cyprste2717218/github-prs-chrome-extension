@@ -10,7 +10,7 @@ type HandleStepBackProps = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
 } & HandleStepCommonProps;
