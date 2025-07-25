@@ -315,6 +315,9 @@ async function handleChangePageResults({
     patCode,
     currentResultPageNum,
   });
+
+  // update current saved page number to chrome local storage after succesful fetching of details for repos on repo selection screen
+  saveToStorage("activeResultsPage", currentResultPageNum);
 }
 
 async function handleToggleRepo({

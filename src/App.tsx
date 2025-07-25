@@ -64,6 +64,11 @@ function App() {
       setNumPageResults(JSON.parse(result.numPageResults));
     });
 
+    // @ts-ignore
+    chrome.storage.local.get("activeResultsPage", (result) => {
+      setActiveResultsPage(JSON.parse(result.activeResultsPage));
+    });
+
     //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", loadFromStorage("step"));
   }, []);

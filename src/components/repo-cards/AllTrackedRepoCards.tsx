@@ -87,7 +87,7 @@ const TrackedCardComponent = ({
     if (fullRepoName.length > 27) {
       return fullRepoName.slice(0, 27) + "...";
     } else {
-      return fullRepoName;
+      return fullRepoName.slice(0, 10) + "\n" + fullRepoName.slice(10, 27);
     }
   }
 
@@ -104,7 +104,7 @@ const TrackedCardComponent = ({
         style={{ margin: "5px" }}
         id={`displayCard-${displayCardName}`}
       >
-        <CardHeader style={{ height: "100px" }}>
+        <CardHeader style={{ height: "100px", whiteSpace: "pre-line" }}>
           <CardTitle>{displayCardName}</CardTitle>
         </CardHeader>
         <CardContent style={{ height: "100px" }}>
