@@ -83,6 +83,30 @@ const PreviewCardComponent = ({
     }
   }, [allReposToggled, lastToggleState]);
 
+  type CalculateCollapsibleHeightProps = {
+    language: string;
+    displayedTopics: string[];
+    numAdditionalTopics: number | undefined;
+  };
+
+  const calculateCollapsibleHeight = ({
+    language,
+    displayedTopics,
+    numAdditionalTopics,
+  }: CalculateCollapsibleHeightProps): number => {
+    let collapsibleCardHeight;
+
+    if (language && displayedTopics && numAdditionalTopics) {
+      collapsibleCardHeight = 170;
+    } else if (language && displayedTopics) {
+      collapsibleCardHeight = 50;
+    } else {
+      collapsibleCardHeight = 20;
+    }
+
+    return collapsibleCardHeight;
+  };
+
   async function handleClick() {
     const newCheckedState = !repoChecked;
     setRepoChecked(newCheckedState);
@@ -90,6 +114,18 @@ const PreviewCardComponent = ({
   }
 
   const separatorPresent = language || (topics && topics.length > 0);
+
+  let numAdditionalTopics: number | undefined;
+  let displayedTopics: string[] = topics;
+  const calculatedCollapsedHeight = calculateCollapsibleHeight({
+    language,
+    displayedTopics,
+    numAdditionalTopics,
+  });
+  if (topics && topics.length > 2) {
+    displayedTopics = topics.slice(0, 2);
+    numAdditionalTopics = topics.length - 2;
+  }
 
   console.log(`allReposToggled: ${name}`, allReposToggled);
   console.log(`repoChecked: ${name}`, repoChecked);
@@ -116,13 +152,18 @@ const PreviewCardComponent = ({
               </div>
             </CardTitle>
           </CardHeader>
-          <CollapsibleContent>
-            <div style={{ display: "flex", justifyContent: "center" }}>
+          <CollapsibleContent className={`h-[${calculatedCollapsedHeight}px]`}>
+            <div
+              style={{ display: "flex", justifyContent: "center" }}
+              className="h-[45px]"
+            >
               <CardDescription className="w-[370px]">
-                {description}
+                <div style={{ marginTop: "auto", marginBottom: "auto" }}>
+                  <div>{description}</div>
+                </div>
               </CardDescription>
             </div>
-            <CardContent>
+            <CardContent className={"h-[110}px]"}>
               <Separator className="my-4" />
               <div
                 style={{
@@ -131,20 +172,41 @@ const PreviewCardComponent = ({
                   flexDirection: "row",
                 }}
               >
-                <div className="flex h-5 items-center space-x-4 text-sm">
+                <div
+                  className={`flex h-[${calculatedCollapsedHeight}]px items-center space-x-4 text-sm`}
+                >
                   <div
+                    className="w-[180px]"
                     style={{
                       display: "flex",
                       justifyContent: "center",
                       flexDirection: "column",
+                      paddingLeft: "15px",
+                      paddingTop: "5px",
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "left" }}>
-                      {language && <Badge>{language}</Badge>}
+                    <div
+                      className="h-5"
+                      style={{
+                        display: "flex",
+                        justifyContent: "left",
+                        marginBottom: "7px",
+                      }}
+                    >
+                      {language && (
+                        <Badge style={{ padding: "10px" }}>{language}</Badge>
+                      )}
                     </div>
-                    <div style={{ display: "flex", justifyContent: "left" }}>
-                      {topics ? (
-                        topics.map((topic) => (
+                    <div
+                      className="h-15"
+                      style={{
+                        display: "flex",
+                        justifyContent: "left",
+                        marginTop: "5px",
+                      }}
+                    >
+                      {displayedTopics ? (
+                        displayedTopics.map((topic) => (
                           <Badge variant="outline" key={topic}>
                             {topic}
                           </Badge>
@@ -153,10 +215,33 @@ const PreviewCardComponent = ({
                         <></>
                       )}
                     </div>
+                    <div
+                      className="h-15"
+                      style={{
+                        display: "flex",
+                        justifyContent: "left",
+                        paddingLeft: "1px",
+                        marginTop: "3px",
+                      }}
+                    >
+                      {numAdditionalTopics ? (
+                        <Badge
+                          className="h-7 min-w-7 rounded-full px-1 font-mono tabular-nums"
+                          variant="outline"
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          +{numAdditionalTopics}
+                        </Badge>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   </div>
+
                   {separatorPresent && <Separator orientation="vertical" />}
 
                   <div
+                    className="w-[180px]"
                     style={{
                       display: "flex",
                       justifyContent: `${separatorPresent ? "left" : "center"}`,
