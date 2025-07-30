@@ -22,9 +22,10 @@ function App() {
   >(null);
   const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
   const [PAT, setPAT] = useState<string | null>(null);
-  const [numPageResults, setNumPageResults] = useState<number | null>(null);
+  const [numPageResults, setNumPageResults] = useState<number>(0);
   const [displayWarning, setDisplayWarning] = useState<boolean>(false);
   const [reposToggled, setReposToggled] = useState<boolean>(false);
+  const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
 
   useEffect(() => {
     // @ts-ignore
@@ -63,6 +64,11 @@ function App() {
       setNumPageResults(JSON.parse(result.numPageResults));
     });
 
+    // @ts-ignore
+    chrome.storage.local.get("activeResultsPage", (result) => {
+      setActiveResultsPage(JSON.parse(result.activeResultsPage));
+    });
+
     //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", loadFromStorage("step"));
   }, []);
@@ -95,6 +101,7 @@ function App() {
         setNumPageResults={setNumPageResults}
         setDisplayWarning={setDisplayWarning}
         setReposToggled={setReposToggled}
+        setActiveResultsPage={setActiveResultsPage}
         username={username}
         repoDetails={repoDetails}
         currentStep={step}
@@ -102,6 +109,7 @@ function App() {
         patCode={PAT}
         numPageResults={numPageResults}
         allReposToggled={reposToggled}
+        activeResultsPage={activeResultsPage}
       />
 
       {displayWarning && <WarningModal setDisplayWarning={setDisplayWarning} />}

@@ -15,7 +15,7 @@ type HeaderProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
   allReposToggled: boolean;

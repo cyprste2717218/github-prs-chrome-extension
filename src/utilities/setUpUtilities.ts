@@ -35,7 +35,7 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setRepoDetails(null);
     setPAT(initialValuePAT);
     setUsername("");
-    setNumPageResults(null);
+    setNumPageResults(0);
 
     saveToStorage("activeNumPRs", []);
     saveToStorage("repoDetails", null);

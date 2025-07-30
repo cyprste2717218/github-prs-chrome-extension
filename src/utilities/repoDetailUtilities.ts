@@ -10,10 +10,10 @@ type RepoDetailUtilities = {
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   username: string;
   patCode: string | null;
-  resultPageNum?: number;
+  currentResultPageNum?: number;
 };
 
 type SubmitPRDetailsProps = {
@@ -31,13 +31,14 @@ type HandleRefreshProps = {
 };
 
 type HandleChangePageResultsProps = {
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
+  setActiveResultsPage: React.Dispatch<React.SetStateAction<number>>;
   username: string;
   patCode: string | null;
-  resultPageNum: number;
+  currentResultPageNum: number;
 };
 
 type HandleToggleSingleRepoProps = {
@@ -123,7 +124,7 @@ async function handleSubmitUserName({
   setNumPageResults,
   username,
   patCode,
-  resultPageNum = 1,
+  currentResultPageNum = 1,
 }: RepoDetailUtilities) {
   if (!username) {
     console.warn("No username entered, no repos fetched");
@@ -134,7 +135,7 @@ async function handleSubmitUserName({
     setNumPageResults,
     username,
     patCode,
-    resultPageNum
+    currentResultPageNum
   ).then((results) => {
     if (!results) {
       return;
@@ -146,7 +147,7 @@ async function handleSubmitUserName({
 }
 
 async function handleFetchUserRepos(
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>,
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>,
   username: string,
   patCode: string | null,
   resultPageNum: number
@@ -293,20 +294,30 @@ async function handleRefresh({
 async function handleChangePageResults({
   setNumPageResults,
   setRepoDetails,
+  setActiveResultsPage,
   username,
   patCode,
-  resultPageNum = 1,
+  currentResultPageNum,
 }: HandleChangePageResultsProps) {
+  console.log(
+    `fetching page ${currentResultPageNum} of github results for user ${username}`
+  );
+
   // reset details stored
   setRepoDetails(null);
+  // store in state the current github repo result page number
+  setActiveResultsPage(currentResultPageNum);
 
   await handleSubmitUserName({
     setRepoDetails,
     setNumPageResults,
     username,
     patCode,
-    resultPageNum,
+    currentResultPageNum,
   });
+
+  // update current saved page number to chrome local storage after succesful fetching of details for repos on repo selection screen
+  saveToStorage("activeResultsPage", currentResultPageNum);
 }
 
 async function handleToggleRepo({

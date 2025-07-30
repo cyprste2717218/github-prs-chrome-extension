@@ -15,6 +15,7 @@ const StepComponent = ({
   setNumPageResults,
   setDisplayWarning,
   setReposToggled,
+  setActiveResultsPage,
   username,
   repoDetails,
   currentStep,
@@ -22,6 +23,7 @@ const StepComponent = ({
   patCode,
   numPageResults,
   allReposToggled,
+  activeResultsPage,
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
@@ -70,6 +72,7 @@ const StepComponent = ({
           setActiveNumPRs={setActiveNumPRs}
           setNumPageResults={setNumPageResults}
           setRepoDetails={setRepoDetails}
+          setActiveResultsPage={setActiveResultsPage}
           username={username}
           patCode={patCode}
           numPageResults={numPageResults}
@@ -77,6 +80,7 @@ const StepComponent = ({
           repoDetails={repoDetails}
           currentStep={currentStep}
           allReposToggled={allReposToggled}
+          activeResultsPage={activeResultsPage}
         />
       );
       break;

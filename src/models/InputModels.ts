@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 import { RepoCardComponentDetails } from "./RepoCardModels";
 import { ActiveNumPRs } from "./RepoCardModels";
 
@@ -33,7 +33,7 @@ type SubmitButtonProps = ButtonProps<{
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setUsername: React.Dispatch<React.SetStateAction<string>>;
-  setNumPageResults: React.Dispatch<React.SetStateAction<number | null>>;
+  setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
   currentStep: number;
@@ -74,6 +74,18 @@ type SelectAllButtonProps = {
   >;
 };
 
+type PaginationInputProps = {
+  setNumPageResults: React.Dispatch<SetStateAction<number>>;
+  setRepoDetails: React.Dispatch<
+    SetStateAction<RepoCardComponentDetails[] | null>
+  >;
+  setActiveResultsPage: React.Dispatch<SetStateAction<number>>;
+  activeResultsPage: number;
+  numPageResults: number;
+  username: string;
+  patCode: string | null;
+};
+
 export type {
   RefreshButtonProps,
   SubmitButtonProps,
@@ -84,4 +96,5 @@ export type {
   UsernameButtonProps,
   LinkButtonProps,
   SelectAllButtonProps,
+  PaginationInputProps,
 };
