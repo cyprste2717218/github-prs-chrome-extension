@@ -1,5 +1,6 @@
 import AllPreviewRepoCards from "./repo-cards/AllPreviewRepoCards";
 import PaginationInput from "./input/PaginationInput";
+import ButtonCustom from "./input/ButtonCustom";
 import { ChooseReposComponentProps } from "@/models/StepComponentModels";
 
 const ChooseReposComponent = ({
@@ -45,6 +46,12 @@ const ChooseReposComponent = ({
           username={username}
           patCode={patCode}
           activeResultsPage={activeResultsPage}
+        />
+      </div>
+      <div>
+        <ButtonCustom
+          type="scrollToTop"
+          hookStyle={{ transition: "all 200ms ease-in" }}
         />
       </div>
     </div>
