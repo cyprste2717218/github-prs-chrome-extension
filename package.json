@@ -19,6 +19,7 @@
     "test:end": "jest --testMatch \"**/*.end.test.js\""
   },
   "dependencies": {
+    "@n8tb1t/use-scroll-position": "^2.0.3",
     "@octokit/core": "^6.1.2",
     "@octokit/request": "^9.2.1",
     "@radix-ui/react-checkbox": "^1.1.1",
