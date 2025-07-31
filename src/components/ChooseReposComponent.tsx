@@ -48,10 +48,9 @@ const ChooseReposComponent = ({
           activeResultsPage={activeResultsPage}
         />
       </div>
-      <div>
+      <div className="fixed bottom-4 right-0 z-10">
         <ButtonCustom
           type="scrollToTop"
-          hookStyle={{ transition: "all 200ms ease-in" }}
         />
       </div>
     </div>

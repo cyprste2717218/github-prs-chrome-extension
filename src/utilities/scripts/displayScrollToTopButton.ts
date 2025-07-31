@@ -3,17 +3,18 @@ import { useScrollPosition } from "@n8tb1t/use-scroll-position";
 
 function displayScrollToTopButton() {
   const [scrollTopButtonStyle, setScrollTopButtonStyle] = useState({
-    transition: "all 200ms ease-in",
   });
 
   useScrollPosition(
-    ({ prevPos, currPos }) => {
-      const isVisible = currPos.y > prevPos.y;
+    ({ currPos }) => {
+
+      const isVisible = currPos.y < -128;
 
       const shouldBeStyle = {
         visibility: isVisible ? "visible" : "hidden",
+        opacity: isVisible ? 1 : 0,
         transition: `all 200ms ${isVisible ? "ease-in" : "ease-out"}`,
-        transform: isVisible ? "none" : "translate(0, -100%)",
+        transform: isVisible ? "none" : "translate(0, -25%)",
       };
 
       if (

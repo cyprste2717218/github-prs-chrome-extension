@@ -19,9 +19,6 @@ type CustomButtonProps =
   | (LinkButtonProps & { type: "link" });
 
 type ScrollToTopButtonProps = ButtonProps<{
-  hookStyle: {
-    transition: string;
-  };
 }>;
 
 type RefreshButtonProps = ButtonProps<{
