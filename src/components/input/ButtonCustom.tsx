@@ -21,7 +21,7 @@ import {
   ArrowLeft,
   ArrowRight,
   KeyRound,
-  ChevronUpIcon,
+  ArrowUp,
 } from "lucide-react";
 import { handleStepChange } from "@/utilities/setUpUtilities";
 import { displayScrollToTopButton } from "@/utilities/scripts/displayScrollToTopButton";
@@ -39,11 +39,11 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({}) => {
   return (
     <Button
       size="icon"
-      className="size-12"
+      className="size-14"
       style={{ ...hookStyle }}
       onClick={handleClick}
     >
-      <ChevronUpIcon />
+      <ArrowUp className="size-4" />
     </Button>
   );
 };
