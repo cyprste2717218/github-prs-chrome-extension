@@ -49,9 +49,7 @@ const ChooseReposComponent = ({
         />
       </div>
       <div className="fixed bottom-4 right-0 z-10">
-        <ButtonCustom
-          type="scrollToTop"
-        />
+        <ButtonCustom type="scrollToTop" />
       </div>
     </div>
   );

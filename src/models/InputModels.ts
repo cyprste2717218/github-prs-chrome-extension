@@ -18,8 +18,7 @@ type CustomButtonProps =
   | (UsernameButtonProps & { type: "username" })
   | (LinkButtonProps & { type: "link" });
 
-type ScrollToTopButtonProps = ButtonProps<{
-}>;
+type ScrollToTopButtonProps = ButtonProps<{}>;
 
 type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
