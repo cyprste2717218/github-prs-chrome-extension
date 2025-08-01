@@ -40,7 +40,11 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({}) => {
     <Button
       size="icon"
       className="size-14"
-      style={{ ...hookStyle }}
+      style={{
+        visibility: "hidden",
+        opacity: 0,
+        ...hookStyle,
+      }}
       onClick={handleClick}
     >
       <ArrowUp className="size-4" />
