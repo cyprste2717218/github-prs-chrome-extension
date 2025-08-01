@@ -4,6 +4,7 @@ import {
   handleRefresh,
 } from "@/utilities/repoDetailUtilities";
 import {
+  SettingsButtonProps,
   RefreshButtonProps,
   SubmitButtonProps,
   CustomButtonProps,
@@ -22,9 +23,18 @@ import {
   ArrowRight,
   KeyRound,
   ArrowUp,
+  Settings,
 } from "lucide-react";
 import { handleStepChange } from "@/utilities/setUpUtilities";
 import { displayScrollToTopButton } from "@/utilities/scripts/displayScrollToTopButton";
+
+const SettingsButton: React.FC<SettingsButtonProps> = ({}) => {
+  return (
+    <Button variant="outline" size="icon" className="size-14">
+      <Settings className="size-4" />
+    </Button>
+  );
+};
 
 const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({}) => {
   function handleClick() {
@@ -204,6 +214,8 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
 const ButtonCustom: React.FC<CustomButtonProps> = (props) => {
   switch (props.type) {
+    case "settings":
+      return <SettingsButton {...props} />;
     case "scrollToTop":
       return <ScrollToTopButton {...props} />;
     case "refresh":

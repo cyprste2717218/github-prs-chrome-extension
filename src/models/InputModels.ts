@@ -9,6 +9,7 @@ type CustomProps = {
 type ButtonProps<T = {}> = CustomProps & T;
 
 type CustomButtonProps =
+  | (SettingsButtonProps & { type: "settings" })
   | (ScrollToTopButtonProps & { type: "scrollToTop" })
   | (RefreshButtonProps & { type: "refresh" })
   | (SubmitButtonProps & { type: "submit" })
@@ -17,6 +18,8 @@ type CustomButtonProps =
   | (UsernameWithPATButtonProps & { type: "usernameWithPAT" })
   | (UsernameButtonProps & { type: "username" })
   | (LinkButtonProps & { type: "link" });
+
+type SettingsButtonProps = ButtonProps<{}>;
 
 type ScrollToTopButtonProps = ButtonProps<{}>;
 
@@ -90,6 +93,7 @@ type PaginationInputProps = {
 };
 
 export type {
+  SettingsButtonProps,
   ScrollToTopButtonProps,
   RefreshButtonProps,
   SubmitButtonProps,
