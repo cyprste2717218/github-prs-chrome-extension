@@ -12,6 +12,7 @@ import {
   UsernameWithPATButtonProps,
   UsernameButtonProps,
   LinkButtonProps,
+  ScrollToTopButtonProps,
 } from "@/models/InputModels";
 import { Button } from "../ui/button";
 import {
@@ -20,8 +21,36 @@ import {
   ArrowLeft,
   ArrowRight,
   KeyRound,
+  ArrowUp,
 } from "lucide-react";
 import { handleStepChange } from "@/utilities/setUpUtilities";
+import { displayScrollToTopButton } from "@/utilities/scripts/displayScrollToTopButton";
+
+const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({}) => {
+  function handleClick() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  const hookStyle = displayScrollToTopButton();
+
+  return (
+    <Button
+      size="icon"
+      className="size-14"
+      style={{
+        visibility: "hidden",
+        opacity: 0,
+        ...hookStyle,
+      }}
+      onClick={handleClick}
+    >
+      <ArrowUp className="size-4" />
+    </Button>
+  );
+};
 
 const LinkButton: React.FC<LinkButtonProps> = ({ text, url }) => (
   <a href={url}>
@@ -175,6 +204,8 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
 const ButtonCustom: React.FC<CustomButtonProps> = (props) => {
   switch (props.type) {
+    case "scrollToTop":
+      return <ScrollToTopButton {...props} />;
     case "refresh":
       return <RefreshButton {...props} />;
     case "submit":

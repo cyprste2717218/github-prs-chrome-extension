@@ -9,6 +9,7 @@ type CustomProps = {
 type ButtonProps<T = {}> = CustomProps & T;
 
 type CustomButtonProps =
+  | (ScrollToTopButtonProps & { type: "scrollToTop" })
   | (RefreshButtonProps & { type: "refresh" })
   | (SubmitButtonProps & { type: "submit" })
   | (BackButtonProps & { type: "back" })
@@ -16,6 +17,8 @@ type CustomButtonProps =
   | (UsernameWithPATButtonProps & { type: "usernameWithPAT" })
   | (UsernameButtonProps & { type: "username" })
   | (LinkButtonProps & { type: "link" });
+
+type ScrollToTopButtonProps = ButtonProps<{}>;
 
 type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
@@ -87,6 +90,7 @@ type PaginationInputProps = {
 };
 
 export type {
+  ScrollToTopButtonProps,
   RefreshButtonProps,
   SubmitButtonProps,
   BackButtonProps,

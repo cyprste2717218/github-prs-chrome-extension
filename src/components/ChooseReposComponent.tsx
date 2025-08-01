@@ -1,5 +1,6 @@
 import AllPreviewRepoCards from "./repo-cards/AllPreviewRepoCards";
 import PaginationInput from "./input/PaginationInput";
+import ButtonCustom from "./input/ButtonCustom";
 import { ChooseReposComponentProps } from "@/models/StepComponentModels";
 
 const ChooseReposComponent = ({
@@ -46,6 +47,9 @@ const ChooseReposComponent = ({
           patCode={patCode}
           activeResultsPage={activeResultsPage}
         />
+      </div>
+      <div className="fixed bottom-4 right-0 z-10">
+        <ButtonCustom type="scrollToTop" />
       </div>
     </div>
   );
