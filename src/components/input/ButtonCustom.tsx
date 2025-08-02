@@ -30,7 +30,7 @@ import { displayScrollToTopButton } from "@/utilities/scripts/displayScrollToTop
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({}) => {
   return (
-    <Button variant="outline" size="icon" className="size-14">
+    <Button variant="ghost" size="icon" className="size-14">
       <Settings className="size-4" />
     </Button>
   );

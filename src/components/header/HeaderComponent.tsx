@@ -63,11 +63,15 @@ const HeaderComponent = ({
             />
           </div>
         )}
-
         <div style={{ marginTop: "auto", marginBottom: "auto" }}>
           {currentStep === 1 && (
-            <div style={{ marginBottom: "30px", fontSize: "20px" }}>
-              <h1 className="title">Welcome to Github PR Tracker!</h1>
+            <div className="">
+              <div className="absolute top-8 right-8 z-10">
+                <ButtonCustom type="settings" />
+              </div>
+              <div style={{ marginBottom: "30px", fontSize: "20px" }}>
+                <h1 className="title">Welcome to Github PR Tracker!</h1>
+              </div>
             </div>
           )}
           <TitleComponent hasPAT={hasPAT} currentStep={currentStep} />
