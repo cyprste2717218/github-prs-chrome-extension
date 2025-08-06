@@ -38,6 +38,7 @@ type GitDetailsEntryProps = {
 
 type ChooseReposComponentProps = {
   setActiveResultsPage: React.Dispatch<React.SetStateAction<number>>;
+  setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
   numPageResults: number;
   repoDetails: RepoCardComponentDetails[] | null;
   username: string;

@@ -73,6 +73,7 @@ const StepComponent = ({
           setNumPageResults={setNumPageResults}
           setRepoDetails={setRepoDetails}
           setActiveResultsPage={setActiveResultsPage}
+          setReposToggled={setReposToggled}
           username={username}
           patCode={patCode}
           numPageResults={numPageResults}

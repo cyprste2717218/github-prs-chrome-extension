@@ -2,7 +2,6 @@ import { handleStepChange } from "@/utilities/setUpUtilities";
 import ButtonCustom from "../input/ButtonCustom";
 import "../../App.css";
 import { HeaderProps } from "@/models/HeaderComponentModels.ts";
-import SelectAllButton from "../input/SelectAllButton";
 import TitleComponent from "./TitleComponent";
 
 const HeaderComponent = ({
@@ -18,8 +17,6 @@ const HeaderComponent = ({
   activeNumPRs,
   repoOwner,
   hasPAT,
-  allReposToggled,
-  repoDetails,
 }: HeaderProps): JSX.Element => {
   // To-do: make separate bundles for props for respective back and next button types
   const buttonStateBundle = {
@@ -36,84 +33,102 @@ const HeaderComponent = ({
     activeNumPRs: activeNumPRs,
   };
 
-  return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "row",
-          marginBottom: "20px",
-        }}
-      >
-        {(currentStep === 2 || currentStep === 3 || currentStep === 4) && (
-          <div
-            style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}
-          >
-            <ButtonCustom
-              type="back"
-              setStep={() =>
-                handleStepChange({
-                  ...buttonStateBundle,
-                  stepOperation: "stepBack",
-                  initialValuePAT: currentStep === 3 ? null : hasPAT,
-                })
-              }
-              currentStep={currentStep}
-            />
-          </div>
-        )}
-        <div style={{ marginTop: "auto", marginBottom: "auto" }}>
-          {currentStep === 1 && (
-            <div className="">
-              <div className="absolute top-8 right-8 z-10">
-                <ButtonCustom type="settings" />
-              </div>
-              <div style={{ marginBottom: "30px", fontSize: "20px" }}>
-                <h1 className="title">Welcome to Github PR Tracker!</h1>
-              </div>
-            </div>
-          )}
-          <TitleComponent hasPAT={hasPAT} currentStep={currentStep} />
+  const BackButton = () => {
+    return (
+      (currentStep === 2 || currentStep === 3 || currentStep === 4) && (
+        <div style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}>
+          <ButtonCustom
+            type="back"
+            setStep={() =>
+              handleStepChange({
+                ...buttonStateBundle,
+                stepOperation: "stepBack",
+                initialValuePAT: currentStep === 3 ? null : hasPAT,
+              })
+            }
+            currentStep={currentStep}
+          />
         </div>
-        {currentStep === 4 && (
-          <div style={{ marginLeft: "60px" }}>
-            <ButtonCustom
-              type="refresh"
-              setActiveNumPRs={setActiveNumPRs}
-              setStep={setStepState}
-              activeNumPRs={activeNumPRs}
-              currentStep={currentStep}
-              repoOwner={repoOwner}
-            />
+      )
+    );
+  };
+
+  const NextButton = () => {
+    return (
+      currentStep === 3 && (
+        <div style={{ marginLeft: "60px" }}>
+          <ButtonCustom
+            type="next"
+            onClick={() =>
+              handleStepChange({
+                ...buttonStateBundle,
+                stepOperation: "stepForward",
+                initialValuePAT: hasPAT,
+              })
+            }
+            activeNumPRs={activeNumPRs}
+          />
+        </div>
+      )
+    );
+  };
+
+  const RefreshButton = () => {
+    return (
+      currentStep === 4 && (
+        <div style={{ marginLeft: "60px" }}>
+          <ButtonCustom
+            type="refresh"
+            setActiveNumPRs={setActiveNumPRs}
+            setStep={setStepState}
+            activeNumPRs={activeNumPRs}
+            currentStep={currentStep}
+            repoOwner={repoOwner}
+          />
+        </div>
+      )
+    );
+  };
+
+  const IntroSpecificContent = () => {
+    return (
+      currentStep === 1 && (
+        <div className="">
+          <div className="absolute top-8 right-8 z-10">
+            <ButtonCustom type="settings" />
           </div>
-        )}
-        {currentStep === 3 && (
-          <div style={{ marginLeft: "60px" }}>
-            <ButtonCustom
-              type="next"
-              onClick={() =>
-                handleStepChange({
-                  ...buttonStateBundle,
-                  stepOperation: "stepForward",
-                  initialValuePAT: hasPAT,
-                })
-              }
-              activeNumPRs={activeNumPRs}
-            />
+          <div style={{ marginBottom: "30px", fontSize: "20px" }}>
+            <h1 className="title">Welcome to Github PR Tracker!</h1>
           </div>
-        )}
+        </div>
+      )
+    );
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "row",
+        marginBottom: "20px",
+      }}
+    >
+      <div style={{ marginTop: "auto", marginBottom: "auto" }}>
+        <IntroSpecificContent />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "row",
+          }}
+        >
+          <BackButton />
+          <TitleComponent hasPAT={hasPAT} currentStep={currentStep} />
+          <NextButton />
+          <RefreshButton />
+        </div>
       </div>
-      {currentStep === 3 && (
-        <SelectAllButton
-          allReposToggled={allReposToggled}
-          repoDetails={repoDetails}
-          activeNumPRs={activeNumPRs}
-          setReposToggled={setReposToggled}
-          setActiveNumPRs={setActiveNumPRs}
-          setRepoDetails={setRepoDetails}
-        />
-      )}
     </div>
   );
 };

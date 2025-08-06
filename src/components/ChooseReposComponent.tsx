@@ -1,12 +1,14 @@
 import AllPreviewRepoCards from "./repo-cards/AllPreviewRepoCards";
 import PaginationInput from "./input/PaginationInput";
 import ButtonCustom from "./input/ButtonCustom";
+import SelectAllButton from "./input/SelectAllButton";
 import { ChooseReposComponentProps } from "@/models/StepComponentModels";
 
 const ChooseReposComponent = ({
   setActiveNumPRs,
   setNumPageResults,
   setRepoDetails,
+  setReposToggled,
   setActiveResultsPage,
   repoDetails,
   activeNumPRs,
@@ -25,6 +27,14 @@ const ChooseReposComponent = ({
         flexDirection: "column",
       }}
     >
+      <SelectAllButton
+        allReposToggled={allReposToggled}
+        setRepoDetails={setRepoDetails}
+        setActiveNumPRs={setActiveNumPRs}
+        repoDetails={repoDetails}
+        activeNumPRs={activeNumPRs}
+        setReposToggled={setReposToggled}
+      />
       <AllPreviewRepoCards
         setActiveNumPRs={setActiveNumPRs}
         setNumPageResults={setNumPageResults}
