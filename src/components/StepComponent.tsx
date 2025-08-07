@@ -5,6 +5,7 @@ import ChooseSetupOptComponent from "./ChooseSetupOptComponent.tsx";
 import GitDetailsEntryComponent from "./GitDetailsEntryComponent.tsx";
 import ChooseReposComponent from "./ChooseReposComponent.tsx";
 import DisplayTrackedReposComponent from "./DisplayTrackedReposComponent.tsx";
+import SettingsComponent from "./SettingsComponent.tsx";
 
 const StepComponent = ({
   setUsername,
@@ -93,6 +94,10 @@ const StepComponent = ({
           activeNumPRs={activeNumPRs}
         />
       );
+      break;
+
+    case 5:
+      CurrentStepUI = <SettingsComponent />;
   }
 
   return CurrentStepUI;

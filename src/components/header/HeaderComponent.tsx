@@ -35,7 +35,10 @@ const HeaderComponent = ({
 
   const BackButton = () => {
     return (
-      (currentStep === 2 || currentStep === 3 || currentStep === 4) && (
+      (currentStep === 2 ||
+        currentStep === 3 ||
+        currentStep === 4 ||
+        currentStep === 5) && (
         <div style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}>
           <ButtonCustom
             type="back"
