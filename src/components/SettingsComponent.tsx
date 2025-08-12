@@ -39,6 +39,18 @@ const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
   );
 };
 
+const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
+  const [val1, val2, val3] = numMinsArr;
+
+  return (
+    <div className="flex flex-row justify-between text-center">
+      <SliderMarker numMinutes={val1} />
+      <SliderMarker numMinutes={val2} />
+      <SliderMarker numMinutes={val3} />
+    </div>
+  );
+};
+
 const SettingsComponent = ({}) => {
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
@@ -62,20 +74,14 @@ const SettingsComponent = ({}) => {
                   Note: Applies only to requests made with a Personal Access
                   Token
                 </CardDescription>
-                <div className="mt-5 mb-5">
-                  <Slider
-                    defaultValue={[50]}
-                    max={100}
-                    step={1}
-                    className={""}
-                    id="request-rate-slider"
-                  />
-                </div>
-                <div className="flex flex-row justify-between text-center">
-                  <SliderMarker numMinutes={10} />
-                  <SliderMarker numMinutes={5} />
-                  <SliderMarker numMinutes={1} />
-                </div>
+                <Slider
+                  defaultValue={[50]}
+                  max={100}
+                  step={1}
+                  className={"mt-5 mb-5"}
+                  id="request-rate-slider"
+                />
+                <AllSliderMarkers numMinsArr={[10, 5, 1]} />
               </div>
             </CardContent>
             <CardFooter className="mt-10">
