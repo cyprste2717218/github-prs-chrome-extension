@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "./ui/slider";
+import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SettingsComponent = ({}) => {
@@ -32,16 +33,46 @@ const SettingsComponent = ({}) => {
                   Note: Applies only to requests made with a Personal Access
                   Token
                 </CardDescription>
-                <Slider
-                  defaultValue={[50]}
-                  max={100}
-                  step={1}
-                  className={""}
-                  id="request-rate-slider"
-                />
+                <div className="mt-5 mb-5">
+                  <Slider
+                    defaultValue={[50]}
+                    max={100}
+                    step={1}
+                    className={""}
+                    id="request-rate-slider"
+                  />
+                </div>
+                <div className="flex flex-row justify-between text-center">
+                  <div className="flex flex-col justify-center">
+                    <div className="flex flex-col justify-center items-center">
+                      <Separator orientation="vertical" />
+                      <p>
+                        Every <br />
+                        10 mins
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="flex flex-col justify-center items-center">
+                      <Separator orientation="vertical" />
+                      <p>
+                        Every <br />5 mins
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="flex flex-col justify-center items-center">
+                      <Separator orientation="vertical" />
+                      <p>
+                        Every <br />
+                        Minute
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="mt-10">
               <Button>Save changes</Button>
             </CardFooter>
           </Card>
