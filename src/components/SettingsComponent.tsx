@@ -77,7 +77,7 @@ const SettingsComponent = ({}) => {
                 <Slider
                   defaultValue={[50]}
                   max={100}
-                  step={1}
+                  step={50}
                   className={"mt-5 mb-5"}
                   id="request-rate-slider"
                 />
