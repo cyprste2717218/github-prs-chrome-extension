@@ -3,7 +3,7 @@ import type {
   RepoCardComponentDetails,
 } from "@/models/RepoCardModels";
 
-type StepOperationType = { stepOperation: "stepBack" | "stepForward" };
+type StepOperationType = { stepOperation: "stepBack" | "stepForward" | "stepSettings" };
 
 type HandleStepBackProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
@@ -25,6 +25,7 @@ type HandleStepCommonProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   currentStep: number;
+  goalStep?: number;
   initialValuePAT: string | null;
 };
 

@@ -28,15 +28,15 @@ import {
 import { handleStepChange } from "@/utilities/setUpUtilities";
 import { displayScrollToTopButton } from "@/utilities/scripts/displayScrollToTopButton";
 
-const SettingsButton: React.FC<SettingsButtonProps> = ({}) => {
+const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {
   return (
-    <Button variant="ghost" size="icon" className="size-14">
+    <Button variant="ghost" size="icon" className="size-14" onClick={onClick}>
       <Settings className="size-4" />
     </Button>
   );
 };
 
-const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({}) => {
+const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ }) => {
   function handleClick() {
     window.scrollTo({
       top: 0,
@@ -68,7 +68,7 @@ const LinkButton: React.FC<LinkButtonProps> = ({ text, url }) => (
   </a>
 );
 
-const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
+const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({ }) => {
   return (
     <Button id="username-pat-entry-button" className="w-full h-18">
       <KeyRound className={`h-4 w-4`} />
@@ -77,7 +77,7 @@ const UsernameWithPATButton: React.FC<UsernameWithPATButtonProps> = ({}) => {
   );
 };
 
-const UsernameButton: React.FC<UsernameButtonProps> = ({}) => {
+const UsernameButton: React.FC<UsernameButtonProps> = ({ }) => {
   return (
     <Button id="username-entry-button" variant="outline" className="w-full">
       Enter Github Username/Org Name
@@ -115,10 +115,10 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
   );
 };
 
-const BackButton: React.FC<BackButtonProps> = ({ setStep, currentStep }) => {
+const BackButton: React.FC<BackButtonProps> = ({ onClick }) => {
   return (
     <Button
-      onClick={() => setStep(currentStep - 1)}
+      onClick={onClick}
       variant="outline"
       className="primary-foreground"
     >

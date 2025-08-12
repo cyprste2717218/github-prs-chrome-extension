@@ -18,12 +18,14 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setDisplayWarning,
     setReposToggled,
     currentStep,
+    goalStep,
     initialValuePAT,
   } = props;
 
-  let newStep = currentStep - 1;
+  // To-do: fix this logic so newStep is set in the line below to the value of goalStep if passed through
+  let newStep = goalStep ? goalStep : currentStep - 1;
 
-  if (currentStep === 3) {
+  if (currentStep === 3 || currentStep === 5) {
     newStep = 1;
   } else if (newStep < 1) {
     // check decrementing step isn't out of bounds
@@ -57,6 +59,8 @@ const handleStepBack = (props: HandleStepBackProps) => {
   // set step to new decremented value
   setStepState(newStep);
   saveToStorage("step", newStep);
+
+  console.log("this is the newStep on going back", newStep);
 };
 
 const handleStepForward = (props: HandleStepForwardProps) => {
@@ -66,14 +70,15 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     setPAT,
     repoOwner,
     currentStep,
+    goalStep,
     activeNumPRs,
     initialValuePAT,
   } = props;
 
-  const newStep = currentStep + 1;
+  const newStep = goalStep ? goalStep : currentStep + 1;
 
-  // check incrementing step isn't out of bounds
-  if (newStep > 4) {
+  // check incrementing step isn't out of bounds when settings page is not being requested to be loaded
+  if (newStep > 4 && !goalStep) {
     return;
   }
 
@@ -100,6 +105,8 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   // set step to new incremented value
   setStepState(newStep);
   saveToStorage("step", newStep);
+
+  console.log("this is the newStep on going forward", newStep);
 };
 
 const handleStepChange = (props: HandleStepChangeProps) => {
@@ -126,6 +133,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     repoOwner: props.repoOwner,
     activeNumPRs: props.activeNumPRs,
     currentStep: props.currentStep,
+    goalStep: props?.goalStep,
     initialValuePAT: props.initialValuePAT,
   };
 

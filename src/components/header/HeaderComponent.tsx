@@ -42,14 +42,15 @@ const HeaderComponent = ({
         <div style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}>
           <ButtonCustom
             type="back"
-            setStep={() =>
+            onClick={() =>
               handleStepChange({
                 ...buttonStateBundle,
+                goalStep: currentStep === 5 ? 1 : undefined,
                 stepOperation: "stepBack",
                 initialValuePAT: currentStep === 3 ? null : hasPAT,
               })
             }
-            currentStep={currentStep}
+
           />
         </div>
       )
@@ -98,7 +99,16 @@ const HeaderComponent = ({
       currentStep === 1 && (
         <div className="">
           <div className="absolute top-8 right-8 z-10">
-            <ButtonCustom type="settings" />
+            <ButtonCustom
+              type="settings"
+              onClick={() =>
+                handleStepChange({
+                  ...buttonStateBundle,
+                  goalStep: 5,
+                  stepOperation: "stepForward",
+                  initialValuePAT: hasPAT,
+                })
+              } />
           </div>
           <div style={{ marginBottom: "30px", fontSize: "20px" }}>
             <h1 className="title">Welcome to Github PR Tracker!</h1>

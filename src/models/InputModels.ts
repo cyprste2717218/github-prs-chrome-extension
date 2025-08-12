@@ -19,7 +19,9 @@ type CustomButtonProps =
   | (UsernameButtonProps & { type: "username" })
   | (LinkButtonProps & { type: "link" });
 
-type SettingsButtonProps = ButtonProps<{}>;
+type SettingsButtonProps = ButtonProps<{
+  onClick: () => void;
+}>;
 
 type ScrollToTopButtonProps = ButtonProps<{}>;
 
@@ -51,8 +53,7 @@ type SubmitButtonProps = ButtonProps<{
 }>;
 
 type BackButtonProps = ButtonProps<{
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-  currentStep: number;
+  onClick: () => void;
 }>;
 
 type NextButtonProps = ButtonProps<{
