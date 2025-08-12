@@ -34,12 +34,24 @@ const HeaderComponent = ({
   };
 
   const BackButton = () => {
+    function calcRightMargin() {
+      if (currentStep === 2) {
+        return "20px";
+      } else if (currentStep === 5) {
+        return "265px";
+      } else {
+        return "60px";
+      }
+    }
+
+    const rightMargin = calcRightMargin();
+
     return (
       (currentStep === 2 ||
         currentStep === 3 ||
         currentStep === 4 ||
         currentStep === 5) && (
-        <div style={{ marginRight: `${currentStep === 2 ? "20px" : "60px"}` }}>
+        <div style={{ marginRight: `${rightMargin}` }}>
           <ButtonCustom
             type="back"
             onClick={() =>
