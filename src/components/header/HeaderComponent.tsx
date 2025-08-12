@@ -50,7 +50,6 @@ const HeaderComponent = ({
                 initialValuePAT: currentStep === 3 ? null : hasPAT,
               })
             }
-
           />
         </div>
       )
@@ -108,7 +107,8 @@ const HeaderComponent = ({
                   stepOperation: "stepForward",
                   initialValuePAT: hasPAT,
                 })
-              } />
+              }
+            />
           </div>
           <div style={{ marginBottom: "30px", fontSize: "20px" }}>
             <h1 className="title">Welcome to Github PR Tracker!</h1>

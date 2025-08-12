@@ -3,7 +3,9 @@ import type {
   RepoCardComponentDetails,
 } from "@/models/RepoCardModels";
 
-type StepOperationType = { stepOperation: "stepBack" | "stepForward" | "stepSettings" };
+type StepOperationType = {
+  stepOperation: "stepBack" | "stepForward" | "stepSettings";
+};
 
 type HandleStepBackProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
