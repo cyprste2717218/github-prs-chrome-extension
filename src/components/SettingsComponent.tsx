@@ -10,6 +10,35 @@ import { Slider } from "./ui/slider";
 import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
+  let displayText = <p></p>;
+
+  if (numMinutes === 1) {
+    displayText = (
+      <p>
+        Every <br />
+        Minute
+      </p>
+    );
+  } else {
+    displayText = (
+      <p>
+        Every <br />
+        {numMinutes} mins
+      </p>
+    );
+  }
+
+  return (
+    <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center items-center">
+        <Separator orientation="vertical" />
+        {displayText}
+      </div>
+    </div>
+  );
+};
+
 const SettingsComponent = ({}) => {
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
@@ -43,32 +72,9 @@ const SettingsComponent = ({}) => {
                   />
                 </div>
                 <div className="flex flex-row justify-between text-center">
-                  <div className="flex flex-col justify-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <Separator orientation="vertical" />
-                      <p>
-                        Every <br />
-                        10 mins
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col justify-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <Separator orientation="vertical" />
-                      <p>
-                        Every <br />5 mins
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col justify-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <Separator orientation="vertical" />
-                      <p>
-                        Every <br />
-                        Minute
-                      </p>
-                    </div>
-                  </div>
+                  <SliderMarker numMinutes={10} />
+                  <SliderMarker numMinutes={5} />
+                  <SliderMarker numMinutes={1} />
                 </div>
               </div>
             </CardContent>
