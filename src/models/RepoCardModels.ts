@@ -3,6 +3,7 @@ import { SetStateAction } from "react";
 type ActiveNumPRs = {
   name: string;
   numActivePRs: number;
+  redirectUrl?: string;
 };
 
 type RepoPropsShared = {

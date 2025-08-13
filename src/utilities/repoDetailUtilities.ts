@@ -70,11 +70,72 @@ async function updatePRDetails({
 
   // Fetch current number of PRs for given repo, using authenticated or deaunthenticated approach
   const fetchNumPRs = async (repo: ActiveNumPRs) => {
+    function handleRedirectLogic({
+      response,
+    }: {
+      response: { status: number; url: string };
+    }): void {
+      function checkForRedirects({
+        status,
+        url,
+      }: {
+        status: number;
+        url: string;
+      }): { type: string; url: string } {
+        console.log("status:", status);
+        console.log("url:", url);
+
+        let redirectionType: string = "na";
+
+        // Handling redirection status codes - see https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#follow-redirects
+
+        if (status === 302 || status === 307) {
+          // temporary redirection
+          redirectionType = "temporary";
+        } else if (status === 301) {
+          // permanent redirection
+          redirectionType = "permanent";
+        }
+
+        return {
+          type: redirectionType,
+          url: url,
+        };
+      }
+
+      const status = response.status;
+      const url = response.url;
+      const redirects = checkForRedirects({ status, url });
+
+      if (redirects.type === "temporary") {
+        console.log("repeating fetchNumPRs with temporary redirect url");
+        const temporaryChangedRepo = { ...repo, redirectUrl: redirects.url };
+        fetchNumPRs(temporaryChangedRepo);
+
+        return;
+      } else if (redirects.type === "permanent") {
+        console.log("repeating fetchNumPRs with permanent redirect url");
+
+        const updatedActiveNumPRs = activeNumPRs;
+        for (let i = 0; i < updatedActiveNumPRs.length; i++) {
+          if (updatedActiveNumPRs[i].name === repoName) {
+            updatedActiveNumPRs[i].redirectUrl = redirects.url;
+          }
+        }
+        setActiveNumPRs(updatedActiveNumPRs);
+        fetchNumPRs(repo);
+
+        return;
+      }
+    }
+
     const repoName = repo.name;
     const owner = repoOwner;
     const currentNumPRs = repo.numActivePRs;
+    const redirectUrl = repo.redirectUrl;
     let results: any;
 
+    // To-do: Switch out request url for authenticated and unauthenticated requests to use the one from the redirectUrl variable if present
     if (!storedPATCode) {
       // unauthenticated request
 
@@ -84,8 +145,11 @@ async function updatePRDetails({
         headers: {
           "X-GitHub-Api-Version": "2022-11-28",
         },
+        url: redirectUrl,
       })
         .then((response) => {
+          handleRedirectLogic({ response });
+
           results = response.data;
         })
         .catch((error) => {
@@ -105,6 +169,8 @@ async function updatePRDetails({
 
       await requestWithAuth(`GET /repos/${owner}/${repoName}/pulls`)
         .then((response) => {
+          handleRedirectLogic({ response });
+
           results = response.data;
         })
         .catch((error) => {
@@ -132,6 +198,7 @@ async function updatePRDetails({
   };
 
   // Determining whether or not to create promises for repo details fetching in sequential or parallel fashion, in order to avoid meeting secondary rate limit of the Github REST API on too many concurrent requests. See https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#about-secondary-rate-limits
+
   if (activeNumPRs.length > 30) {
     // Sequential execution of each async call to get current number of PRs per repo
     for (const repoDetails of activeNumPRs) {
