@@ -66,53 +66,84 @@ async function updatePRDetails({
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
   const storedPATCode = await loadFromStorage("patCode");
+  let updatedNumPRs: ActiveNumPRs[] = [];
 
-  const updatedNumPRs = await Promise.all(
-    activeNumPRs.map(async (repo) => {
-      const repoName = repo.name;
-      const owner = repoOwner;
-      const currentNumPRs = repo.numActivePRs;
-      let results: any;
+  // Fetch current number of PRs for given repo, using authenticated or deaunthenticated approach
+  const fetchNumPRs = async (repo: ActiveNumPRs) => {
+    const repoName = repo.name;
+    const owner = repoOwner;
+    const currentNumPRs = repo.numActivePRs;
+    let results: any;
 
-      if (!storedPATCode) {
-        // unauthenticated request
+    if (!storedPATCode) {
+      // unauthenticated request
 
-        results = await request(`GET /repos/${owner}/${repoName}/pulls`, {
-          owner: owner,
-          repo: repoName,
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }).then((response) => response.data);
-      } else {
-        // authenticated request
-
-        const requestWithAuth = request.defaults({
-          headers: {
-            authorization: `token ${storedPATCode}`,
-          },
+      await request(`GET /repos/${owner}/${repoName}/pulls`, {
+        owner: owner,
+        repo: repoName,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      })
+        .then((response) => {
+          results = response.data;
+        })
+        .catch((error) => {
+          console.log(
+            `error fetching number of PRs for repo ${repoName}: ${error}`
+          );
+          //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
         });
+    } else {
+      // authenticated request
 
-        let response = await requestWithAuth(
-          `GET /repos/${owner}/${repoName}/pulls`
-        );
-        results = response.data;
-      }
+      const requestWithAuth = request.defaults({
+        headers: {
+          authorization: `token ${storedPATCode}`,
+        },
+      });
 
-      // update number of PRs for repo if number changed
-      let updatedNumPRs: number = currentNumPRs;
-      if (currentNumPRs !== results.length) {
-        updatedNumPRs = results.length;
-      }
+      await requestWithAuth(`GET /repos/${owner}/${repoName}/pulls`)
+        .then((response) => {
+          results = response.data;
+        })
+        .catch((error) => {
+          console.log(
+            `error fetching number of PRs for repo ${repoName}: ${error}`
+          );
+          //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
+        });
+    }
 
-      console.log("github prs fetched:", results);
+    // update number of PRs for repo if number changed
 
-      return {
-        name: repoName,
-        numActivePRs: updatedNumPRs,
-      };
-    })
-  );
+    // setting a default value in case fetch request doesn't return a number (on first load of displayed tracked repos page)
+    let updatedNumPRs: number = currentNumPRs ? currentNumPRs : 0;
+    if (currentNumPRs !== results.length && results.length > -1) {
+      updatedNumPRs = results.length;
+    }
+
+    console.log("github prs fetched:", results);
+
+    return {
+      name: repoName,
+      numActivePRs: updatedNumPRs,
+    };
+  };
+
+  // Determining whether or not to create promises for repo details fetching in sequential or parallel fashion, in order to avoid meeting secondary rate limit of the Github REST API on too many concurrent requests. See https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#about-secondary-rate-limits
+  if (activeNumPRs.length > 30) {
+    // Sequential execution of each async call to get current number of PRs per repo
+    for (const repoDetails of activeNumPRs) {
+      const updatedPRDetails = await fetchNumPRs(repoDetails);
+      updatedNumPRs.push(updatedPRDetails);
+    }
+  } else {
+    // Parallel execution of each async call to get current number of PRs per repo
+    updatedNumPRs = await Promise.all(
+      activeNumPRs.map((repoDetails) => fetchNumPRs(repoDetails))
+    );
+  }
 
   setActiveNumPRs(updatedNumPRs);
   saveToStorage("activeNumPRs", updatedNumPRs);
