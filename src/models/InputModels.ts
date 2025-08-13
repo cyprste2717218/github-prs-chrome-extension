@@ -31,6 +31,7 @@ type RefreshButtonProps = ButtonProps<{
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;
+  patCode: string | null;
 }>;
 
 type SubmitButtonProps = ButtonProps<{

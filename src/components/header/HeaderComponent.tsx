@@ -99,6 +99,7 @@ const HeaderComponent = ({
             activeNumPRs={activeNumPRs}
             currentStep={currentStep}
             repoOwner={repoOwner}
+            patCode={hasPAT}
           />
         </div>
       )
