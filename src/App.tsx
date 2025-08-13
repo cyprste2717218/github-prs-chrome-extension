@@ -26,6 +26,7 @@ function App() {
   const [displayWarning, setDisplayWarning] = useState<boolean>(false);
   const [reposToggled, setReposToggled] = useState<boolean>(false);
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
+  const [pollingRate, setPollingRate] = useState<number>(5);
 
   useEffect(() => {
     // @ts-ignore
@@ -110,6 +111,8 @@ function App() {
         numPageResults={numPageResults}
         allReposToggled={reposToggled}
         activeResultsPage={activeResultsPage}
+        setPollingRate={setPollingRate}
+        pollingRate={pollingRate}
       />
 
       {displayWarning && <WarningModal setDisplayWarning={setDisplayWarning} />}

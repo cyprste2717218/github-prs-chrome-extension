@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "./ui/slider";
 import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SettingsProps } from "@/models/StepComponentModels";
 
 const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
   let displayText = <p></p>;
@@ -51,7 +52,11 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
   );
 };
 
-const SettingsComponent = ({}) => {
+const SettingsComponent = ({
+  setPollingRate,
+  pollingRate,
+  patCode,
+}: SettingsProps) => {
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
       <Tabs defaultValue="configuration">
@@ -80,6 +85,7 @@ const SettingsComponent = ({}) => {
                   step={50}
                   className={"mt-5 mb-5"}
                   id="request-rate-slider"
+                  disabled={patCode ? false : true}
                 />
                 <AllSliderMarkers numMinsArr={[10, 5, 1]} />
               </div>

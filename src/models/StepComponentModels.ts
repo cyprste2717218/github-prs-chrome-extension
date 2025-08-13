@@ -14,7 +14,8 @@ type CommonProps = {
 type StepComponentProps = ChooseSetupOptProps &
   GitDetailsEntryProps &
   ChooseReposComponentProps &
-  DisplayTrackedReposProps;
+  DisplayTrackedReposProps &
+  SettingsProps;
 
 type ChooseSetupOptProps = {
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
@@ -52,10 +53,17 @@ type DisplayTrackedReposProps = {
   username: string;
 };
 
+type SettingsProps = {
+  setPollingRate: React.Dispatch<React.SetStateAction<number>>;
+  pollingRate: number;
+  patCode: string | null;
+};
+
 export type {
   StepComponentProps,
   ChooseSetupOptProps,
   GitDetailsEntryProps,
   ChooseReposComponentProps,
   DisplayTrackedReposProps,
+  SettingsProps,
 };

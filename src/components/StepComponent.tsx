@@ -17,6 +17,7 @@ const StepComponent = ({
   setDisplayWarning,
   setReposToggled,
   setActiveResultsPage,
+  setPollingRate,
   username,
   repoDetails,
   currentStep,
@@ -25,6 +26,7 @@ const StepComponent = ({
   numPageResults,
   allReposToggled,
   activeResultsPage,
+  pollingRate,
 }: StepComponentProps) => {
   let CurrentStepUI = <></>;
 
@@ -97,7 +99,13 @@ const StepComponent = ({
       break;
 
     case 5:
-      CurrentStepUI = <SettingsComponent />;
+      CurrentStepUI = (
+        <SettingsComponent
+          setPollingRate={setPollingRate}
+          pollingRate={pollingRate}
+          patCode={patCode}
+        />
+      );
   }
 
   return CurrentStepUI;
