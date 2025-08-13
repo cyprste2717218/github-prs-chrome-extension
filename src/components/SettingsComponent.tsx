@@ -53,8 +53,8 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
 };
 
 const SettingsComponent = ({
-  /*  setPollingRate,
-	 pollingRate, */
+  setPollingRate,
+  pollingRate,
   patCode,
 }: SettingsProps) => {
   return (
@@ -80,12 +80,12 @@ const SettingsComponent = ({
                   Token
                 </CardDescription>
                 <Slider
-                  defaultValue={[50]}
+                  value={[pollingRate]}
+                  onValueChange={(val) => setPollingRate(val[0])}
                   max={100}
                   step={50}
                   className={"mt-5 mb-5"}
                   id="request-rate-slider"
-                  disabled={patCode ? false : true}
                 />
                 <AllSliderMarkers numMinsArr={[10, 5, 1]} />
               </div>
