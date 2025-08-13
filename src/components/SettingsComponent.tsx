@@ -53,8 +53,8 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
 };
 
 const SettingsComponent = ({
-  setPollingRate,
-  pollingRate,
+  /*  setPollingRate,
+	 pollingRate, */
   patCode,
 }: SettingsProps) => {
   return (
