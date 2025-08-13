@@ -52,11 +52,7 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
   );
 };
 
-const SettingsComponent = ({
-  setPollingRate,
-  pollingRate,
-  patCode,
-}: SettingsProps) => {
+const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
       <Tabs defaultValue="configuration">
