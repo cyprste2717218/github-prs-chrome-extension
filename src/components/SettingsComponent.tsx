@@ -54,17 +54,11 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
 };
 
 const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
-  function handleSliderChange(val: number[]) {
-    const sliderValue = val[0];
+  function handleSaveSliderLocal() {
+    console.log("Setting new polling rate of", pollingRate);
 
-    if (pollingRate !== sliderValue) {
-      () => setPollingRate(sliderValue);
-
-      // call handlePollingRate function here
-      setPollingRateLocal(sliderValue);
-    } else {
-      return;
-    }
+    // call handlePollingRate function here
+    setPollingRateLocal(pollingRate);
   }
 
   return (
@@ -90,8 +84,8 @@ const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
                   Token
                 </CardDescription>
                 <Slider
-                  value={[pollingRate]}
-                  onValueChange={handleSliderChange}
+                  defaultValue={[pollingRate]}
+                  onValueChange={([sliderValue]) => setPollingRate(sliderValue)}
                   max={100}
                   step={50}
                   className={"mt-5 mb-5"}
@@ -101,7 +95,7 @@ const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
               </div>
             </CardContent>
             <CardFooter className="mt-10">
-              <Button>Save changes</Button>
+              <Button onClick={handleSaveSliderLocal}>Save changes</Button>
             </CardFooter>
           </Card>
         </TabsContent>

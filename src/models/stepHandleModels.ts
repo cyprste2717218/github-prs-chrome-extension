@@ -15,12 +15,14 @@ type HandleStepBackProps = {
   setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
   intervalId: NodeJS.Timeout | null;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];
+  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
 } & HandleStepCommonProps;
 
 type HandleStepCommonProps = {

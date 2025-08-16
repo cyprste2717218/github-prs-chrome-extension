@@ -14,6 +14,7 @@ const GitDetailsEntryComponent = ({
   setNumPageResults,
   setDisplayWarning,
   setReposToggled,
+  setIntervalId,
   currentStep,
   username,
   activeNumPRs,
@@ -84,6 +85,7 @@ const GitDetailsEntryComponent = ({
             setNumPageResults={setNumPageResults}
             setDisplayWarning={setDisplayWarning}
             setReposToggled={setReposToggled}
+            setIntervalId={setIntervalId}
           />
         </div>
       </div>

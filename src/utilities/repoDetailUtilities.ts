@@ -20,8 +20,6 @@ type SubmitPRDetailsProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
-  signal: AbortSignal;
-  intervalId: NodeJS.Timeout;
 };
 
 type HandleRefreshProps = {
@@ -383,8 +381,6 @@ async function handleRefresh({
   activeNumPRs,
   setActiveNumPRs,
   repoOwner,
-  intervalId,
-  signal,
 }: HandleRefreshProps) {
   if (activeNumPRs.length !== 0) {
     console.log("activeNumPRs array is not empty");
@@ -392,8 +388,6 @@ async function handleRefresh({
       setActiveNumPRs,
       activeNumPRs,
       repoOwner,
-      intervalId,
-      signal,
     });
     saveToStorage("activeNumPRs", activeNumPRs);
   } else {

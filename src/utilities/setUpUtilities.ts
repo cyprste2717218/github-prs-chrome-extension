@@ -1,4 +1,4 @@
-import { saveToStorage } from "../../public/background.ts";
+import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 
 import type {
   HandleStepChangeProps,
@@ -7,7 +7,7 @@ import type {
 } from "@/models/stepHandleModels.ts";
 import { clearPolling, startPolling } from "./pollingUtilities.ts";
 
-const handleStepBack = (props: HandleStepBackProps) => {
+const handleStepBack = async (props: HandleStepBackProps) => {
   const {
     setStepState,
     setPAT,
@@ -17,10 +17,10 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setNumPageResults,
     setDisplayWarning,
     setReposToggled,
+    setIntervalId,
     currentStep,
     goalStep,
     initialValuePAT,
-    intervalId,
   } = props;
 
   // To-do: fix this logic so newStep is set in the line below to the value of goalStep if passed through
@@ -53,7 +53,18 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setReposToggled(false);
     setActiveNumPRs([]);
 
-    clearPolling(intervalId as NodeJS.Timeout);
+    const storedIntervalId: NodeJS.Timeout | null =
+      await loadFromStorage("intervalId");
+    if (!storedIntervalId) {
+      throw new Error(
+        "storedIntervalId is null when trying to access to close current polling queue"
+      );
+    }
+
+    clearPolling(storedIntervalId);
+    console.log("the retrieved interval ID was:", storedIntervalId);
+    setIntervalId(null);
+
     saveToStorage("activeNumPRs", []);
     saveToStorage("reposToggled", false);
   }
@@ -70,6 +81,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     setStepState,
     setActiveNumPRs,
     setPAT,
+    setIntervalId,
     repoOwner,
     currentStep,
     goalStep,
@@ -98,7 +110,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
 
-      startPolling({ setActiveNumPRs, activeNumPRs, repoOwner });
+      startPolling({ setActiveNumPRs, setIntervalId, activeNumPRs, repoOwner });
       saveToStorage("activeNumPRs", activeNumPRs);
     } else {
       console.log("activeNumPRs array is empty");
@@ -125,6 +137,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setNumPageResults: props.setNumPageResults,
     setDisplayWarning: props.setDisplayWarning,
     setReposToggled: props.setReposToggled,
+    setIntervalId: props.setIntervalId,
     currentStep: props.currentStep,
     initialValuePAT: props.initialValuePAT,
     intervalId: props.intervalId,
@@ -134,6 +147,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setStepState: props.setStepState,
     setActiveNumPRs: props.setActiveNumPRs,
     setPAT: props.setPAT,
+    setIntervalId: props.setIntervalId,
     repoOwner: props.repoOwner,
     activeNumPRs: props.activeNumPRs,
     currentStep: props.currentStep,

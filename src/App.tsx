@@ -27,6 +27,10 @@ function App() {
   const [reposToggled, setReposToggled] = useState<boolean>(false);
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
   const [pollingRate, setPollingRate] = useState<number>(50);
+  // @ts-ignore
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  console.log("intervalId:", intervalId);
 
   useEffect(() => {
     // @ts-ignore
@@ -75,6 +79,11 @@ function App() {
       setPollingRate(JSON.parse(result.pollingRate));
     });
 
+    // @ts-ignore
+    chrome.storage.local.get("intervalId", (result) => {
+      setIntervalId(JSON.parse(result.intervalId));
+    });
+
     //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", loadFromStorage("step"));
   }, []);
@@ -89,6 +98,7 @@ function App() {
         setNumPageResults={setNumPageResults}
         setPAT={setPAT}
         setDisplayWarning={setDisplayWarning}
+        setIntervalId={setIntervalId}
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}
@@ -96,7 +106,7 @@ function App() {
         repoDetails={repoDetails}
         allReposToggled={reposToggled}
         setReposToggled={setReposToggled}
-        argIntervalId={null}
+        argIntervalId={intervalId}
         signal={null as unknown as AbortSignal}
       />
 
@@ -110,6 +120,7 @@ function App() {
         setDisplayWarning={setDisplayWarning}
         setReposToggled={setReposToggled}
         setActiveResultsPage={setActiveResultsPage}
+        setIntervalId={setIntervalId}
         username={username}
         repoDetails={repoDetails}
         currentStep={step}

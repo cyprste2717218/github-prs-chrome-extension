@@ -3,13 +3,13 @@ import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 import { updatePRDetails } from "./repoDetailUtilities";
 
 const controller = new AbortController();
-const signal = controller.signal;
 
 function setPollingRateLocal(newPollingRate: number) {
   saveToStorage("pollingRate", newPollingRate);
 }
 
 function clearPolling(intervalId: NodeJS.Timeout) {
+  console.log("clearing polling interval");
   clearInterval(intervalId);
   if (controller) {
     controller.abort();
@@ -18,13 +18,15 @@ function clearPolling(intervalId: NodeJS.Timeout) {
 
 async function startPolling({
   setActiveNumPRs,
+  setIntervalId,
   activeNumPRs,
   repoOwner,
 }: {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
-}): Promise<NodeJS.Timeout> {
+}) {
   function getDelay(sliderValue: number): number {
     // setting the delay based on the polling interval chosen (1,5 or 10 mins)
 
@@ -50,12 +52,10 @@ async function startPolling({
         setActiveNumPRs,
         activeNumPRs,
         repoOwner,
-        signal,
-        intervalId,
       });
       console.log(`finished polling github api`);
     } catch (error) {
-      // handle errors
+      console.error("Error during polling github api:", error);
     }
   }
 
@@ -65,12 +65,16 @@ async function startPolling({
   const delay = getDelay(parseInt(currentSliderValue as string));
 
   // initial call to get current number of open PRs across repos before commencing fetches at regular intervals
-  getData().then(() => console.log(`initial call to github api complete`));
+  await getData().then(() =>
+    console.log(`initial call to github api complete`)
+  );
 
   // starting scheduled fetches
-  const intervalId = setInterval(getData, delay);
+  const newIntervalId = setInterval(getData, delay);
 
-  return intervalId;
+  // save interval ID to React state and chrome local storage
+  () => setIntervalId(newIntervalId);
+  saveToStorage("intervalId", newIntervalId);
 }
 
 export { clearPolling, startPolling, setPollingRateLocal };
