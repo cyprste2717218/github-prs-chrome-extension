@@ -15,6 +15,7 @@ type HandleStepBackProps = {
   setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  intervalId: NodeJS.Timeout | null;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {

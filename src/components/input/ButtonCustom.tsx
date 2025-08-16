@@ -92,6 +92,8 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
   currentStep,
   repoOwner,
   patCode,
+  intervalId,
+  signal,
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -104,6 +106,8 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
       activeNumPRs,
       currentStep,
       repoOwner,
+      intervalId,
+      signal,
     });
     setIsRefreshing(false);
     console.log("succesfully refreshed prs");
@@ -190,6 +194,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       ...buttonStateBundle,
       stepOperation: "stepForward",
       initialValuePAT: patCode,
+      intervalId: null,
     });
   }
 

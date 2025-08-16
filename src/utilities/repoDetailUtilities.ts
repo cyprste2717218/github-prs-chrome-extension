@@ -5,6 +5,7 @@ import type {
 } from "../models/RepoCardModels";
 import { request } from "@octokit/request";
 import { loadFromStorage, saveToStorage } from "../../public/background.ts";
+import { clearPolling } from "./pollingUtilities.ts";
 
 type RepoDetailUtilities = {
   setRepoDetails: React.Dispatch<
@@ -20,6 +21,8 @@ type SubmitPRDetailsProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
+  signal: AbortSignal;
+  intervalId: NodeJS.Timeout;
 };
 
 type HandleRefreshProps = {
@@ -28,6 +31,8 @@ type HandleRefreshProps = {
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;
+  signal: AbortSignal;
+  intervalId: NodeJS.Timeout;
 };
 
 type HandleChangePageResultsProps = {
@@ -62,11 +67,21 @@ async function updatePRDetails({
   setActiveNumPRs,
   activeNumPRs,
   repoOwner,
+  intervalId,
+  signal,
 }: SubmitPRDetailsProps) {
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
   const storedPATCode = await loadFromStorage("patCode");
   let updatedNumPRs: ActiveNumPRs[] = [];
+
+  if (signal.aborted) {
+    clearPolling(intervalId);
+  }
+
+  signal.addEventListener("abort", () => {
+    clearPolling(intervalId);
+  });
 
   // Fetch current number of PRs for given repo, using authenticated or deaunthenticated approach
   const fetchNumPRs = async (repo: ActiveNumPRs) => {
@@ -134,6 +149,11 @@ async function updatePRDetails({
     const currentNumPRs = repo.numActivePRs;
     const redirectUrl = repo.redirectUrl;
     let results: any;
+
+    // Check periodically for abort signal
+    if (signal.aborted) {
+      clearPolling(intervalId);
+    }
 
     // To-do: Switch out request url for authenticated and unauthenticated requests to use the one from the redirectUrl variable if present
     if (!storedPATCode) {
@@ -379,10 +399,18 @@ async function handleRefresh({
   activeNumPRs,
   setActiveNumPRs,
   repoOwner,
+  intervalId,
+  signal,
 }: HandleRefreshProps) {
   if (activeNumPRs.length !== 0) {
     console.log("activeNumPRs array is not empty");
-    updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+    updatePRDetails({
+      setActiveNumPRs,
+      activeNumPRs,
+      repoOwner,
+      intervalId,
+      signal,
+    });
     saveToStorage("activeNumPRs", activeNumPRs);
   } else {
     console.log("activeNumPRs array is empty");

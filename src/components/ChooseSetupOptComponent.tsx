@@ -39,6 +39,7 @@ const ChooseSetupOptComponent = ({
             ...buttonStateBundle,
             stepOperation: "stepForward",
             initialValuePAT: null,
+            intervalId: null,
           })
         }
       >
@@ -55,6 +56,7 @@ const ChooseSetupOptComponent = ({
             ...buttonStateBundle,
             stepOperation: "stepForward",
             initialValuePAT: "",
+            intervalId: null,
           })
         }
       >

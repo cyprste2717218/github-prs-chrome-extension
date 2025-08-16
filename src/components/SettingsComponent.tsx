@@ -10,6 +10,7 @@ import { Slider } from "./ui/slider";
 import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SettingsProps } from "@/models/StepComponentModels";
+import { setPollingRateLocal } from "@/utilities/pollingUtilities";
 
 const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
   let displayText = <p></p>;
@@ -53,6 +54,19 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
 };
 
 const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
+  function handleSliderChange(val: number[]) {
+    const sliderValue = val[0];
+
+    if (pollingRate !== sliderValue) {
+      () => setPollingRate(sliderValue);
+
+      // call handlePollingRate function here
+      setPollingRateLocal(sliderValue);
+    } else {
+      return;
+    }
+  }
+
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
       <Tabs defaultValue="configuration">
@@ -77,7 +91,7 @@ const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
                 </CardDescription>
                 <Slider
                   value={[pollingRate]}
-                  onValueChange={(val) => setPollingRate(val[0])}
+                  onValueChange={handleSliderChange}
                   max={100}
                   step={50}
                   className={"mt-5 mb-5"}

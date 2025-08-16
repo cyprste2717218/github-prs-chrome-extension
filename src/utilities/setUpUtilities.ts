@@ -1,11 +1,11 @@
 import { saveToStorage } from "../../public/background.ts";
-import { updatePRDetails } from "@/utilities/repoDetailUtilities";
 
 import type {
   HandleStepChangeProps,
   HandleStepBackProps,
   HandleStepForwardProps,
 } from "@/models/stepHandleModels.ts";
+import { clearPolling, startPolling } from "./pollingUtilities.ts";
 
 const handleStepBack = (props: HandleStepBackProps) => {
   const {
@@ -20,6 +20,7 @@ const handleStepBack = (props: HandleStepBackProps) => {
     currentStep,
     goalStep,
     initialValuePAT,
+    intervalId,
   } = props;
 
   // To-do: fix this logic so newStep is set in the line below to the value of goalStep if passed through
@@ -52,6 +53,7 @@ const handleStepBack = (props: HandleStepBackProps) => {
     setReposToggled(false);
     setActiveNumPRs([]);
 
+    clearPolling(intervalId as NodeJS.Timeout);
     saveToStorage("activeNumPRs", []);
     saveToStorage("reposToggled", false);
   }
@@ -95,7 +97,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   if (newStep === 4 || newStep === 3) {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
-      updatePRDetails({ setActiveNumPRs, activeNumPRs, repoOwner });
+      startPolling({ setActiveNumPRs, activeNumPRs, repoOwner });
       saveToStorage("activeNumPRs", activeNumPRs);
     } else {
       console.log("activeNumPRs array is empty");
@@ -124,6 +126,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setReposToggled: props.setReposToggled,
     currentStep: props.currentStep,
     initialValuePAT: props.initialValuePAT,
+    intervalId: props.intervalId,
   };
 
   const nextButtonOperationsProps = {

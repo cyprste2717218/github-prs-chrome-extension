@@ -26,7 +26,7 @@ function App() {
   const [displayWarning, setDisplayWarning] = useState<boolean>(false);
   const [reposToggled, setReposToggled] = useState<boolean>(false);
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
-  const [pollingRate, setPollingRate] = useState<number>(5);
+  const [pollingRate, setPollingRate] = useState<number>(50);
 
   useEffect(() => {
     // @ts-ignore
@@ -70,6 +70,11 @@ function App() {
       setActiveResultsPage(JSON.parse(result.activeResultsPage));
     });
 
+    // @ts-ignore
+    chrome.storage.local.get("pollingRate", (result) => {
+      setPollingRate(JSON.parse(result.pollingRate));
+    });
+
     //setChromeExtensionWindowSize()
     console.log("localCurrentStep:", loadFromStorage("step"));
   }, []);
@@ -91,6 +96,8 @@ function App() {
         repoDetails={repoDetails}
         allReposToggled={reposToggled}
         setReposToggled={setReposToggled}
+        argIntervalId={null}
+        signal={null as unknown as AbortSignal}
       />
 
       <StepComponent

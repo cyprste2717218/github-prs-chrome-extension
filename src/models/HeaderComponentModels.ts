@@ -22,6 +22,8 @@ type HeaderProps = {
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
   repoDetails: RepoCardComponentDetails[] | null;
+  argIntervalId: NodeJS.Timeout | null;
+  signal: AbortSignal;
 } & TitleProps;
 
 export type { HeaderProps, TitleProps };

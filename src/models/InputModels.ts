@@ -32,6 +32,8 @@ type RefreshButtonProps = ButtonProps<{
   currentStep: number;
   repoOwner: string;
   patCode: string | null;
+  intervalId: NodeJS.Timeout;
+  signal: AbortSignal;
 }>;
 
 type SubmitButtonProps = ButtonProps<{
