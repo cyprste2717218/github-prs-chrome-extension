@@ -65,7 +65,7 @@ async function startPolling({
   const delay = getDelay(parseInt(currentSliderValue as string));
 
   // initial call to get current number of open PRs across repos before commencing fetches at regular intervals
-  await getData();
+  getData().then(() => console.log(`initial call to github api complete`));
 
   // starting scheduled fetches
   const intervalId = setInterval(getData, delay);

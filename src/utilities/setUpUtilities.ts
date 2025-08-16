@@ -97,6 +97,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   if (newStep === 4 || newStep === 3) {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
+
       startPolling({ setActiveNumPRs, activeNumPRs, repoOwner });
       saveToStorage("activeNumPRs", activeNumPRs);
     } else {
