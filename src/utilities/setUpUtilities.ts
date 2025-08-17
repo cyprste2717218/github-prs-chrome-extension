@@ -57,7 +57,7 @@ const handleStepBack = async (props: HandleStepBackProps) => {
       await loadFromStorage("intervalId");
     if (!storedIntervalId) {
       throw new Error(
-        "storedIntervalId is null when trying to access to close current polling queue"
+        "storedIntervalId is null when trying to access to close current polling interval"
       );
     }
 
