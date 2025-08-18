@@ -192,11 +192,12 @@ async function handleSubmitUserName({
     currentResultPageNum
   ).then((results) => {
     if (!results) {
-      return;
+      throw new Error("No results returned from handleFetchUserRepos");
+    } else {
+      setRepoDetails(results);
+      // @ts-ignore
+      saveToStorage("repoDetails", results);
     }
-    setRepoDetails(results);
-    // @ts-ignore
-    saveToStorage("repoDetails", results);
   });
 }
 

@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { handleStepChange } from "@/utilities/setUpUtilities";
 import { displayScrollToTopButton } from "@/utilities/scripts/displayScrollToTopButton";
+import { toast } from "sonner";
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {
   return (
@@ -191,13 +192,22 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       patCode,
       setRepoDetails,
       setNumPageResults,
-    });
-    handleStepChange({
-      ...buttonStateBundle,
-      stepOperation: "stepForward",
-      initialValuePAT: patCode,
-      intervalId: null,
-    });
+    })
+      .then(() => {
+        console.log(
+          "succesfully submitted and retrieved repos for provided username"
+        );
+        handleStepChange({
+          ...buttonStateBundle,
+          stepOperation: "stepForward",
+          initialValuePAT: patCode,
+          intervalId: null,
+        });
+      })
+      .catch((error) => {
+        console.error("Error in handleSubmitUserName:", error);
+        toast.info("No public repositories discovered for specified user");
+      });
   }
 
   let isDisabled: boolean;
