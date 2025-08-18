@@ -1,6 +1,7 @@
 import { ActiveNumPRs } from "@/models/RepoCardModels";
 import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 import { updatePRDetails } from "./repoDetailUtilities";
+import { toast } from "sonner";
 
 const controller = new AbortController();
 
@@ -56,6 +57,9 @@ async function startPolling({
       console.log(`finished polling github api`);
     } catch (error) {
       console.error("Error during polling github api:", error);
+      toast.error(
+        "Error during polling github api, if the issue persists try reinstalling the extension"
+      );
     }
   }
 
