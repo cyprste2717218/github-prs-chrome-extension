@@ -4,8 +4,8 @@ import { updatePRDetails } from "./repoDetailUtilities";
 
 const controller = new AbortController();
 
-function setPollingRateLocal(newPollingRate: number) {
-  saveToStorage("pollingRate", newPollingRate);
+async function setPollingRateLocal(newPollingRate: number) {
+  await saveToStorage("pollingRate", newPollingRate);
 }
 
 function clearPolling(intervalId: NodeJS.Timeout) {

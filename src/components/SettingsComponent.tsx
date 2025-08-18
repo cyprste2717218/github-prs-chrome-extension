@@ -11,6 +11,7 @@ import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SettingsProps } from "@/models/StepComponentModels";
 import { setPollingRateLocal } from "@/utilities/pollingUtilities";
+import { toast } from "sonner";
 
 const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
   let displayText = <p></p>;
@@ -54,11 +55,16 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
 };
 
 const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
-  function handleSaveSliderLocal() {
+  async function handleSaveSliderLocal() {
     console.log("Setting new polling rate of", pollingRate);
 
-    // call handlePollingRate function here
-    setPollingRateLocal(pollingRate);
+    try {
+      await setPollingRateLocal(pollingRate);
+      toast.success("Changes saved successfully!");
+    } catch (e) {
+      console.error("Error saving polling rate", e);
+      toast.error("Error saving changes. Please try again later");
+    }
   }
 
   return (

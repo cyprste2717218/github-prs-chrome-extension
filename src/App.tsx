@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
 import WarningModal from "./components/input/WarningModal.tsx";
+import { Toaster } from "@/components/ui/sonner";
+
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
@@ -134,6 +136,8 @@ function App() {
       />
 
       {displayWarning && <WarningModal setDisplayWarning={setDisplayWarning} />}
+
+      <Toaster position="top-center" expand={false} richColors closeButton />
     </>
   );
 }
