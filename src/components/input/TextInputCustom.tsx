@@ -3,7 +3,7 @@ import {
   CustomTextInputProps,
   UsernameInputProps,
   PATInputProps,
-} from "@/models/TextInputModels";
+} from "@/models/frontend/TextInputModels";
 
 const InputCustom: React.FC<CustomTextInputProps> = (props) => {
   switch (props.type) {
