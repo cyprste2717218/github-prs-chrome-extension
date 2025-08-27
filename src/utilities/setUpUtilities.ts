@@ -4,7 +4,7 @@ import type {
   HandleStepChangeProps,
   HandleStepBackProps,
   HandleStepForwardProps,
-} from "@/models/stepHandleModels.ts";
+} from "@/models/utilities/stepHandleModels.ts";
 import { clearPolling, startPolling } from "./pollingUtilities.ts";
 
 const handleStepBack = async (props: HandleStepBackProps) => {
