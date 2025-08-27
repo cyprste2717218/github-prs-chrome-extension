@@ -1,7 +1,7 @@
-import { ActiveNumPRs } from "@/models/RepoCardModels";
 import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 import { updatePRDetails } from "./repoDetailUtilities";
 import { toast } from "sonner";
+import { StartPollingProps } from "@/models/PollingUtilitiesModels.ts";
 
 const controller = new AbortController();
 
@@ -22,12 +22,7 @@ async function startPolling({
   setIntervalId,
   activeNumPRs,
   repoOwner,
-}: {
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
-  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
-  activeNumPRs: ActiveNumPRs[];
-  repoOwner: string;
-}) {
+}: StartPollingProps) {
   function getDelay(sliderValue: number): number {
     // setting the delay based on the polling interval chosen (1,5 or 10 mins)
 
