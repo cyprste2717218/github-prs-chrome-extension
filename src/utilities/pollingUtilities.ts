@@ -1,7 +1,7 @@
 import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 import { updatePRDetails } from "./repoDetailUtilities";
 import { toast } from "sonner";
-import { StartPollingProps } from "@/models/PollingUtilitiesModels.ts";
+import { StartPollingProps } from "@/models/utilities/PollingUtilitiesModels.ts";
 
 const controller = new AbortController();
 

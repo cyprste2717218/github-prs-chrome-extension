@@ -3,7 +3,7 @@ import { Separator } from "./ui/separator";
 import { Label } from "./ui/label";
 import InputCustom from "./input/TextInputCustom";
 import ButtonCustom from "./input/ButtonCustom";
-import { GitDetailsEntryProps } from "@/models/StepComponentModels";
+import { GitDetailsEntryProps } from "@/models/frontend/StepComponentModels";
 
 const GitDetailsEntryComponent = ({
   setUsername,

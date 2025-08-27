@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
-} from "./models/RepoCardModels";
+} from "./models/frontend/RepoCardModels.ts";
 import "./App.css";
 
 import {

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "./ui/slider";
 import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SettingsProps } from "@/models/StepComponentModels";
+import { SettingsProps } from "@/models/frontend/StepComponentModels";
 import { setPollingRateLocal } from "@/utilities/pollingUtilities";
 import { toast } from "sonner";
 

@@ -1,4 +1,4 @@
-import { TitleProps } from "@/models/HeaderComponentModels";
+import { TitleProps } from "@/models/frontend/HeaderComponentModels";
 
 const TitleComponent = ({ currentStep, hasPAT }: TitleProps): JSX.Element => {
   let stepTitle = "";

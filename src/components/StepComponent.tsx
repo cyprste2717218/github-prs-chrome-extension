@@ -1,4 +1,4 @@
-import type { StepComponentProps } from "@/models/StepComponentModels";
+import type { StepComponentProps } from "@/models/frontend/StepComponentModels.ts";
 
 import "../App.css";
 import ChooseSetupOptComponent from "./ChooseSetupOptComponent.tsx";

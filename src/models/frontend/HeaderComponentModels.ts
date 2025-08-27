@@ -1,5 +1,5 @@
-import { ActiveNumPRs } from "@/models/RepoCardModels";
-import type { RepoCardComponentDetails } from "@/models/RepoCardModels";
+import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
+import type { RepoCardComponentDetails } from "@/models/frontend/RepoCardModels";
 import React from "react";
 
 type TitleProps = {

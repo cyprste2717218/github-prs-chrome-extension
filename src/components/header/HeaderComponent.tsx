@@ -1,7 +1,7 @@
 import { handleStepChange } from "@/utilities/setUpUtilities";
 import ButtonCustom from "../input/ButtonCustom";
 import "../../App.css";
-import { HeaderProps } from "@/models/HeaderComponentModels.ts";
+import { HeaderProps } from "@/models/frontend/HeaderComponentModels";
 import TitleComponent from "./TitleComponent";
 
 const HeaderComponent = ({

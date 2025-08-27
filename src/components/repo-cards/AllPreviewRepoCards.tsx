@@ -2,7 +2,7 @@ import {
   AllPreviewRepoCardsProps,
   PreviewRepoCardProps,
   RepoCardComponentDetails,
-} from "@/models/RepoCardModels";
+} from "@/models/frontend/RepoCardModels";
 import { handleToggleRepo } from "@/utilities/repoDetailUtilities";
 import { useEffect, useState } from "react";
 import {

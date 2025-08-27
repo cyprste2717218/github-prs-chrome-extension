@@ -1,4 +1,4 @@
-import { DisplayTrackedReposProps } from "@/models/StepComponentModels";
+import { DisplayTrackedReposProps } from "@/models/frontend/StepComponentModels";
 import AllTrackedRepoCards from "./repo-cards/AllTrackedRepoCards";
 
 const DisplayTrackedReposComponent = ({

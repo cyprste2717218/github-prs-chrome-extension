@@ -1,4 +1,4 @@
-import { ActiveNumPRs } from "./RepoCardModels";
+import { ActiveNumPRs } from "../frontend/RepoCardModels";
 
 type StartPollingProps = {
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;

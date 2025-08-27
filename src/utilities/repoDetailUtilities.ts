@@ -2,7 +2,7 @@ import React from "react";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
-} from "../models/RepoCardModels";
+} from "../models/frontend/RepoCardModels.ts";
 import { request } from "@octokit/request";
 import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 import {
@@ -12,7 +12,7 @@ import {
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
   SubmitPRDetailsProps,
-} from "@/models/RepoDetailUtilitiesModels.ts";
+} from "@/models/utilities/RepoDetailUtilitiesModels.ts";
 
 async function updatePRDetails({
   setActiveNumPRs,

@@ -2,7 +2,7 @@ import AllPreviewRepoCards from "./repo-cards/AllPreviewRepoCards";
 import PaginationInput from "./input/PaginationInput";
 import ButtonCustom from "./input/ButtonCustom";
 import SelectAllButton from "./input/SelectAllButton";
-import { ChooseReposComponentProps } from "@/models/StepComponentModels";
+import { ChooseReposComponentProps } from "@/models/frontend/StepComponentModels";
 
 const ChooseReposComponent = ({
   setActiveNumPRs,

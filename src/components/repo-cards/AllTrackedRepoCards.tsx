@@ -4,7 +4,7 @@ import {
   AllTrackedRepoCardProps,
   TrackedRepoCardProps,
   TrackedRepoRowProps,
-} from "@/models/RepoCardModels";
+} from "@/models/frontend/RepoCardModels";
 
 const AllTrackedRepoCards = ({
   activeNumPRs,

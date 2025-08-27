@@ -1,7 +1,7 @@
 import type {
   ActiveNumPRs,
   RepoCardComponentDetails,
-} from "@/models/RepoCardModels";
+} from "@/models/frontend/RepoCardModels";
 
 type StepOperationType = {
   stepOperation: "stepBack" | "stepForward" | "stepSettings";

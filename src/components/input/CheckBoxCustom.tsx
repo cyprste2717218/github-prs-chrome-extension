@@ -1,4 +1,4 @@
-import { CheckBoxCustomProps } from "@/models/CheckBoxCustomModels";
+import { CheckBoxCustomProps } from "@/models/frontend/CheckBoxCustomModels";
 
 const CheckBoxCustom = ({
   repoChecked,

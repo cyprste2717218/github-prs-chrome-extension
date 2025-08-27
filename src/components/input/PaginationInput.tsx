@@ -8,7 +8,7 @@ import {
   PaginationPrevious,
 } from "../ui/pagination";
 import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
-import { PaginationInputProps } from "@/models/InputModels";
+import { PaginationInputProps } from "@/models/frontend/InputModels";
 
 const PaginationInput = ({
   setNumPageResults,

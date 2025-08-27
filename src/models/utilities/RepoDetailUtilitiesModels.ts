@@ -1,4 +1,7 @@
-import { RepoCardComponentDetails, ActiveNumPRs } from "./RepoCardModels";
+import {
+  RepoCardComponentDetails,
+  ActiveNumPRs,
+} from "../frontend/RepoCardModels";
 
 type RepoDetailUtilities = {
   setRepoDetails: React.Dispatch<

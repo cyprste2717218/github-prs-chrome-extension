@@ -1,7 +1,7 @@
 import ButtonCustom from "./input/ButtonCustom";
 import { handleStepChange } from "@/utilities/setUpUtilities";
 import { Separator } from "./ui/separator";
-import { ChooseSetupOptProps } from "@/models/StepComponentModels";
+import { ChooseSetupOptProps } from "@/models/frontend/StepComponentModels";
 
 const ChooseSetupOptComponent = ({
   setPAT,

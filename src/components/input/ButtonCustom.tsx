@@ -14,7 +14,7 @@ import {
   UsernameButtonProps,
   LinkButtonProps,
   ScrollToTopButtonProps,
-} from "@/models/InputModels";
+} from "@/models/frontend/InputModels";
 import { Button } from "../ui/button";
 import {
   RefreshCw,

@@ -1,4 +1,4 @@
-import { SelectAllButtonProps } from "@/models/InputModels";
+import { SelectAllButtonProps } from "@/models/frontend/InputModels";
 import { Button } from "../ui/button";
 import CheckBoxCustom from "./CheckBoxCustom";
 import { handleToggleAllRepos } from "@/utilities/repoDetailUtilities";
