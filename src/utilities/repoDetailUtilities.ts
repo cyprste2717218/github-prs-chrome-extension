@@ -24,8 +24,43 @@ async function updatePRDetails({
   const storedPATCode = await loadFromStorage("patCode");
   let updatedNumPRs: ActiveNumPRs[] = [];
 
+  type SucessFetchNumPRs = {
+    name: string;
+    numActivePRs: number;
+  };
+
+  type FailureFetchNumPRs = {
+    waitInterval: number;
+    messages: string[];
+  };
+
+  type FetchNumPRs = SucessFetchNumPRs | FailureFetchNumPRs;
+
+  function isSuccessFetchNumPRs(obj: FetchNumPRs): obj is SucessFetchNumPRs {
+    return (
+      typeof obj === "object" &&
+      "name" in obj &&
+      "numActivePRs" in obj &&
+      typeof obj.name === "string" &&
+      typeof obj.numActivePRs === "number"
+    );
+  }
+
+  function isFailureFetchNumPRs(obj: FetchNumPRs): obj is FailureFetchNumPRs {
+    return (
+      typeof obj === "object" &&
+      "waitInterval" in obj &&
+      "messages" in obj &&
+      typeof obj.waitInterval === "number" &&
+      Array.isArray(obj.messages) &&
+      obj.messages.every((item: any) => typeof item === "string")
+    );
+  }
+
   // Fetch current number of PRs for given repo, using authenticated or deaunthenticated approach
-  const fetchNumPRs = async (repo: ActiveNumPRs) => {
+  const fetchNumPRs = async (
+    repo: ActiveNumPRs
+  ): Promise<SucessFetchNumPRs | FailureFetchNumPRs> => {
     function handleRedirectLogic({
       response,
     }: {
@@ -85,6 +120,48 @@ async function updatePRDetails({
       }
     }
 
+    function handleRateLimitError(error: {
+      response: { headers: { [x: string]: number } };
+      status: number;
+    }): { waitInterval: number; messages: string[]; type: "failure" } {
+      // check if it was a primary or secondary rate limit error which was met
+      let waitInterval: number = 0;
+      const messages: string[] = [];
+
+      if (error.response && (error.status === 403 || error.status === 429)) {
+        // checking if conditions met for primary rate limit error
+        if (error.response.headers["x-ratelimit-remaining"] === "0") {
+          // if x-ratelimit-remaining header present, then the x-ratelimit-reset header for when safe to make another separate request must be also present
+          const resetTimeEpochSeconds =
+            error.response.headers["x-ratelimit-reset"];
+          const currentTimeEpochSeconds = Math.floor(Date.now() / 1000);
+          const secondsToWait = resetTimeEpochSeconds - currentTimeEpochSeconds;
+
+          waitInterval = secondsToWait;
+          messages.push(
+            `Primary rate limit error, waiting ${waitInterval} seconds before making another request`
+          );
+        }
+
+        // check if secondary rate limit error has occurred so timer can possibly be set for that duration (dependent on whether duration stated by 'retry-after' or 'x-ratelimit-reset' header is longer)
+        if (error.response.headers["retry-after"] !== undefined) {
+          if (error.response.headers["retry-after"] > waitInterval) {
+            waitInterval = error.response.headers["retry-after"];
+          }
+
+          messages.push(
+            `Secondary rate limit error, waiting ${waitInterval} seconds before making another request`
+          );
+        }
+      }
+
+      return {
+        type: "failure",
+        waitInterval: waitInterval,
+        messages: messages,
+      };
+    }
+
     const repoName = repo.name;
     const owner = repoOwner;
     const currentNumPRs = repo.numActivePRs;
@@ -109,9 +186,14 @@ async function updatePRDetails({
           results = response.data;
         })
         .catch((error) => {
+          const errorDetails = handleRateLimitError(error);
+
           console.log(
             `error fetching number of PRs for repo ${repoName}: ${error}`
           );
+
+          return errorDetails;
+
           //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
         });
     } else {
@@ -130,9 +212,14 @@ async function updatePRDetails({
           results = response.data;
         })
         .catch((error) => {
+          const errorDetails = handleRateLimitError(error);
+
           console.log(
             `error fetching number of PRs for repo ${repoName}: ${error}`
           );
+
+          return errorDetails;
+
           //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
         });
     }
@@ -148,24 +235,20 @@ async function updatePRDetails({
     console.log("github prs fetched:", results);
 
     return {
+      type: "success",
       name: repoName,
       numActivePRs: updatedNumPRs,
     };
   };
 
-  // Determining whether or not to create promises for repo details fetching in sequential or parallel fashion, in order to avoid meeting secondary rate limit of the Github REST API on too many concurrent requests. See https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#about-secondary-rate-limits
+  // Sequential execution of each async call to get current number of PRs per repo
+  for (const repoDetails of activeNumPRs) {
+    const updatedPRDetails = await fetchNumPRs(repoDetails);
 
-  if (activeNumPRs.length > 30) {
-    // Sequential execution of each async call to get current number of PRs per repo
-    for (const repoDetails of activeNumPRs) {
-      const updatedPRDetails = await fetchNumPRs(repoDetails);
+    if (isSuccessFetchNumPRs(updatedPRDetails)) {
       updatedNumPRs.push(updatedPRDetails);
+    } else if (isFailureFetchNumPRs(updatedPRDetails)) {
     }
-  } else {
-    // Parallel execution of each async call to get current number of PRs per repo
-    updatedNumPRs = await Promise.all(
-      activeNumPRs.map((repoDetails) => fetchNumPRs(repoDetails))
-    );
   }
 
   setActiveNumPRs(updatedNumPRs);

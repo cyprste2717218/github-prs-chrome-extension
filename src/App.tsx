@@ -31,6 +31,7 @@ function App() {
   const [pollingRate, setPollingRate] = useState<number>(50);
   // @ts-ignore
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [nextReqInterval, setNextReqInterval] = useState<number | null>(null);
 
   console.log("intervalId:", intervalId);
 

@@ -64,9 +64,14 @@ async function startPolling({
   const delay = getDelay(parseInt(currentSliderValue as string));
 
   // initial call to get current number of open PRs across repos before commencing fetches at regular intervals
-  await getData().then(() =>
-    console.log(`initial call to github api complete`)
-  );
+  await getData()
+    .then(() => console.log(`initial call to github api complete`))
+    .catch((error) => {
+      console.error("Error during initial call to github api:", error);
+      toast.error(
+        "Error during initial call to github api, if the issue persists try reinstalling the extension"
+      );
+    });
 
   // starting scheduled fetches
   const newIntervalId = setInterval(getData, delay);
