@@ -2,6 +2,7 @@ import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 import { updatePRDetails } from "./repoDetailUtilities";
 import { toast } from "sonner";
 import { StartPollingProps } from "@/models/utilities/PollingUtilitiesModels.ts";
+import { Chrome } from "lucide-react";
 
 const controller = new AbortController();
 

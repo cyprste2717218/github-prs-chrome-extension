@@ -4,6 +4,7 @@ import type {
   ActiveNumPRs,
 } from "../models/frontend/RepoCardModels.ts";
 import { request } from "@octokit/request";
+import { RequestError } from "@octokit/request-error";
 import { loadFromStorage, saveToStorage } from "../../public/background.ts";
 import {
   HandleChangePageResultsProps,
@@ -120,10 +121,7 @@ async function updatePRDetails({
       }
     }
 
-    function handleRateLimitError(error: {
-      response: { headers: { [x: string]: number } };
-      status: number;
-    }): { waitInterval: number; messages: string[]; type: "failure" } {
+    function handleRateLimitError(error: RequestError): FailureFetchNumPRs {
       // check if it was a primary or secondary rate limit error which was met
       let waitInterval: number = 0;
       const messages: string[] = [];
@@ -132,8 +130,10 @@ async function updatePRDetails({
         // checking if conditions met for primary rate limit error
         if (error.response.headers["x-ratelimit-remaining"] === "0") {
           // if x-ratelimit-remaining header present, then the x-ratelimit-reset header for when safe to make another separate request must be also present
-          const resetTimeEpochSeconds =
-            error.response.headers["x-ratelimit-reset"];
+          const resetTimeEpochSeconds = Number(
+            error.response.headers["x-ratelimit-reset"]
+          );
+
           const currentTimeEpochSeconds = Math.floor(Date.now() / 1000);
           const secondsToWait = resetTimeEpochSeconds - currentTimeEpochSeconds;
 
@@ -145,8 +145,11 @@ async function updatePRDetails({
 
         // check if secondary rate limit error has occurred so timer can possibly be set for that duration (dependent on whether duration stated by 'retry-after' or 'x-ratelimit-reset' header is longer)
         if (error.response.headers["retry-after"] !== undefined) {
-          if (error.response.headers["retry-after"] > waitInterval) {
-            waitInterval = error.response.headers["retry-after"];
+          const retryAfterHeaderVal: number = Number(
+            error.response.headers["retry-after"]
+          );
+          if (retryAfterHeaderVal > waitInterval) {
+            waitInterval = retryAfterHeaderVal;
           }
 
           messages.push(
@@ -156,7 +159,6 @@ async function updatePRDetails({
       }
 
       return {
-        type: "failure",
         waitInterval: waitInterval,
         messages: messages,
       };
@@ -219,8 +221,6 @@ async function updatePRDetails({
           );
 
           return errorDetails;
-
-          //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
         });
     }
 
@@ -235,7 +235,6 @@ async function updatePRDetails({
     console.log("github prs fetched:", results);
 
     return {
-      type: "success",
       name: repoName,
       numActivePRs: updatedNumPRs,
     };
@@ -248,6 +247,9 @@ async function updatePRDetails({
     if (isSuccessFetchNumPRs(updatedPRDetails)) {
       updatedNumPRs.push(updatedPRDetails);
     } else if (isFailureFetchNumPRs(updatedPRDetails)) {
+      // return the toast messages from primary/secondary rate limit error
+      // wait for specified period by primary/secondary rate limit error
+      // retry the call to fetchNumPRs
     }
   }
 

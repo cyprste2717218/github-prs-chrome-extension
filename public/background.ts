@@ -46,6 +46,16 @@ function saveToStorage<T>(key: string, value: T | null): Promise<void> {
   });
 }
 
+async function startPollingAlarm() {
+  // @ts-ignore
+  await chrome.runtime.sendMessage({ type: "startPollingAlarm" });
+}
+
+async function cancelPollingAlarm() {
+  // @ts-ignore
+  await chrome.runtime.sendMessage({ type: "cancelPollingAlarm" });
+}
+
 /* async function saveLocalRepoDetails(activeNumPRs: ActiveNumPRs[]) {
   activeNumPRs.map((repoDetails: ActiveNumPRs) => {
     const repoName = repoDetails.name;
