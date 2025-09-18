@@ -1,5 +1,3 @@
-// @ts-ignore
-
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === "install") {
     console.log("Extension installed for the first time");
@@ -10,7 +8,6 @@ chrome.runtime.onInstalled.addListener(function (details) {
 function initializeExtension() {
   // set intitial state variable default values on first install, chrome version update or extension update for setting current step react state]
 
-  // @ts-ignore
   chrome.storage.local.set({
     step: 1,
     username: "",
@@ -21,7 +18,6 @@ function initializeExtension() {
 
 function loadFromLocalStorage<T>(key: string): Promise<T | null> {
   return new Promise<T | null>((resolve) => {
-    // @ts-ignore
     chrome.storage.local.get([key], (dict: any) => {
       let result;
       try {
@@ -36,7 +32,6 @@ function loadFromLocalStorage<T>(key: string): Promise<T | null> {
 
 function saveToLocalStorage<T>(key: string, value: T | null): Promise<void> {
   return new Promise<void>((resolve) => {
-    // @ts-ignore
     chrome.storage.local.set(
       {
         [key]: JSON.stringify(value),
@@ -73,12 +68,10 @@ function saveToSessionStorage<T>(key: string, value: T | null): Promise<void> {
 }
 
 async function startPollingAlarm() {
-  // @ts-ignore
   await chrome.runtime.sendMessage({ type: "startPollingAlarm" });
 }
 
 async function cancelPollingAlarm() {
-  // @ts-ignore
   await chrome.runtime.sendMessage({ type: "cancelPollingAlarm" });
 }
 
