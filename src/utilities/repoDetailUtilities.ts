@@ -5,7 +5,10 @@ import type {
 } from "../models/frontend/RepoCardModels.ts";
 import { request } from "@octokit/request";
 import { RequestError } from "@octokit/request-error";
-import { loadFromStorage, saveToStorage } from "../../public/background.ts";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "../../public/background.ts";
 import {
   HandleChangePageResultsProps,
   HandleRefreshProps,
@@ -22,7 +25,7 @@ async function updatePRDetails({
 }: SubmitPRDetailsProps) {
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
-  const storedPATCode = await loadFromStorage("patCode");
+  const storedPATCode = await loadFromLocalStorage("patCode");
   let updatedNumPRs: ActiveNumPRs[] = [];
 
   type SucessFetchNumPRs = {
@@ -254,7 +257,7 @@ async function updatePRDetails({
   }
 
   setActiveNumPRs(updatedNumPRs);
-  saveToStorage("activeNumPRs", updatedNumPRs);
+  saveToLocalStorage("activeNumPRs", updatedNumPRs);
 }
 
 async function handleSubmitUserName({
@@ -281,7 +284,7 @@ async function handleSubmitUserName({
     } else {
       setRepoDetails(results);
       // @ts-ignore
-      saveToStorage("repoDetails", results);
+      saveToLocalStorage("repoDetails", results);
     }
   });
 }
@@ -351,7 +354,7 @@ async function handleFetchUserRepos(
     try {
       lastValidPageNumber = extractLastPageNumber(linkHeader);
       setNumPageResults(lastValidPageNumber);
-      saveToStorage("numPageResults", lastValidPageNumber);
+      saveToLocalStorage("numPageResults", lastValidPageNumber);
       console.log("lastValidPageNumber:", lastValidPageNumber);
 
       return lastValidPageNumber;
@@ -429,7 +432,7 @@ async function handleRefresh({
       activeNumPRs,
       repoOwner,
     });
-    saveToStorage("activeNumPRs", activeNumPRs);
+    saveToLocalStorage("activeNumPRs", activeNumPRs);
   } else {
     console.log("activeNumPRs array is empty");
   }
@@ -461,7 +464,7 @@ async function handleChangePageResults({
   });
 
   // update current saved page number to chrome local storage after succesful fetching of details for repos on repo selection screen
-  saveToStorage("activeResultsPage", currentResultPageNum);
+  saveToLocalStorage("activeResultsPage", currentResultPageNum);
 }
 
 async function handleToggleRepo({

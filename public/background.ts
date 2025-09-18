@@ -19,7 +19,7 @@ function initializeExtension() {
   });
 }
 
-function loadFromStorage<T>(key: string): Promise<T | null> {
+function loadFromLocalStorage<T>(key: string): Promise<T | null> {
   return new Promise<T | null>((resolve) => {
     // @ts-ignore
     chrome.storage.local.get([key], (dict: any) => {
@@ -34,10 +34,36 @@ function loadFromStorage<T>(key: string): Promise<T | null> {
   });
 }
 
-function saveToStorage<T>(key: string, value: T | null): Promise<void> {
+function saveToLocalStorage<T>(key: string, value: T | null): Promise<void> {
   return new Promise<void>((resolve) => {
     // @ts-ignore
     chrome.storage.local.set(
+      {
+        [key]: JSON.stringify(value),
+      },
+      resolve
+    );
+  });
+}
+
+function loadFromSessionStorage<T>(key: string): Promise<T | null> {
+  return new Promise<T | null>((resolve) => {
+    chrome.storage.session.get([key], (dict: any) => {
+      let result;
+      try {
+        result = JSON.parse(dict[key]);
+      } catch (e) {
+        result = dict[key];
+      }
+      resolve(result || null);
+    });
+  });
+}
+
+function saveToSessionStorage<T>(key: string, value: T | null): Promise<void> {
+  return new Promise<void>((resolve) => {
+    // @ts-ignore
+    chrome.storage.session.set(
       {
         [key]: JSON.stringify(value),
       },
@@ -104,6 +130,10 @@ export {
   getLocalRepoDetails,
   saveLocalCurrentStep,
   setChromeExtensionWindowSize, */
-  saveToStorage,
-  loadFromStorage,
+  saveToLocalStorage,
+  loadFromLocalStorage,
+  saveToSessionStorage,
+  loadFromSessionStorage,
+  startPollingAlarm,
+  cancelPollingAlarm,
 };

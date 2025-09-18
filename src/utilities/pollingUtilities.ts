@@ -1,13 +1,15 @@
-import { loadFromStorage, saveToStorage } from "../../public/background.ts";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "../../public/background.ts";
 import { updatePRDetails } from "./repoDetailUtilities";
 import { toast } from "sonner";
 import { StartPollingProps } from "@/models/utilities/PollingUtilitiesModels.ts";
-import { Chrome } from "lucide-react";
 
 const controller = new AbortController();
 
 async function setPollingRateLocal(newPollingRate: number) {
-  await saveToStorage("pollingRate", newPollingRate);
+  await saveToLocalStorage("pollingRate", newPollingRate);
 }
 
 function clearPolling(intervalId: NodeJS.Timeout) {
@@ -60,7 +62,7 @@ async function startPolling({
   }
 
   const currentSliderValue: string | null =
-    await loadFromStorage("pollingRate");
+    await loadFromLocalStorage("pollingRate");
 
   const delay = getDelay(parseInt(currentSliderValue as string));
 
@@ -79,7 +81,7 @@ async function startPolling({
 
   // save interval ID to React state and chrome local storage
   () => setIntervalId(newIntervalId);
-  saveToStorage("intervalId", newIntervalId);
+  saveToLocalStorage("intervalId", newIntervalId);
 }
 
 export { clearPolling, startPolling, setPollingRateLocal };

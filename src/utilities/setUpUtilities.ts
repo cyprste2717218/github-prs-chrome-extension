@@ -1,4 +1,7 @@
-import { loadFromStorage, saveToStorage } from "../../public/background.ts";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "../../public/background.ts";
 
 import type {
   HandleStepChangeProps,
@@ -40,11 +43,11 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     setUsername("");
     setNumPageResults(0);
 
-    saveToStorage("activeNumPRs", []);
-    saveToStorage("repoDetails", null);
-    saveToStorage("patCode", initialValuePAT); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
-    saveToStorage("username", "");
-    saveToStorage("numPageResults", null);
+    saveToLocalStorage("activeNumPRs", []);
+    saveToLocalStorage("repoDetails", null);
+    saveToLocalStorage("patCode", initialValuePAT); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
+    saveToLocalStorage("username", "");
+    saveToLocalStorage("numPageResults", null);
   }
 
   if (newStep === 3) {
@@ -54,7 +57,7 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     setActiveNumPRs([]);
 
     const storedIntervalId: NodeJS.Timeout | null =
-      await loadFromStorage("intervalId");
+      await loadFromLocalStorage("intervalId");
     if (!storedIntervalId) {
       throw new Error(
         "storedIntervalId is null when trying to access to close current polling interval"
@@ -65,13 +68,13 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     console.log("the retrieved interval ID was:", storedIntervalId);
     setIntervalId(null);
 
-    saveToStorage("activeNumPRs", []);
-    saveToStorage("reposToggled", false);
+    saveToLocalStorage("activeNumPRs", []);
+    saveToLocalStorage("reposToggled", false);
   }
 
   // set step to new decremented value
   setStepState(newStep);
-  saveToStorage("step", newStep);
+  saveToLocalStorage("step", newStep);
 
   console.log("this is the newStep on going back", newStep);
 };
@@ -98,12 +101,12 @@ const handleStepForward = (props: HandleStepForwardProps) => {
 
   if (newStep === 2) {
     setPAT(initialValuePAT);
-    saveToStorage("patCode", initialValuePAT);
+    saveToLocalStorage("patCode", initialValuePAT);
   }
 
   if (newStep === 3) {
-    saveToStorage("username", repoOwner);
-    saveToStorage("patCode", initialValuePAT);
+    saveToLocalStorage("username", repoOwner);
+    saveToLocalStorage("patCode", initialValuePAT);
   }
 
   if (newStep === 4 || newStep === 3) {
@@ -111,7 +114,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
       console.log("activeNumPRs array is not empty");
 
       startPolling({ setActiveNumPRs, setIntervalId, activeNumPRs, repoOwner });
-      saveToStorage("activeNumPRs", activeNumPRs);
+      saveToLocalStorage("activeNumPRs", activeNumPRs);
     } else {
       console.log("activeNumPRs array is empty");
     }
@@ -119,7 +122,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
 
   // set step to new incremented value
   setStepState(newStep);
-  saveToStorage("step", newStep);
+  saveToLocalStorage("step", newStep);
 
   console.log("this is the newStep on going forward", newStep);
 };
