@@ -27,9 +27,6 @@ function App() {
   const [reposToggled, setReposToggled] = useState<boolean>(false);
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-  console.log("intervalId:", intervalId);
 
   useEffect(() => {
     // @ts-ignore
@@ -79,11 +76,6 @@ function App() {
     });
 
     // @ts-ignore
-    chrome.storage.local.get("intervalId", (result) => {
-      setIntervalId(JSON.parse(result.intervalId));
-    });
-
-    // @ts-ignore
     chrome.storage.local.get("step", (result) => {
       setStep(JSON.parse(result.step));
     });
@@ -101,7 +93,6 @@ function App() {
         setNumPageResults={setNumPageResults}
         setPAT={setPAT}
         setDisplayWarning={setDisplayWarning}
-        setIntervalId={setIntervalId}
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}
@@ -109,7 +100,6 @@ function App() {
         repoDetails={repoDetails}
         allReposToggled={reposToggled}
         setReposToggled={setReposToggled}
-        argIntervalId={intervalId}
         signal={null as unknown as AbortSignal}
       />
 
@@ -123,7 +113,6 @@ function App() {
         setDisplayWarning={setDisplayWarning}
         setReposToggled={setReposToggled}
         setActiveResultsPage={setActiveResultsPage}
-        setIntervalId={setIntervalId}
         username={username}
         repoDetails={repoDetails}
         currentStep={step}

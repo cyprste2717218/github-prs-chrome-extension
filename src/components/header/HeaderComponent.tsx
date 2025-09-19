@@ -13,13 +13,10 @@ const HeaderComponent = ({
   setNumPageResults,
   setDisplayWarning,
   setReposToggled,
-  setIntervalId,
   currentStep,
   activeNumPRs,
   repoOwner,
   hasPAT,
-  argIntervalId,
-  signal,
 }: HeaderProps): JSX.Element => {
   // To-do: make separate bundles for props for respective back and next button types
 
@@ -32,11 +29,9 @@ const HeaderComponent = ({
     setNumPageResults: setNumPageResults,
     setDisplayWarning: setDisplayWarning,
     setReposToggled: setReposToggled,
-    setIntervalId: setIntervalId,
     currentStep: currentStep,
     repoOwner: repoOwner,
     activeNumPRs: activeNumPRs,
-    intervalId: argIntervalId,
   };
 
   const BackButton = () => {

@@ -140,10 +140,8 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setNumPageResults: props.setNumPageResults,
     setDisplayWarning: props.setDisplayWarning,
     setReposToggled: props.setReposToggled,
-    setIntervalId: props.setIntervalId,
     currentStep: props.currentStep,
     initialValuePAT: props.initialValuePAT,
-    intervalId: props.intervalId,
   };
 
   const nextButtonOperationsProps = {
