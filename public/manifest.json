@@ -15,7 +15,7 @@
   "permissions": ["scripting", "tabs", "activeTab", "storage"],
   "host_permissions": ["https://*/*", "http://*/*"],
   "background": {
-    "service_worker": "service-worker.js",
+    "service_worker": "service-worker.ts",
     "type": "module"
   }
 }

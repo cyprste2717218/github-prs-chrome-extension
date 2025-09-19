@@ -1,5 +1,13 @@
+import { RequestError } from "@octokit/request-error";
+import { request } from "@octokit/request";
+import {
+  saveToSessionStorage,
+  saveToLocalStorage,
+  loadFromLocalStorage,
+  loadFromSessionStorage,
+} from "./storage-utils";
+
 type SubmitPRDetailsProps = {
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
 };
@@ -10,22 +18,6 @@ type ActiveNumPRs = {
   redirectUrl?: string;
 };
 
-import { RequestError } from "@octokit/request-error";
-import { request } from "@octokit/request";
-import {
-  saveToSessionStorage,
-  saveToLocalStorage,
-  loadFromLocalStorage,
-  loadFromSessionStorage,
-} from "./storage-utils";
-
-chrome.runtime.onInstalled.addListener(function (details) {
-  if (details.reason === "install") {
-    console.log("Extension installed for the first time");
-    initializeExtension();
-  }
-});
-
 function initializeExtension() {
   // set intitial state variable default values on first install, chrome version update or extension update for setting current step react state]
 
@@ -35,103 +27,6 @@ function initializeExtension() {
     repoDetails: null,
     activeNumPRs: [],
   });
-}
-
-async function createPollingAlarm(): Promise<Boolean> {
-  function getDelay(sliderValue: number): number {
-    // setting the delay based on the polling interval chosen (1,5 or 10 mins)
-
-    let delayMs = 300000;
-
-    if (sliderValue === 0) {
-      delayMs = 10;
-    } else if (sliderValue === 50) {
-      delayMs = 5;
-    } else if (sliderValue === 100) {
-      delayMs = 1;
-    }
-
-    return delayMs;
-  }
-
-  const ALARM_NAME = "pollingAlarm";
-
-  const alarm = await chrome.alarms.get(ALARM_NAME);
-  if (typeof alarm === "undefined") {
-    const pollingRate = await loadFromLocalStorage("pollingRate");
-    const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
-
-    if (!pollingRate) {
-      throw new Error("No polling rate retrieved from localStorage");
-    }
-
-    if (
-      !trackedRepoDetails ||
-      (trackedRepoDetails as ActiveNumPRs[]).length === 0
-    ) {
-      throw new Error(
-        "No current repo details for tracking retrieved from localStorage"
-      );
-    }
-
-    await chrome.alarms.create(ALARM_NAME, {
-      delayInMinutes: 1,
-      periodInMinutes: getDelay(pollingRate as number),
-    });
-
-    console.log(`${ALARM_NAME} alarm created`);
-    return true;
-  }
-
-  return false;
-}
-
-async function createRateLimitErrorAlarm(): Promise<Boolean> {
-  const ALARM_NAME = "rateLimitErrorAlarm";
-
-  const alarm = await chrome.alarms.get(ALARM_NAME);
-  if (typeof alarm === "undefined") {
-    const delayPeriod = await loadFromSessionStorage("delayPeriod");
-
-    if (!delayPeriod) {
-      throw new Error("No delay period retrieved from session storage");
-    }
-
-    await chrome.alarms.create(ALARM_NAME, {
-      delayInMinutes: 1,
-      periodInMinutes: delayPeriod as number,
-    });
-
-    console.log(`${ALARM_NAME} alarm created`);
-
-    return true;
-  }
-
-  return false;
-}
-
-async function deletePollingAlarm() {
-  const ALARM_NAME = "pollingAlarm";
-
-  const alarm = await chrome.alarms.get(ALARM_NAME);
-  if (typeof alarm !== "undefined") {
-    await chrome.alarms.clear(ALARM_NAME);
-    console.log(`${ALARM_NAME} alarm deleted`);
-  }
-}
-
-async function deleteRateLimitErrorAlarm() {
-  const ALARM_NAME = "rateLimitErrorAlarm";
-
-  const alarm = await chrome.alarms.get(ALARM_NAME);
-  if (typeof alarm !== "undefined") {
-    await chrome.alarms.clear(ALARM_NAME);
-    console.log(`${ALARM_NAME} alarm deleted`);
-  }
-}
-
-async function checkActiveAlarm() {
-  const pollingAlarmCreated = await createPollingAlarm();
 }
 
 async function updatePRDetails({
@@ -232,7 +127,7 @@ async function updatePRDetails({
             updatedActiveNumPRs[i].redirectUrl = redirects.url;
           }
         }
-        setActiveNumPRs(updatedActiveNumPRs);
+        saveToLocalStorage("activeNumPRs", updatedActiveNumPRs);
         fetchNumPRs(repo);
 
         return;
@@ -377,36 +272,13 @@ async function updatePRDetails({
   return updatedNumPRs;
 }
 
-await checkActiveAlarm();
-
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === "pollingAlarm") {
-    const activeNumPRs = await loadFromLocalStorage("activeNumPRs");
-    const repoOwner = await loadFromLocalStorage("username");
-    try {
-      const updatedDetails = await updatePRDetails({ activeNumPRs, repoOwner });
-    } catch (e) {
-      console.error(
-        "Error encountered on call to updatePRDetails on pollingAlarm alarm occurence"
-      );
-
-      await deletePollingAlarm();
-      await createRateLimitErrorAlarm();
-      console.log("deleted polling alarm and created rate limit error alarm");
-    }
-  } else if (alarm.name === "rateLimitErrorAlarm") {
-    const deletionResult = await deleteRateLimitErrorAlarm();
-    const newPollingAlarmCreated = await createPollingAlarm();
-
-    console.log(
-      "rate limit delay period elapsed, deleted rate limit error alarm and created new polling alarm"
-    );
-  }
-});
-
 export {
   saveToLocalStorage,
   loadFromLocalStorage,
   saveToSessionStorage,
   loadFromSessionStorage,
+  updatePRDetails,
+  initializeExtension,
 };
+
+export type { ActiveNumPRs, SubmitPRDetailsProps };
