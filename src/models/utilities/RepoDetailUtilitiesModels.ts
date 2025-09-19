@@ -25,8 +25,6 @@ type HandleRefreshProps = {
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;
-  signal: AbortSignal;
-  intervalId: NodeJS.Timeout;
 };
 
 type HandleChangePageResultsProps = {

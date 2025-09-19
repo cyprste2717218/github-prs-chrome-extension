@@ -18,7 +18,6 @@ const StepComponent = ({
   setReposToggled,
   setActiveResultsPage,
   setPollingRate,
-  setIntervalId,
   username,
   repoDetails,
   currentStep,
@@ -43,7 +42,6 @@ const StepComponent = ({
           setNumPageResults={setNumPageResults}
           setDisplayWarning={setDisplayWarning}
           setReposToggled={setReposToggled}
-          setIntervalId={setIntervalId}
           currentStep={currentStep}
           username={username}
           activeNumPRs={activeNumPRs}
@@ -62,7 +60,6 @@ const StepComponent = ({
           setNumPageResults={setNumPageResults}
           setDisplayWarning={setDisplayWarning}
           setReposToggled={setReposToggled}
-          setIntervalId={setIntervalId}
           activeNumPRs={activeNumPRs}
           username={username}
           repoDetails={repoDetails}

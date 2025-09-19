@@ -18,13 +18,10 @@ type HeaderProps = {
   setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
-  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
   allReposToggled: boolean;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
   repoDetails: RepoCardComponentDetails[] | null;
-  argIntervalId: NodeJS.Timeout | null;
-  signal: AbortSignal;
 } & TitleProps;
 
 export type { HeaderProps, TitleProps };

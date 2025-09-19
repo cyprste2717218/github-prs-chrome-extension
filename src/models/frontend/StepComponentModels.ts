@@ -23,7 +23,6 @@ type ChooseSetupOptProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
-  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
   username: string;
 } & CommonProps;
 
@@ -33,7 +32,6 @@ type GitDetailsEntryProps = {
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
-  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
   username: string;
   repoDetails: RepoCardComponentDetails[] | null;
   patCode: string | null;

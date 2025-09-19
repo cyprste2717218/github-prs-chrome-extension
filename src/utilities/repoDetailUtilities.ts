@@ -4,19 +4,15 @@ import type {
   ActiveNumPRs,
 } from "../models/frontend/RepoCardModels.ts";
 import { request } from "@octokit/request";
-import { RequestError } from "@octokit/request-error";
-import {
-  loadFromLocalStorage,
-  saveToLocalStorage,
-} from "../../public/background.ts";
+import { saveToLocalStorage } from "../../public/background.ts";
 import {
   HandleChangePageResultsProps,
   HandleRefreshProps,
   HandleToggleAllSelectedReposProps,
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
-  SubmitPRDetailsProps,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
+import { updatePRDetails } from "../../public/background.ts";
 
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
@@ -178,15 +174,10 @@ async function handleFetchUserRepos(
   }
 }
 
-async function handleRefresh({
-  activeNumPRs,
-  setActiveNumPRs,
-  repoOwner,
-}: HandleRefreshProps) {
+async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
   if (activeNumPRs.length !== 0) {
     console.log("activeNumPRs array is not empty");
     updatePRDetails({
-      setActiveNumPRs,
       activeNumPRs,
       repoOwner,
     });
@@ -309,7 +300,6 @@ export {
   handleSubmitUserName,
   handleRefresh,
   handleChangePageResults,
-  updatePRDetails,
   handleToggleAllRepos,
   handleToggleRepo,
 };

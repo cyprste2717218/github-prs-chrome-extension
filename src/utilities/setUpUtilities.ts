@@ -1,14 +1,11 @@
-import {
-  loadFromLocalStorage,
-  saveToLocalStorage,
-} from "../../public/background.ts";
+import { saveToLocalStorage } from "../../public/background.ts";
 
 import type {
   HandleStepChangeProps,
   HandleStepBackProps,
   HandleStepForwardProps,
 } from "@/models/utilities/stepHandleModels.ts";
-import { clearPolling, startPolling } from "./pollingUtilities.ts";
+import { startPolling } from "./pollingUtilities.ts";
 
 const handleStepBack = async (props: HandleStepBackProps) => {
   const {
@@ -20,7 +17,6 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     setNumPageResults,
     setDisplayWarning,
     setReposToggled,
-    setIntervalId,
     currentStep,
     goalStep,
     initialValuePAT,
@@ -56,18 +52,6 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     setReposToggled(false);
     setActiveNumPRs([]);
 
-    const storedIntervalId: NodeJS.Timeout | null =
-      await loadFromLocalStorage("intervalId");
-    if (!storedIntervalId) {
-      throw new Error(
-        "storedIntervalId is null when trying to access to close current polling interval"
-      );
-    }
-
-    clearPolling(storedIntervalId);
-    console.log("the retrieved interval ID was:", storedIntervalId);
-    setIntervalId(null);
-
     saveToLocalStorage("activeNumPRs", []);
     saveToLocalStorage("reposToggled", false);
   }
@@ -84,7 +68,6 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     setStepState,
     setActiveNumPRs,
     setPAT,
-    setIntervalId,
     repoOwner,
     currentStep,
     goalStep,
@@ -113,7 +96,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
 
-      startPolling({ setActiveNumPRs, setIntervalId, activeNumPRs, repoOwner });
+      startPolling({ setActiveNumPRs, activeNumPRs, repoOwner });
       saveToLocalStorage("activeNumPRs", activeNumPRs);
     } else {
       console.log("activeNumPRs array is empty");
@@ -140,17 +123,14 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setNumPageResults: props.setNumPageResults,
     setDisplayWarning: props.setDisplayWarning,
     setReposToggled: props.setReposToggled,
-    setIntervalId: props.setIntervalId,
     currentStep: props.currentStep,
     initialValuePAT: props.initialValuePAT,
-    intervalId: props.intervalId,
   };
 
   const nextButtonOperationsProps = {
     setStepState: props.setStepState,
     setActiveNumPRs: props.setActiveNumPRs,
     setPAT: props.setPAT,
-    setIntervalId: props.setIntervalId,
     repoOwner: props.repoOwner,
     activeNumPRs: props.activeNumPRs,
     currentStep: props.currentStep,

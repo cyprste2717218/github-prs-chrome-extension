@@ -32,8 +32,6 @@ type RefreshButtonProps = ButtonProps<{
   currentStep: number;
   repoOwner: string;
   patCode: string | null;
-  intervalId: NodeJS.Timeout;
-  signal: AbortSignal;
 }>;
 
 type SubmitButtonProps = ButtonProps<{
@@ -47,7 +45,6 @@ type SubmitButtonProps = ButtonProps<{
   setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
-  setIntervalId: React.Dispatch<React.SetStateAction<NodeJS.Timeout | null>>;
   currentStep: number;
   repoOwner: string;
   activeNumPRs: ActiveNumPRs[];

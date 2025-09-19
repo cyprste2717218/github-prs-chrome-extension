@@ -12,7 +12,6 @@ const ChooseSetupOptComponent = ({
   setNumPageResults,
   setDisplayWarning,
   setReposToggled,
-  setIntervalId,
   currentStep,
   username,
   activeNumPRs,
@@ -26,7 +25,6 @@ const ChooseSetupOptComponent = ({
     setNumPageResults: setNumPageResults,
     setDisplayWarning: setDisplayWarning,
     setReposToggled: setReposToggled,
-    setIntervalId: setIntervalId,
     currentStep: currentStep,
     repoOwner: username,
     activeNumPRs: activeNumPRs,
@@ -41,7 +39,6 @@ const ChooseSetupOptComponent = ({
             ...buttonStateBundle,
             stepOperation: "stepForward",
             initialValuePAT: null,
-            intervalId: null,
           })
         }
       >
@@ -58,7 +55,6 @@ const ChooseSetupOptComponent = ({
             ...buttonStateBundle,
             stepOperation: "stepForward",
             initialValuePAT: "",
-            intervalId: null,
           })
         }
       >
