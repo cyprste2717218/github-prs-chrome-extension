@@ -10,11 +10,9 @@ import type {
 } from "./models/frontend/RepoCardModels.ts";
 import "./App.css";
 
-import {
-  loadFromStorage,
-  //setChromeExtensionWindowSize,
-  // @ts-ignore
-} from "../public/background.ts";
+import {} from //setChromeExtensionWindowSize,
+// @ts-ignore
+"../public/background.ts";
 
 function App() {
   const [username, setUsername] = useState<string>(""); // @ts-ignore
@@ -28,10 +26,8 @@ function App() {
   const [displayWarning, setDisplayWarning] = useState<boolean>(false);
   const [reposToggled, setReposToggled] = useState<boolean>(false);
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
-  const [pollingRate, setPollingRate] = useState<number>(50);
-  // @ts-ignore
+  const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  const [nextReqInterval, setNextReqInterval] = useState<number | null>(null);
 
   console.log("intervalId:", intervalId);
 
@@ -87,8 +83,12 @@ function App() {
       setIntervalId(JSON.parse(result.intervalId));
     });
 
-    //setChromeExtensionWindowSize()
-    console.log("localCurrentStep:", loadFromStorage("step"));
+    // @ts-ignore
+    chrome.storage.local.get("step", (result) => {
+      setStep(JSON.parse(result.step));
+    });
+
+    console.log("localCurrentStep:", step);
   }, []);
 
   return (
