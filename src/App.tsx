@@ -10,9 +10,9 @@ import type {
 } from "./models/frontend/RepoCardModels.ts";
 import "./App.css";
 
-import { } from //setChromeExtensionWindowSize,
-  // @ts-ignore
-  "../public/background.ts";
+import {} from //setChromeExtensionWindowSize,
+// @ts-ignore
+"../public/background.ts";
 
 function App() {
   const [username, setUsername] = useState<string>(""); // @ts-ignore
