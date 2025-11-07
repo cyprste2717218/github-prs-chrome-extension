@@ -21,12 +21,7 @@ type ActiveNumPRs = {
 function initializeExtension() {
   // set intitial state variable default values on first install, chrome version update or extension update for setting current step react state]
 
-  chrome.storage.local.set({
-    step: 1,
-    username: "",
-    repoDetails: null,
-    activeNumPRs: [],
-  });
+
 }
 
 async function updatePRDetails({

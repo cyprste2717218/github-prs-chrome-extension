@@ -3,16 +3,13 @@ import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
 import WarningModal from "./components/input/WarningModal.tsx";
 import { Toaster } from "@/components/ui/sonner";
+import { loadFromLocalStorage } from "./utilities/service-worker-funcs/storage-utils.js";
 
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
 } from "./models/frontend/RepoCardModels.ts";
 import "./App.css";
-
-import {} from //setChromeExtensionWindowSize,
-// @ts-ignore
-"../public/background.ts";
 
 function App() {
   const [username, setUsername] = useState<string>(""); // @ts-ignore
@@ -29,55 +26,45 @@ function App() {
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
 
   useEffect(() => {
-    // @ts-ignore
-    chrome.storage.local.get("username", (result) => {
-      setUsername(JSON.parse(result.username));
+
+    loadFromLocalStorage("username").then((result) => {
+      setUsername(result ? (result as string) : "");
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("repoDetails", (result) => {
-      setRepoDetails(JSON.parse(result.repoDetails));
+    loadFromLocalStorage("repoDetails").then((result) => {
+      setRepoDetails(result ? (result as RepoCardComponentDetails[]) : null);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("activeNumPRs", (result) => {
-      setActiveNumPRs(JSON.parse(result.activeNumPRs));
+    loadFromLocalStorage("activeNumPRs").then((result) => {
+      setActiveNumPRs(result ? (result as ActiveNumPRs[]) : []);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("step", (result) => {
-      setStep(JSON.parse(result.step));
+    loadFromLocalStorage("step").then((result) => {
+      setStep(result ? (result as number) : 1);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("patCode", (result) => {
-      setPAT(JSON.parse(result.patCode));
-      console.log("PAT:", result.patCode);
+    loadFromLocalStorage("patCode").then((result) => {
+      setPAT(result ? (result as string) : null);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("reposToggled", (result) => {
-      setReposToggled(JSON.parse(result.reposToggled));
+    loadFromLocalStorage("reposToggled").then((result) => {
+      setReposToggled(result ? (result as boolean) : false);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("numPageResults", (result) => {
-      setNumPageResults(JSON.parse(result.numPageResults));
+    loadFromLocalStorage("numPageResults").then((result) => {
+      setNumPageResults(result ? (result as number) : 0);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("activeResultsPage", (result) => {
-      setActiveResultsPage(JSON.parse(result.activeResultsPage));
+    loadFromLocalStorage("activeResultsPage").then((result) => {
+      setActiveResultsPage(result ? (result as number) : 1);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("pollingRate", (result) => {
-      setPollingRate(JSON.parse(result.pollingRate));
+    loadFromLocalStorage("pollingRate").then((result) => {
+      setPollingRate(result ? (result as number) : 50);
     });
 
-    // @ts-ignore
-    chrome.storage.local.get("step", (result) => {
-      setStep(JSON.parse(result.step));
+    loadFromLocalStorage("step").then((result) => {
+      setStep(result ? (result as number) : 1);
     });
 
     console.log("localCurrentStep:", step);

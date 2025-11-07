@@ -21,6 +21,5 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
 chrome.runtime.onInstalled.addListener(function (details) {
   if (details.reason === "install") {
     console.log("Extension installed for the first time");
-    initializeExtension();
   }
 });

@@ -94,8 +94,9 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
       const pollingRate = await loadFromLocalStorage("pollingRate");
       const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
 
-      if (!pollingRate) {
+      if (!pollingRate || typeof pollingRate !== "number") {
         throw new Error("No polling rate retrieved from localStorage");
+
       }
 
       if (
@@ -109,7 +110,7 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 
       await chrome.alarms.create(ALARM_NAME, {
         delayInMinutes: 1,
-        periodInMinutes: getDelay(pollingRate as number),
+        periodInMinutes: getDelay(pollingRate),
       });
 
       // doing initial fetching of repo PR details before first alarm goes off

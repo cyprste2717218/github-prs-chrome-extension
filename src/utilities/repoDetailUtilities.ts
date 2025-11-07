@@ -4,7 +4,7 @@ import type {
   ActiveNumPRs,
 } from "../models/frontend/RepoCardModels.ts";
 import { request } from "@octokit/request";
-import { saveToLocalStorage } from "../../public/background.ts";
+import { saveToLocalStorage } from "./service-worker-funcs/background.js";
 import {
   HandleChangePageResultsProps,
   HandleRefreshProps,
@@ -12,7 +12,7 @@ import {
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
-import { updatePRDetails } from "../../public/background.ts";
+import { updatePRDetails } from "./service-worker-funcs/background.js";
 
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does

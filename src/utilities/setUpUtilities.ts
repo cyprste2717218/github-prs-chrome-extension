@@ -1,4 +1,4 @@
-import { saveToLocalStorage } from "../../public/background.ts";
+import { saveToLocalStorage } from "./service-worker-funcs/background.js";
 
 import type {
   HandleStepChangeProps,
