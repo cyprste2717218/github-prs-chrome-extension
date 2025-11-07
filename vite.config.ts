@@ -7,21 +7,33 @@ export default defineConfig({
     outDir: "dist",
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'index.html'),
-        "service-worker": path.resolve(__dirname, "./src/utilities/service-worker-funcs/service-worker.ts"),
-        "background": path.resolve(__dirname, "./src/utilities/service-worker-funcs/background.ts"),
-        "alarm-utils": path.resolve(__dirname, "./src/utilities/service-worker-funcs/alarm-utils.ts"),
-        "storage-utils": path.resolve(__dirname, "./src/utilities/service-worker-funcs/storage-utils.ts"),
+        main: path.resolve(__dirname, "index.html"),
+        "service-worker": path.resolve(
+          __dirname,
+          "./src/utilities/service-worker-funcs/service-worker.ts"
+        ),
+        background: path.resolve(
+          __dirname,
+          "./src/utilities/service-worker-funcs/background.ts"
+        ),
+        "alarm-utils": path.resolve(
+          __dirname,
+          "./src/utilities/service-worker-funcs/alarm-utils.ts"
+        ),
+        "storage-utils": path.resolve(
+          __dirname,
+          "./src/utilities/service-worker-funcs/storage-utils.ts"
+        ),
       },
       output: {
-        assetFileNames: 'assets/[name]-[hash][extname]',
+        assetFileNames: "assets/[name]-[hash][extname]",
         entryFileNames: (assetInfo) => {
-          if (assetInfo.name === 'main') {
-            return 'assets/[name]-[hash].js';
+          if (assetInfo.name === "main") {
+            return "assets/[name]-[hash].js";
           }
-          return '[name].js';
+          return "[name].js";
         },
-        chunkFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: "assets/[name]-[hash].js",
       },
     },
   },

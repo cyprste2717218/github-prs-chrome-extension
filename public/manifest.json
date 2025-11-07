@@ -12,17 +12,8 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": [
-    "scripting",
-    "tabs",
-    "activeTab",
-    "storage",
-    "alarms"
-  ],
-  "host_permissions": [
-    "https://*/*",
-    "http://*/*"
-  ],
+  "permissions": ["scripting", "tabs", "activeTab", "storage", "alarms"],
+  "host_permissions": ["https://*/*", "http://*/*"],
   "background": {
     "service_worker": "service-worker.js",
     "type": "module"

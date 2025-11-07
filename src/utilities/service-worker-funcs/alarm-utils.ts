@@ -96,7 +96,6 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 
       if (!pollingRate || typeof pollingRate !== "number") {
         throw new Error("No polling rate retrieved from localStorage");
-
       }
 
       if (

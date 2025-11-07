@@ -26,7 +26,6 @@ function App() {
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
 
   useEffect(() => {
-
     loadFromLocalStorage("username").then((result) => {
       setUsername(result ? (result as string) : "");
     });
