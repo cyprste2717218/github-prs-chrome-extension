@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
 import WarningModal from "./components/input/WarningModal.tsx";
 import { Toaster } from "@/components/ui/sonner";
-import { loadFromLocalStorage } from "./utilities/service-worker-funcs/storage-utils.js";
+import { useChromeStorageSync } from "@/utilities/hooks/useChromeStorageSync.ts";
+import { useChromeStorageListener } from "./utilities/hooks/useChromeStorageListener.ts";
 
 import type {
   RepoCardComponentDetails,
@@ -12,6 +13,38 @@ import type {
 import "./App.css";
 
 function App() {
+  const loadInitialData = useCallback(() => {
+    const keysToLoad = [
+      "username",
+      "repoDetails",
+      "activeNumPRs",
+      "step",
+      "patCode",
+      "reposToggled",
+      "numPageResults",
+      "activeResultsPage",
+      "pollingRate",
+    ];
+
+    chrome.storage.local.get(keysToLoad, (result) => {
+      // Check for chrome.runtime.lastError in case of an issue
+      if (chrome.runtime.lastError) {
+        console.error("Error loading storage:", chrome.runtime.lastError);
+        return;
+      }
+
+      setUsername(result.username || "");
+      setRepoDetails(result.repoDetails || null);
+      setActiveNumPRs(result.activeNumPRs || []);
+      setStep(result.step || 1);
+      setPAT(result.patCode || null);
+      setReposToggled(result.reposToggled || false);
+      setNumPageResults(result.numPageResults || 0);
+      setActiveResultsPage(result.activeResultsPage || 1);
+      setPollingRate(result.pollingRate || 50);
+    });
+  }, []);
+
   const [username, setUsername] = useState<string>(""); // @ts-ignore
   const [step, setStep] = useState<number>(1);
   const [repoDetails, setRepoDetails] = useState<
@@ -25,49 +58,32 @@ function App() {
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
 
+  // Listen for storage changes and update state
+  useChromeStorageListener("username", setUsername);
+  useChromeStorageListener("activeNumPRs", setActiveNumPRs);
+  useChromeStorageListener("step", setStep);
+  useChromeStorageListener("repoDetails", setRepoDetails);
+  useChromeStorageListener("patCode", setPAT);
+  useChromeStorageListener("numPageResults", setNumPageResults);
+  useChromeStorageListener("reposToggled", setReposToggled);
+  useChromeStorageListener("activeResultsPage", setActiveResultsPage);
+  useChromeStorageListener("pollingRate", setPollingRate);
+
   useEffect(() => {
-    loadFromLocalStorage("username").then((result) => {
-      setUsername(result ? (result as string) : "");
-    });
+    loadInitialData();
+  }, [loadInitialData]);
 
-    loadFromLocalStorage("repoDetails").then((result) => {
-      setRepoDetails(result ? (result as RepoCardComponentDetails[]) : null);
-    });
-
-    loadFromLocalStorage("activeNumPRs").then((result) => {
-      setActiveNumPRs(result ? (result as ActiveNumPRs[]) : []);
-    });
-
-    loadFromLocalStorage("step").then((result) => {
-      setStep(result ? (result as number) : 1);
-    });
-
-    loadFromLocalStorage("patCode").then((result) => {
-      setPAT(result ? (result as string) : null);
-    });
-
-    loadFromLocalStorage("reposToggled").then((result) => {
-      setReposToggled(result ? (result as boolean) : false);
-    });
-
-    loadFromLocalStorage("numPageResults").then((result) => {
-      setNumPageResults(result ? (result as number) : 0);
-    });
-
-    loadFromLocalStorage("activeResultsPage").then((result) => {
-      setActiveResultsPage(result ? (result as number) : 1);
-    });
-
-    loadFromLocalStorage("pollingRate").then((result) => {
-      setPollingRate(result ? (result as number) : 50);
-    });
-
-    loadFromLocalStorage("step").then((result) => {
-      setStep(result ? (result as number) : 1);
-    });
-
-    console.log("localCurrentStep:", step);
-  }, []);
+  useChromeStorageSync({
+    username: username,
+    step: step,
+    repoDetails: repoDetails,
+    activeNumPRs: activeNumPRs,
+    patCode: PAT,
+    numPageResults: numPageResults,
+    reposToggled: reposToggled,
+    activeResultsPage: activeResultsPage,
+    pollingRate: pollingRate,
+  });
 
   return (
     <>

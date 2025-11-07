@@ -127,8 +127,8 @@ const PreviewCardComponent = ({
     numAdditionalTopics = topics.length - 2;
   }
 
-  console.log(`allReposToggled: ${name}`, allReposToggled);
-  console.log(`repoChecked: ${name}`, repoChecked);
+  // console.log(`allReposToggled: ${name}`, allReposToggled);
+  // console.log(`repoChecked: ${name}`, repoChecked);
 
   return (
     <div

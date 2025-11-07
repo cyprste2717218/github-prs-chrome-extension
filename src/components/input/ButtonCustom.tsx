@@ -26,7 +26,7 @@ import {
   Settings,
 } from "lucide-react";
 import { handleStepChange } from "@/utilities/setUpUtilities";
-import { displayScrollToTopButton } from "@/utilities/scripts/displayScrollToTopButton";
+import { displayScrollToTopButton } from "@/utilities/hooks/displayScrollToTopButton.ts";
 import { toast } from "sonner";
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {

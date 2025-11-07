@@ -8,7 +8,6 @@ type StepOperationType = {
 };
 
 type HandleStepBackProps = {
-  setUsername: React.Dispatch<React.SetStateAction<string>>;
   setRepoDetails: React.Dispatch<
     React.SetStateAction<RepoCardComponentDetails[] | null>
   >;
@@ -26,6 +25,7 @@ type HandleStepCommonProps = {
   setStepState: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
   currentStep: number;
   goalStep?: number;
   initialValuePAT: string | null;

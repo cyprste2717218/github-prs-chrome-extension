@@ -12,6 +12,12 @@ async function loadFromLocalStorage<T>(key: string): Promise<T | null> {
   });
 }
 
+async function saveAllToLocalStorage(data: object): Promise<void> {
+  return new Promise<void>(() => {
+    chrome.storage.local.set(data);
+  });
+}
+
 async function saveToLocalStorage<T>(
   key: string,
   value: T | null
@@ -58,6 +64,7 @@ async function saveToSessionStorage<T>(
 export {
   loadFromLocalStorage,
   saveToLocalStorage,
+  saveAllToLocalStorage,
   loadFromSessionStorage,
   saveToSessionStorage,
 };

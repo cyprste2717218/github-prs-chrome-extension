@@ -10,7 +10,6 @@ import { Slider } from "./ui/slider";
 import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SettingsProps } from "@/models/frontend/StepComponentModels";
-import { setPollingRateLocal } from "@/utilities/pollingUtilities";
 import { toast } from "sonner";
 
 const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
@@ -55,16 +54,10 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
 };
 
 const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
-  async function handleSaveSliderLocal() {
+  async function handleSaveSliderToast() {
     console.log("Setting new polling rate of", pollingRate);
 
-    try {
-      await setPollingRateLocal(pollingRate);
-      toast.success("Changes saved successfully!");
-    } catch (e) {
-      console.error("Error saving polling rate", e);
-      toast.error("Error saving changes. Please try again later");
-    }
+    return toast.success("Changes saved successfully!");
   }
 
   return (
@@ -101,7 +94,7 @@ const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
               </div>
             </CardContent>
             <CardFooter className="mt-10">
-              <Button onClick={handleSaveSliderLocal}>Save changes</Button>
+              <Button onClick={handleSaveSliderToast}>Save changes</Button>
             </CardFooter>
           </Card>
         </TabsContent>

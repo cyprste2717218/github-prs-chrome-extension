@@ -1,5 +1,3 @@
-import { saveToLocalStorage } from "./service-worker-funcs/background.js";
-
 import type {
   HandleStepChangeProps,
   HandleStepBackProps,
@@ -38,12 +36,6 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     setPAT(initialValuePAT);
     setUsername("");
     setNumPageResults(0);
-
-    saveToLocalStorage("activeNumPRs", []);
-    saveToLocalStorage("repoDetails", null);
-    saveToLocalStorage("patCode", initialValuePAT); // To-do: encrypt/decrypt during storing and retrieval of PAT code between extension storage and retrieval?
-    saveToLocalStorage("username", "");
-    saveToLocalStorage("numPageResults", null);
   }
 
   if (newStep === 3) {
@@ -51,15 +43,10 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     setDisplayWarning(true);
     setReposToggled(false);
     setActiveNumPRs([]);
-
-    saveToLocalStorage("activeNumPRs", []);
-    saveToLocalStorage("reposToggled", false);
   }
 
   // set step to new decremented value
   setStepState(newStep);
-  saveToLocalStorage("step", newStep);
-
   console.log("this is the newStep on going back", newStep);
 };
 
@@ -68,6 +55,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     setStepState,
     setActiveNumPRs,
     setPAT,
+    setUsername,
     repoOwner,
     currentStep,
     goalStep,
@@ -84,12 +72,10 @@ const handleStepForward = (props: HandleStepForwardProps) => {
 
   if (newStep === 2) {
     setPAT(initialValuePAT);
-    saveToLocalStorage("patCode", initialValuePAT);
   }
 
   if (newStep === 3) {
-    saveToLocalStorage("username", repoOwner);
-    saveToLocalStorage("patCode", initialValuePAT);
+    setUsername(repoOwner);
   }
 
   if (newStep === 4 || newStep === 3) {
@@ -97,7 +83,6 @@ const handleStepForward = (props: HandleStepForwardProps) => {
       console.log("activeNumPRs array is not empty");
 
       startPolling({ setActiveNumPRs, activeNumPRs, repoOwner });
-      saveToLocalStorage("activeNumPRs", activeNumPRs);
     } else {
       console.log("activeNumPRs array is empty");
     }
@@ -105,7 +90,6 @@ const handleStepForward = (props: HandleStepForwardProps) => {
 
   // set step to new incremented value
   setStepState(newStep);
-  saveToLocalStorage("step", newStep);
 
   console.log("this is the newStep on going forward", newStep);
 };
@@ -131,6 +115,7 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setStepState: props.setStepState,
     setActiveNumPRs: props.setActiveNumPRs,
     setPAT: props.setPAT,
+    setUsername: props.setUsername,
     repoOwner: props.repoOwner,
     activeNumPRs: props.activeNumPRs,
     currentStep: props.currentStep,

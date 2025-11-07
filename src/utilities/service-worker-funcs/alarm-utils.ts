@@ -1,8 +1,4 @@
-import {
-  loadFromLocalStorage,
-  loadFromSessionStorage,
-  saveToLocalStorage,
-} from "./storage-utils";
+import { loadFromLocalStorage, loadFromSessionStorage } from "./storage-utils";
 import { ActiveNumPRs, updatePRDetails } from "./background";
 
 function isActiveNumPRsArray(arr: any): arr is ActiveNumPRs[] {
@@ -91,13 +87,9 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 
     const alarm = await chrome.alarms.get(ALARM_NAME);
     if (typeof alarm === "undefined") {
-      const pollingRate = await loadFromLocalStorage("pollingRate");
+      let retrievedPollingRate = await loadFromLocalStorage("pollingRate");
+
       const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
-
-      if (!pollingRate || typeof pollingRate !== "number") {
-        throw new Error("No polling rate retrieved from localStorage");
-      }
-
       if (
         !trackedRepoDetails ||
         (trackedRepoDetails as ActiveNumPRs[]).length === 0
@@ -109,7 +101,7 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 
       await chrome.alarms.create(ALARM_NAME, {
         delayInMinutes: 1,
-        periodInMinutes: getDelay(pollingRate),
+        periodInMinutes: getDelay(retrievedPollingRate as number),
       });
 
       // doing initial fetching of repo PR details before first alarm goes off
@@ -193,8 +185,7 @@ async function handleAlertPollingAlarm(): Promise<void> {
   }
 
   try {
-    const updatedDetails = await updatePRDetails({ activeNumPRs, repoOwner });
-    await saveToLocalStorage("activeNumPRs", updatedDetails);
+    await updatePRDetails({ activeNumPRs, repoOwner });
 
     console.log(
       "saved updated PR details to extension localStorage successfully"

@@ -4,7 +4,6 @@ import type {
   ActiveNumPRs,
 } from "../models/frontend/RepoCardModels.ts";
 import { request } from "@octokit/request";
-import { saveToLocalStorage } from "./service-worker-funcs/background.js";
 import {
   HandleChangePageResultsProps,
   HandleRefreshProps,
@@ -37,8 +36,6 @@ async function handleSubmitUserName({
       throw new Error("No results returned from handleFetchUserRepos");
     } else {
       setRepoDetails(results);
-      // @ts-ignore
-      saveToLocalStorage("repoDetails", results);
     }
   });
 }
@@ -108,7 +105,6 @@ async function handleFetchUserRepos(
     try {
       lastValidPageNumber = extractLastPageNumber(linkHeader);
       setNumPageResults(lastValidPageNumber);
-      saveToLocalStorage("numPageResults", lastValidPageNumber);
       console.log("lastValidPageNumber:", lastValidPageNumber);
 
       return lastValidPageNumber;
@@ -175,13 +171,16 @@ async function handleFetchUserRepos(
 }
 
 async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
-  if (activeNumPRs.length !== 0) {
+  if (
+    activeNumPRs &&
+    Array.isArray(activeNumPRs) &&
+    activeNumPRs.length !== 0
+  ) {
     console.log("activeNumPRs array is not empty");
     updatePRDetails({
       activeNumPRs,
       repoOwner,
     });
-    saveToLocalStorage("activeNumPRs", activeNumPRs);
   } else {
     console.log("activeNumPRs array is empty");
   }
@@ -211,9 +210,6 @@ async function handleChangePageResults({
     patCode,
     currentResultPageNum,
   });
-
-  // update current saved page number to chrome local storage after succesful fetching of details for repos on repo selection screen
-  saveToLocalStorage("activeResultsPage", currentResultPageNum);
 }
 
 async function handleToggleRepo({
@@ -267,7 +263,7 @@ async function handleToggleAllRepos({
   let updatedOriginalRepoDetails: RepoCardComponentDetails[] = [];
   let updatedToggledRepos: ActiveNumPRs[] = [];
 
-  console.log("allReposToggled:", allReposToggled);
+  // console.log("allReposToggled:", allReposToggled);
 
   // update all in-memory repos isRepoChecked to true or false
   updatedOriginalRepoDetails = currentRepoArrDetails.map(

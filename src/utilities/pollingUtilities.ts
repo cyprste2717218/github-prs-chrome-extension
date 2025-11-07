@@ -1,14 +1,7 @@
-import {
-  loadFromLocalStorage,
-  saveToLocalStorage,
-} from "./service-worker-funcs/background.js";
+import { loadFromLocalStorage } from "./service-worker-funcs/background.js";
 import { updatePRDetails } from "./service-worker-funcs/background.js";
 import { toast } from "sonner";
 import { StartPollingProps } from "@/models/utilities/PollingUtilitiesModels.ts";
-
-async function setPollingRateLocal(newPollingRate: number) {
-  await saveToLocalStorage("pollingRate", newPollingRate);
-}
 
 async function startPolling({ activeNumPRs, repoOwner }: StartPollingProps) {
   function getDelay(sliderValue: number): number {
@@ -61,4 +54,4 @@ async function startPolling({ activeNumPRs, repoOwner }: StartPollingProps) {
     });
 }
 
-export { startPolling, setPollingRateLocal };
+export { startPolling };
