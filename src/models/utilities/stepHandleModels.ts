@@ -14,6 +14,7 @@ type HandleStepBackProps = {
   setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
 } & HandleStepCommonProps;
 
 type HandleStepForwardProps = {
@@ -25,7 +26,6 @@ type HandleStepCommonProps = {
   setStepState: React.Dispatch<React.SetStateAction<number>>;
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setPAT: React.Dispatch<React.SetStateAction<string | null>>;
-  setUsername: React.Dispatch<React.SetStateAction<string>>;
   currentStep: number;
   goalStep?: number;
   initialValuePAT: string | null;

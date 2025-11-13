@@ -4,17 +4,18 @@ import type {
   HandleStepForwardProps,
 } from "@/models/utilities/stepHandleModels.ts";
 import { startPolling } from "./pollingUtilities.ts";
+import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 
 const handleStepBack = async (props: HandleStepBackProps) => {
   const {
-    setStepState,
-    setPAT,
-    setActiveNumPRs,
-    setRepoDetails,
-    setUsername,
-    setNumPageResults,
-    setDisplayWarning,
-    setReposToggled,
+    /*     setStepState,
+        setPAT,
+        setActiveNumPRs,
+        setRepoDetails,
+        setUsername,
+        setNumPageResults,
+        setDisplayWarning,
+        setReposToggled, */
     currentStep,
     goalStep,
     initialValuePAT,
@@ -31,31 +32,41 @@ const handleStepBack = async (props: HandleStepBackProps) => {
   }
 
   if (newStep === 1) {
-    setActiveNumPRs([]);
-    setRepoDetails(null);
-    setPAT(initialValuePAT);
-    setUsername("");
-    setNumPageResults(0);
+    saveToLocalStorage("repoOwner", "");
+    saveToLocalStorage("repoDetails", null);
+    saveToLocalStorage("activeNumPRs", []);
+    saveToLocalStorage("patCode", initialValuePAT);
+    saveToLocalStorage("numPageResults", 0);
+
+    // setUsername("");
+    //setActiveNumPRs([]);
+    //setRepoDetails(null);
+    //setPAT(initialValuePAT);
+    //setNumPageResults(0);
   }
 
   if (newStep === 3) {
     // check navigation to previous step is intended
-    setDisplayWarning(true);
-    setReposToggled(false);
-    setActiveNumPRs([]);
+    //setDisplayWarning(true);
+    //setReposToggled(false);
+    //setActiveNumPRs([]);
+
+
+    saveToLocalStorage("activeNumPRs", []);
+    saveToLocalStorage("reposToggled", false);
   }
 
   // set step to new decremented value
-  setStepState(newStep);
+  saveToLocalStorage("step", newStep);
+  //setStepState(newStep);
   console.log("this is the newStep on going back", newStep);
 };
 
 const handleStepForward = (props: HandleStepForwardProps) => {
   const {
-    setStepState,
-    setActiveNumPRs,
-    setPAT,
-    setUsername,
+    /*  setStepState,
+     setActiveNumPRs,
+     setPAT, */
     repoOwner,
     currentStep,
     goalStep,
@@ -71,25 +82,23 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   }
 
   if (newStep === 2) {
-    setPAT(initialValuePAT);
-  }
-
-  if (newStep === 3) {
-    setUsername(repoOwner);
+    saveToLocalStorage("patCode", initialValuePAT);
+    //setPAT(initialValuePAT);
   }
 
   if (newStep === 4 || newStep === 3) {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
 
-      startPolling({ setActiveNumPRs, activeNumPRs, repoOwner });
+      startPolling({ activeNumPRs, repoOwner });
     } else {
       console.log("activeNumPRs array is empty");
     }
   }
 
   // set step to new incremented value
-  setStepState(newStep);
+  saveToLocalStorage("step", newStep);
+  //setStepState(newStep);
 
   console.log("this is the newStep on going forward", newStep);
 };
@@ -115,7 +124,6 @@ const handleStepChange = (props: HandleStepChangeProps) => {
     setStepState: props.setStepState,
     setActiveNumPRs: props.setActiveNumPRs,
     setPAT: props.setPAT,
-    setUsername: props.setUsername,
     repoOwner: props.repoOwner,
     activeNumPRs: props.activeNumPRs,
     currentStep: props.currentStep,

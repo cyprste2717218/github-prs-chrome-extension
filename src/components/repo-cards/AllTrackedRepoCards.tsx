@@ -37,8 +37,8 @@ const AllTrackedRepoCards = ({
 
   return (
     <>
-      {results.map((card) => (
-        <Fragment>{card}</Fragment>
+      {results.map((card, index) => (
+        <Fragment key={index}>{card}</Fragment>
       ))}
     </>
   );

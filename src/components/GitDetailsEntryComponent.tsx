@@ -4,6 +4,7 @@ import { Label } from "./ui/label";
 import InputCustom from "./input/TextInputCustom";
 import ButtonCustom from "./input/ButtonCustom";
 import { GitDetailsEntryProps } from "@/models/frontend/StepComponentModels";
+import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
 
 const GitDetailsEntryComponent = ({
   setUsername,
@@ -20,11 +21,13 @@ const GitDetailsEntryComponent = ({
   patCode,
 }: GitDetailsEntryProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setUsername(event?.target?.value);
+    saveToLocalStorage("repoOwner", event?.target?.value);
+    // setUsername(event?.target?.value);
   };
 
   const handlePATChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPAT(event?.target?.value);
+    saveToLocalStorage("patCode", event?.target?.value);
+    //setPAT(event?.target?.value);
   };
 
   return (

@@ -18,14 +18,11 @@ type ActiveNumPRs = {
   redirectUrl?: string;
 };
 
-function initializeExtension() {
-  // set intitial state variable default values on first install, chrome version update or extension update for setting current step react state]
-}
 
 async function updatePRDetails({
   activeNumPRs,
   repoOwner,
-}: SubmitPRDetailsProps): Promise<ActiveNumPRs[]> {
+}: SubmitPRDetailsProps): Promise<void> {
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
   const storedPATCode = await loadFromLocalStorage("patCode");
@@ -260,9 +257,12 @@ async function updatePRDetails({
     }
   }
 
-  saveToLocalStorage("activeNumPRs", updatedNumPRs);
+  console.log("--------------------------------");
+  console.log("updated num PRs array:", updatedNumPRs);
+  console.log("--------------------------------");
+  await saveToLocalStorage("activeNumPRs", updatedNumPRs);
 
-  return updatedNumPRs;
+  return;
 }
 
 export {
@@ -271,7 +271,6 @@ export {
   saveToSessionStorage,
   loadFromSessionStorage,
   updatePRDetails,
-  initializeExtension,
 };
 
 export type { ActiveNumPRs, SubmitPRDetailsProps };

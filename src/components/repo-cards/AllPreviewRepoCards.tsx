@@ -47,6 +47,7 @@ const AllPreviewRepoCards = ({
           allReposToggled={allReposToggled}
           setActiveNumPRs={setActiveNumPRs}
           activeNumPRs={activeNumPRs}
+          key={`${repo.name}-${repo.description}`}
         />
       ))}
     </>

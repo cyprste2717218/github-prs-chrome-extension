@@ -19,7 +19,7 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
 });
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  if (details.reason === "install" || details.reason === "update") {
+  if (details.reason === "install") {
     console.log("GitHub PR Tracker Extension installed or updated!");
 
     const initialSettings = {

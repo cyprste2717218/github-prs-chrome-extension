@@ -3,9 +3,8 @@ import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
 import WarningModal from "./components/input/WarningModal.tsx";
 import { Toaster } from "@/components/ui/sonner";
-import { useChromeStorageSync } from "@/utilities/hooks/useChromeStorageSync.ts";
+// import { useChromeStorageSync } from "@/utilities/hooks/useChromeStorageSync.ts";
 import { useChromeStorageListener } from "./utilities/hooks/useChromeStorageListener.ts";
-
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
@@ -13,7 +12,39 @@ import type {
 import "./App.css";
 
 function App() {
-  const loadInitialData = useCallback(() => {
+
+
+  const loadInitialData = useCallback(async () => {
+    const getSetData = async (): Promise<[key: string] | null> => {
+      const result = chrome.storage.local.get(keysToLoad, (result) => {
+        // Check for chrome.runtime.lastError in case of an issue
+        if (chrome.runtime.lastError) {
+          console.error("Error loading storage:", chrome.runtime.lastError);
+          return null;
+        }
+
+        console.log("Loaded initial data from storage:", result);
+
+        // @ts-ignore
+        setUsername(result.username); // @ts-ignore
+        setRepoDetails(result.repoDetails); // @ts-ignore
+        setActiveNumPRs(result.activeNumPRs); // @ts-ignore
+        setStep(result.step); // @ts-ignore
+        setPAT(result.patCode); // @ts-ignore
+        setReposToggled(result.reposToggled);// @ts-ignore
+        setNumPageResults(result.numPageResults);// @ts-ignore
+        setActiveResultsPage(result.activeResultsPage);// @ts-ignore
+        setPollingRate(result.pollingRate);
+
+        return result;
+      });
+
+      if (result === void 0) {
+        return null;
+      }
+      return result;
+    }
+
     const keysToLoad = [
       "username",
       "repoDetails",
@@ -26,26 +57,16 @@ function App() {
       "pollingRate",
     ];
 
-    chrome.storage.local.get(keysToLoad, (result) => {
-      // Check for chrome.runtime.lastError in case of an issue
-      if (chrome.runtime.lastError) {
-        console.error("Error loading storage:", chrome.runtime.lastError);
-        return;
-      }
+    const result = await getSetData();
 
-      setUsername(result.username || "");
-      setRepoDetails(result.repoDetails || null);
-      setActiveNumPRs(result.activeNumPRs || []);
-      setStep(result.step || 1);
-      setPAT(result.patCode || null);
-      setReposToggled(result.reposToggled || false);
-      setNumPageResults(result.numPageResults || 0);
-      setActiveResultsPage(result.activeResultsPage || 1);
-      setPollingRate(result.pollingRate || 50);
-    });
+    if (result === null) {
+      console.error("Failed to load initial data from storage.");
+      return;
+    }
+
   }, []);
 
-  const [username, setUsername] = useState<string>(""); // @ts-ignore
+  const [username, setUsername] = useState<string>("");
   const [step, setStep] = useState<number>(1);
   const [repoDetails, setRepoDetails] = useState<
     RepoCardComponentDetails[] | null
@@ -59,21 +80,21 @@ function App() {
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
 
   // Listen for storage changes and update state
-  useChromeStorageListener("username", setUsername);
-  useChromeStorageListener("activeNumPRs", setActiveNumPRs);
-  useChromeStorageListener("step", setStep);
-  useChromeStorageListener("repoDetails", setRepoDetails);
-  useChromeStorageListener("patCode", setPAT);
-  useChromeStorageListener("numPageResults", setNumPageResults);
-  useChromeStorageListener("reposToggled", setReposToggled);
-  useChromeStorageListener("activeResultsPage", setActiveResultsPage);
-  useChromeStorageListener("pollingRate", setPollingRate);
+  useChromeStorageListener("username", (value) => setUsername(value as string));
+  useChromeStorageListener("activeNumPRs", (value) => setActiveNumPRs(value as ActiveNumPRs[]));
+  useChromeStorageListener("step", (value) => setStep(value as number));
+  useChromeStorageListener("repoDetails", (value) => setRepoDetails(value as RepoCardComponentDetails[] | null));
+  useChromeStorageListener("patCode", (value) => setPAT(value as string));
+  useChromeStorageListener("numPageResults", (value) => setNumPageResults(value as number));
+  useChromeStorageListener("reposToggled", (value) => setReposToggled(value as boolean));
+  useChromeStorageListener("activeResultsPage", (value) => setActiveResultsPage(value as number));
+  useChromeStorageListener("pollingRate", (value) => setPollingRate(value as number));
 
   useEffect(() => {
     loadInitialData();
   }, [loadInitialData]);
 
-  useChromeStorageSync({
+  /* useChromeStorageSync({
     username: username,
     step: step,
     repoDetails: repoDetails,
@@ -83,7 +104,7 @@ function App() {
     reposToggled: reposToggled,
     activeResultsPage: activeResultsPage,
     pollingRate: pollingRate,
-  });
+  }); */
 
   return (
     <>

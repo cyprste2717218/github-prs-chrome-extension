@@ -48,7 +48,7 @@ const PaginationInput = ({
           activeResultsPage === currentResultPageNum ? true : false;
 
         paginationElements.push(
-          <PaginationItem>
+          <PaginationItem key={`pagination-item-${currentResultPageNum}`}>
             <PaginationLink
               onClick={() =>
                 handleChangePageResults({

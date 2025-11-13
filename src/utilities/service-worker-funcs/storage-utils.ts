@@ -51,7 +51,6 @@ async function saveToSessionStorage<T>(
   value: T | null
 ): Promise<void> {
   return new Promise<void>((resolve) => {
-    // @ts-ignore
     chrome.storage.session.set(
       {
         [key]: JSON.stringify(value),

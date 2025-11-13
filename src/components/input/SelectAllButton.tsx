@@ -2,6 +2,7 @@ import { SelectAllButtonProps } from "@/models/frontend/InputModels";
 import { Button } from "../ui/button";
 import CheckBoxCustom from "./CheckBoxCustom";
 import { handleToggleAllRepos } from "@/utilities/repoDetailUtilities";
+import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
 
 const SelectAllButton = ({
   allReposToggled,
@@ -9,11 +10,12 @@ const SelectAllButton = ({
   activeNumPRs,
   setActiveNumPRs,
   setRepoDetails,
-  setReposToggled,
+  /* setReposToggled, */
 }: SelectAllButtonProps): JSX.Element => {
   async function toggleAllSelectedRepos() {
     if (repoDetails !== null) {
-      setReposToggled(!allReposToggled);
+      saveToLocalStorage("reposToggled", !allReposToggled);
+      //setReposToggled(!allReposToggled);
       await handleToggleAllRepos({
         allReposToggled,
         setRepoDetails,

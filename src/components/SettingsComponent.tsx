@@ -11,6 +11,7 @@ import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SettingsProps } from "@/models/frontend/StepComponentModels";
 import { toast } from "sonner";
+import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
 
 const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
   let displayText = <p></p>;
@@ -53,7 +54,7 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
   );
 };
 
-const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
+const SettingsComponent = ({ /* setPollingRate, */ pollingRate }: SettingsProps) => {
   async function handleSaveSliderToast() {
     console.log("Setting new polling rate of", pollingRate);
 
@@ -84,7 +85,7 @@ const SettingsComponent = ({ setPollingRate, pollingRate }: SettingsProps) => {
                 </CardDescription>
                 <Slider
                   defaultValue={[pollingRate]}
-                  onValueChange={([sliderValue]) => setPollingRate(sliderValue)}
+                  onValueChange={([sliderValue]) => saveToLocalStorage("sliderValue", sliderValue) /*setPollingRate(sliderValue)*/}
                   max={100}
                   step={50}
                   className={"mt-5 mb-5"}

@@ -11,7 +11,7 @@ import {
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
-import { updatePRDetails } from "./service-worker-funcs/background.js";
+import { saveToLocalStorage, updatePRDetails } from "./service-worker-funcs/background.js";
 
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
@@ -189,7 +189,7 @@ async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
 async function handleChangePageResults({
   setNumPageResults,
   setRepoDetails,
-  setActiveResultsPage,
+  /* setActiveResultsPage, */
   username,
   patCode,
   currentResultPageNum,
@@ -201,7 +201,8 @@ async function handleChangePageResults({
   // reset details stored
   setRepoDetails(null);
   // store in state the current github repo result page number
-  setActiveResultsPage(currentResultPageNum);
+  saveToLocalStorage("currentResultPageNum", currentResultPageNum);
+  //setActiveResultsPage(currentResultPageNum);
 
   await handleSubmitUserName({
     setRepoDetails,
@@ -216,7 +217,7 @@ async function handleToggleRepo({
   name,
   newCheckedState,
   activeNumPRs,
-  setActiveNumPRs,
+  /*  setActiveNumPRs, */
 }: HandleToggleSingleRepoProps): Promise<void> {
   const currentRepoDetails: ActiveNumPRs[] = [...activeNumPRs];
   let updatedRepoDetails: ActiveNumPRs[] = [];
@@ -249,14 +250,15 @@ async function handleToggleRepo({
     }
   }
 
-  setActiveNumPRs(updatedRepoDetails);
+  saveToLocalStorage("activeNumPRs", updatedRepoDetails);
+  //setActiveNumPRs(updatedRepoDetails);
 }
 
 async function handleToggleAllRepos({
   allReposToggled,
   repoDetails,
-  setActiveNumPRs,
-  setRepoDetails,
+  /*   setActiveNumPRs,
+    setRepoDetails, */
 }: HandleToggleAllSelectedReposProps): Promise<void> {
   console.log("gets to here");
   const currentRepoArrDetails = repoDetails;
@@ -287,8 +289,10 @@ async function handleToggleAllRepos({
 
   console.log("updatedToggledRepos:", updatedToggledRepos);
 
-  setRepoDetails(updatedOriginalRepoDetails);
-  setActiveNumPRs(updatedToggledRepos);
+  saveToLocalStorage("activeNumPRs", updatedToggledRepos);
+  saveToLocalStorage("repoDetails", updatedOriginalRepoDetails);
+  //setRepoDetails(updatedOriginalRepoDetails);
+  //setActiveNumPRs(updatedToggledRepos);
 }
 
 export {
