@@ -51,7 +51,6 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     //setReposToggled(false);
     //setActiveNumPRs([]);
 
-
     saveToLocalStorage("activeNumPRs", []);
     saveToLocalStorage("reposToggled", false);
   }

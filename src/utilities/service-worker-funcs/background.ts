@@ -18,7 +18,6 @@ type ActiveNumPRs = {
   redirectUrl?: string;
 };
 
-
 async function updatePRDetails({
   activeNumPRs,
   repoOwner,

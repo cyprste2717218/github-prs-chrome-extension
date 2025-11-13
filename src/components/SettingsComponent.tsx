@@ -54,7 +54,9 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
   );
 };
 
-const SettingsComponent = ({ /* setPollingRate, */ pollingRate }: SettingsProps) => {
+const SettingsComponent = ({
+  /* setPollingRate, */ pollingRate,
+}: SettingsProps) => {
   async function handleSaveSliderToast() {
     console.log("Setting new polling rate of", pollingRate);
 
@@ -85,7 +87,13 @@ const SettingsComponent = ({ /* setPollingRate, */ pollingRate }: SettingsProps)
                 </CardDescription>
                 <Slider
                   defaultValue={[pollingRate]}
-                  onValueChange={([sliderValue]) => saveToLocalStorage("sliderValue", sliderValue) /*setPollingRate(sliderValue)*/}
+                  onValueChange={
+                    ([sliderValue]) =>
+                      saveToLocalStorage(
+                        "sliderValue",
+                        sliderValue
+                      ) /*setPollingRate(sliderValue)*/
+                  }
                   max={100}
                   step={50}
                   className={"mt-5 mb-5"}

@@ -12,8 +12,6 @@ import type {
 import "./App.css";
 
 function App() {
-
-
   const loadInitialData = useCallback(async () => {
     const getSetData = async (): Promise<[key: string] | null> => {
       const result = chrome.storage.local.get(keysToLoad, (result) => {
@@ -31,9 +29,9 @@ function App() {
         setActiveNumPRs(result.activeNumPRs); // @ts-ignore
         setStep(result.step); // @ts-ignore
         setPAT(result.patCode); // @ts-ignore
-        setReposToggled(result.reposToggled);// @ts-ignore
-        setNumPageResults(result.numPageResults);// @ts-ignore
-        setActiveResultsPage(result.activeResultsPage);// @ts-ignore
+        setReposToggled(result.reposToggled); // @ts-ignore
+        setNumPageResults(result.numPageResults); // @ts-ignore
+        setActiveResultsPage(result.activeResultsPage); // @ts-ignore
         setPollingRate(result.pollingRate);
 
         return result;
@@ -43,7 +41,7 @@ function App() {
         return null;
       }
       return result;
-    }
+    };
 
     const keysToLoad = [
       "username",
@@ -63,7 +61,6 @@ function App() {
       console.error("Failed to load initial data from storage.");
       return;
     }
-
   }, []);
 
   const [username, setUsername] = useState<string>("");
@@ -81,14 +78,26 @@ function App() {
 
   // Listen for storage changes and update state
   useChromeStorageListener("username", (value) => setUsername(value as string));
-  useChromeStorageListener("activeNumPRs", (value) => setActiveNumPRs(value as ActiveNumPRs[]));
+  useChromeStorageListener("activeNumPRs", (value) =>
+    setActiveNumPRs(value as ActiveNumPRs[])
+  );
   useChromeStorageListener("step", (value) => setStep(value as number));
-  useChromeStorageListener("repoDetails", (value) => setRepoDetails(value as RepoCardComponentDetails[] | null));
+  useChromeStorageListener("repoDetails", (value) =>
+    setRepoDetails(value as RepoCardComponentDetails[] | null)
+  );
   useChromeStorageListener("patCode", (value) => setPAT(value as string));
-  useChromeStorageListener("numPageResults", (value) => setNumPageResults(value as number));
-  useChromeStorageListener("reposToggled", (value) => setReposToggled(value as boolean));
-  useChromeStorageListener("activeResultsPage", (value) => setActiveResultsPage(value as number));
-  useChromeStorageListener("pollingRate", (value) => setPollingRate(value as number));
+  useChromeStorageListener("numPageResults", (value) =>
+    setNumPageResults(value as number)
+  );
+  useChromeStorageListener("reposToggled", (value) =>
+    setReposToggled(value as boolean)
+  );
+  useChromeStorageListener("activeResultsPage", (value) =>
+    setActiveResultsPage(value as number)
+  );
+  useChromeStorageListener("pollingRate", (value) =>
+    setPollingRate(value as number)
+  );
 
   useEffect(() => {
     loadInitialData();
