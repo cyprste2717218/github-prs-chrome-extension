@@ -111,18 +111,6 @@ function App() {
     loadInitialData();
   }, [loadInitialData]);
 
-  /* useChromeStorageSync({
-    username: username,
-    step: step,
-    repoDetails: repoDetails,
-    activeNumPRs: activeNumPRs,
-    patCode: PAT,
-    numPageResults: numPageResults,
-    reposToggled: reposToggled,
-    activeResultsPage: activeResultsPage,
-    pollingRate: pollingRate,
-  }); */
-
   return (
     <>
       <HeaderComponent
