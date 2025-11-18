@@ -84,7 +84,7 @@ function App() {
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
 
-  // Listen for storage changes and update state accordingly
+  // Configure storage listeners for updating state accordingly
   const storageListenersConfig = [
     { key: "username", setState: setUsername },
     { key: "activeNumPRs", setState: setActiveNumPRs },
