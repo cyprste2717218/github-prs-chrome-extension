@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,7 +10,10 @@ import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SettingsProps } from "@/models/frontend/StepComponentModels";
 import { toast } from "sonner";
-import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "@/utilities/service-worker-funcs/storage-utils";
 
 const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
   let displayText = <p></p>;
@@ -54,13 +56,12 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
   );
 };
 
-const SettingsComponent = ({
-  /* setPollingRate, */ pollingRate,
-}: SettingsProps) => {
+const SettingsComponent = ({ pollingRate }: SettingsProps) => {
   async function handleSaveSliderToast() {
+    const pollingRate = await loadFromLocalStorage("pollingRate");
     console.log("Setting new polling rate of", pollingRate);
 
-    return toast.success("Changes saved successfully!");
+    return toast.success("New polling rate saved successfully!");
   }
 
   return (
@@ -87,13 +88,10 @@ const SettingsComponent = ({
                 </CardDescription>
                 <Slider
                   defaultValue={[pollingRate]}
-                  onValueChange={
-                    ([sliderValue]) =>
-                      saveToLocalStorage(
-                        "sliderValue",
-                        sliderValue
-                      ) /*setPollingRate(sliderValue)*/
-                  }
+                  onValueChange={async ([sliderValue]) => {
+                    await saveToLocalStorage("sliderValue", sliderValue);
+                    await handleSaveSliderToast();
+                  }}
                   max={100}
                   step={50}
                   className={"mt-5 mb-5"}
@@ -102,9 +100,7 @@ const SettingsComponent = ({
                 <AllSliderMarkers numMinsArr={[10, 5, 1]} />
               </div>
             </CardContent>
-            <CardFooter className="mt-10">
-              <Button onClick={handleSaveSliderToast}>Save changes</Button>
-            </CardFooter>
+            <CardFooter className="mt-10"></CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value="accessibility">

@@ -21,7 +21,7 @@ const GitDetailsEntryComponent = ({
   patCode,
 }: GitDetailsEntryProps) => {
   const handleUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    saveToLocalStorage("repoOwner", event?.target?.value);
+    saveToLocalStorage("username", event?.target?.value);
     // setUsername(event?.target?.value);
   };
 

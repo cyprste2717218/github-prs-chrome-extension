@@ -56,7 +56,6 @@ type DisplayTrackedReposProps = {
 type SettingsProps = {
   setPollingRate: React.Dispatch<React.SetStateAction<number>>;
   pollingRate: number;
-  patCode: string | null;
 };
 
 export type {

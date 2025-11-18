@@ -103,7 +103,6 @@ const StepComponent = ({
         <SettingsComponent
           setPollingRate={setPollingRate}
           pollingRate={pollingRate}
-          patCode={patCode}
         />
       );
   }

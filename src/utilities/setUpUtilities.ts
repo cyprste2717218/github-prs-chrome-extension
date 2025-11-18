@@ -32,7 +32,7 @@ const handleStepBack = async (props: HandleStepBackProps) => {
   }
 
   if (newStep === 1) {
-    saveToLocalStorage("repoOwner", "");
+    saveToLocalStorage("username", "");
     saveToLocalStorage("repoDetails", null);
     saveToLocalStorage("activeNumPRs", []);
     saveToLocalStorage("patCode", initialValuePAT);

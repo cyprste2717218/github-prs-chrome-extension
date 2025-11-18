@@ -25,7 +25,7 @@ async function saveToLocalStorage<T>(
   return new Promise<void>((resolve) => {
     chrome.storage.local.set(
       {
-        [key]: JSON.stringify(value),
+        [key]: value,
       },
       resolve
     );

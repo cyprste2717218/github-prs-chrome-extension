@@ -13,8 +13,8 @@ import "./App.css";
 
 function App() {
   const loadInitialData = useCallback(async () => {
-    const getSetData = async (): Promise<[key: string] | null> => {
-      const result = chrome.storage.local.get(keysToLoad, (result) => {
+    const getSetData = async () => {
+      chrome.storage.local.get(keysToLoad, (result) => {
         // Check for chrome.runtime.lastError in case of an issue
         if (chrome.runtime.lastError) {
           console.error("Error loading storage:", chrome.runtime.lastError);
@@ -23,24 +23,32 @@ function App() {
 
         console.log("Loaded initial data from storage:", result);
 
-        // @ts-ignore
-        setUsername(result.username); // @ts-ignore
-        setRepoDetails(result.repoDetails); // @ts-ignore
-        setActiveNumPRs(result.activeNumPRs); // @ts-ignore
-        setStep(result.step); // @ts-ignore
-        setPAT(result.patCode); // @ts-ignore
-        setReposToggled(result.reposToggled); // @ts-ignore
-        setNumPageResults(result.numPageResults); // @ts-ignore
-        setActiveResultsPage(result.activeResultsPage); // @ts-ignore
-        setPollingRate(result.pollingRate);
+        // Checking for empty or null string for username before parsing
+        const jsonUsername = result.username;
+        if (
+          jsonUsername === null ||
+          jsonUsername === undefined ||
+          jsonUsername.trim() === ""
+        ) {
+          console.log(
+            "username value retrieved is empty or null, setting empty string manually to avoid JSON parsing error"
+          );
+          setUsername("");
+        } else {
+          setUsername(result.username);
+        }
+
+        setRepoDetails(result.repoDetails);
+        setActiveNumPRs(result.activeNumPRs);
+        setStep(JSON.parse(result.step));
+        setPAT(result.patCode);
+        setReposToggled(JSON.parse(result.reposToggled));
+        setNumPageResults(JSON.parse(result.numPageResults));
+        setActiveResultsPage(JSON.parse(result.activeResultsPage));
+        setPollingRate(JSON.parse(result.pollingRate));
 
         return result;
       });
-
-      if (result === void 0) {
-        return null;
-      }
-      return result;
     };
 
     const keysToLoad = [
