@@ -58,8 +58,8 @@ const AllSliderMarkers = ({ numMinsArr }: { numMinsArr: number[] }) => {
 
 const SettingsComponent = ({ pollingRate }: SettingsProps) => {
   async function handleSaveSliderToast() {
-    const pollingRate = await loadFromLocalStorage("pollingRate");
-    console.log("Setting new polling rate of", pollingRate);
+    const fetchedPollingRate = await loadFromLocalStorage("pollingRate");
+    console.log("Setting new polling rate of", fetchedPollingRate);
 
     return toast.success("New polling rate saved successfully!");
   }
@@ -89,7 +89,7 @@ const SettingsComponent = ({ pollingRate }: SettingsProps) => {
                 <Slider
                   defaultValue={[pollingRate]}
                   onValueChange={async ([sliderValue]) => {
-                    await saveToLocalStorage("sliderValue", sliderValue);
+                    await saveToLocalStorage("pollingRate", sliderValue);
                     await handleSaveSliderToast();
                   }}
                   max={100}

@@ -87,7 +87,7 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 
     const alarm = await chrome.alarms.get(ALARM_NAME);
     if (typeof alarm === "undefined") {
-      let retrievedPollingRate = await loadFromLocalStorage("pollingRate");
+      const retrievedPollingRate = await loadFromLocalStorage("pollingRate");
 
       const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
       if (
@@ -169,7 +169,10 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 }
 
 async function handleAlertPollingAlarm(): Promise<void> {
-  console.log("pollingAlarm alarm triggered");
+  const now = new Date();
+  const isoString = now.toISOString();
+
+  console.log(`pollingAlarm alarm triggered at ${isoString}`);
   const activeNumPRs = await loadFromLocalStorage("activeNumPRs");
   const repoOwner = await loadFromLocalStorage("username");
 
