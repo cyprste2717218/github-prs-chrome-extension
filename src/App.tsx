@@ -84,28 +84,21 @@ function App() {
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
 
-  // Listen for storage changes and update state
-  useChromeStorageListener("username", (value) => setUsername(value as string));
-  useChromeStorageListener("activeNumPRs", (value) =>
-    setActiveNumPRs(value as ActiveNumPRs[])
-  );
-  useChromeStorageListener("step", (value) => setStep(value as number));
-  useChromeStorageListener("repoDetails", (value) =>
-    setRepoDetails(value as RepoCardComponentDetails[] | null)
-  );
-  useChromeStorageListener("patCode", (value) => setPAT(value as string));
-  useChromeStorageListener("numPageResults", (value) =>
-    setNumPageResults(value as number)
-  );
-  useChromeStorageListener("reposToggled", (value) =>
-    setReposToggled(value as boolean)
-  );
-  useChromeStorageListener("activeResultsPage", (value) =>
-    setActiveResultsPage(value as number)
-  );
-  useChromeStorageListener("pollingRate", (value) =>
-    setPollingRate(value as number)
-  );
+  // Listen for storage changes and update state accordingly
+  const storageListenersConfig = [
+    { key: "username", setState: setUsername },
+    { key: "activeNumPRs", setState: setActiveNumPRs },
+    { key: "step", setState: setStep },
+    { key: "repoDetails", setState: setRepoDetails },
+    { key: "patCode", setState: setPAT },
+    { key: "numPageResults", setState: setNumPageResults },
+    { key: "reposToggled", setState: setReposToggled },
+    { key: "activeResultsPage", setState: setActiveResultsPage },
+    { key: "pollingRate", setState: setPollingRate },
+  ];
+  storageListenersConfig.forEach(({ key, setState }) => {
+    useChromeStorageListener(key, (value) => setState(value as any));
+  });
 
   useEffect(() => {
     loadInitialData();
