@@ -3,7 +3,6 @@ import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
 import WarningModal from "./components/input/WarningModal.tsx";
 import { Toaster } from "@/components/ui/sonner";
-// import { useChromeStorageSync } from "@/utilities/hooks/useChromeStorageSync.ts";
 import { useChromeStorageListener } from "./utilities/hooks/useChromeStorageListener.ts";
 import type {
   RepoCardComponentDetails,
