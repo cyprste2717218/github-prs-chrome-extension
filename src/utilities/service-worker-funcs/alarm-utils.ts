@@ -231,14 +231,15 @@ async function handleLocalStorageTrackedReposChanges(
 ): Promise<void> {
   // checking if activeNumPRs array in local storage has changed to determine if polling alarm needs to be created or deleted
   if (area === "local" && changes.activeNumPRs) {
-    if (changes.activeNumPRs.newValue.length === 0) {
+    const newValue = JSON.parse(changes.activeNumPRs.newValue);
+    if (newValue.length === 0) {
       // if no repos being tracked, delete polling alarm if it exists
 
       console.log(
         "no repos being tracked, deleting polling or rate limit error alarm if it exists"
       );
       await handleDeleteAllAlarms();
-    } else if (changes.activeNumPRs.newValue.length > 0) {
+    } else if (newValue.length > 0) {
       // if repos being tracked, ensure polling alarm exists
 
       console.log("repos being tracked, ensuring polling alarm exists");

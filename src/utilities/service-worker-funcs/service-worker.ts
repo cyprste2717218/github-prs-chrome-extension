@@ -3,6 +3,7 @@ import {
   handleAlertRateLimitErrorAlarm,
   handleLocalStorageTrackedReposChanges,
 } from "./alarm-utils";
+import { saveAllToLocalStorage } from "./storage-utils";
 
 // handling when different alarm types go off
 chrome.alarms.onAlarm.addListener(async (alarm) => {
@@ -18,7 +19,7 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
   await handleLocalStorageTrackedReposChanges(changes, area);
 });
 
-chrome.runtime.onInstalled.addListener(function (details) {
+chrome.runtime.onInstalled.addListener(async function (details) {
   if (details.reason === "install") {
     console.log("GitHub PR Tracker Extension installed or updated!");
 
@@ -34,17 +35,14 @@ chrome.runtime.onInstalled.addListener(function (details) {
       activeNumPRs: [], // Initial empty array for active PRs
     };
 
-    chrome.storage.local.set(initialSettings, () => {
-      // Check for chrome.runtime.lastError in case of an issue
-      if (chrome.runtime.lastError) {
+    await saveAllToLocalStorage(initialSettings)
+      .then(() => {
+        console.log("Initial settings saved to local storage successfully!");
+      })
+      .catch((error) => {
         console.error(
-          "Error setting initial storage data on extension install:",
-          chrome.runtime.lastError
+          `Error saving initial settings to local storage: ${error}`
         );
-        return;
-      }
-
-      console.log("Initial settings saved to local storage successfully!");
-    });
+      });
   }
 });

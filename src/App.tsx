@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import HeaderComponent from "./components/header/HeaderComponent.tsx";
 import StepComponent from "./components/StepComponent";
 import WarningModal from "./components/input/WarningModal.tsx";
@@ -11,6 +11,37 @@ import type {
 import "./App.css";
 
 function App() {
+  const [username, setUsername] = useState<string>("");
+  const [step, setStep] = useState<number>(1);
+  const [repoDetails, setRepoDetails] = useState<
+    RepoCardComponentDetails[] | null
+  >(null);
+  const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
+  const [PAT, setPAT] = useState<string | null>(null);
+  const [numPageResults, setNumPageResults] = useState<number>(0);
+  const [displayWarning, setDisplayWarning] = useState<boolean>(false);
+  const [reposToggled, setReposToggled] = useState<boolean>(false);
+  const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
+  const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
+
+  const intialConfig = [
+    { key: "username", setState: setUsername },
+    { key: "activeNumPRs", setState: setActiveNumPRs },
+    { key: "step", setState: setStep },
+    { key: "repoDetails", setState: setRepoDetails },
+    { key: "patCode", setState: setPAT },
+    { key: "numPageResults", setState: setNumPageResults },
+    { key: "reposToggled", setState: setReposToggled },
+    { key: "activeResultsPage", setState: setActiveResultsPage },
+    { key: "pollingRate", setState: setPollingRate },
+  ];
+
+  // Configure storage listeners for updating state accordingly
+  intialConfig.forEach(({ key, setState }) => {
+    useChromeStorageListener(key, (value) => setState(value as any));
+  });
+
+  // Load initial data from storage on component mount
   const loadInitialData = useCallback(async () => {
     const getSetData = async () => {
       chrome.storage.local.get(keysToLoad, (result) => {
@@ -34,13 +65,13 @@ function App() {
           );
           setUsername("");
         } else {
-          setUsername(result.username);
+          setUsername(JSON.parse(result.username));
         }
 
-        setRepoDetails(result.repoDetails);
-        setActiveNumPRs(result.activeNumPRs);
+        setRepoDetails(JSON.parse(result.repoDetails));
+        setActiveNumPRs(JSON.parse(result.activeNumPRs));
         setStep(JSON.parse(result.step));
-        setPAT(result.patCode);
+        setPAT(JSON.parse(result.patCode));
         setReposToggled(JSON.parse(result.reposToggled));
         setNumPageResults(JSON.parse(result.numPageResults));
         setActiveResultsPage(JSON.parse(result.activeResultsPage));
@@ -69,35 +100,6 @@ function App() {
       return;
     }
   }, []);
-
-  const [username, setUsername] = useState<string>("");
-  const [step, setStep] = useState<number>(1);
-  const [repoDetails, setRepoDetails] = useState<
-    RepoCardComponentDetails[] | null
-  >(null);
-  const [activeNumPRs, setActiveNumPRs] = useState<ActiveNumPRs[]>([]);
-  const [PAT, setPAT] = useState<string | null>(null);
-  const [numPageResults, setNumPageResults] = useState<number>(0);
-  const [displayWarning, setDisplayWarning] = useState<boolean>(false);
-  const [reposToggled, setReposToggled] = useState<boolean>(false);
-  const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
-  const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
-
-  // Configure storage listeners for updating state accordingly
-  const storageListenersConfig = [
-    { key: "username", setState: setUsername },
-    { key: "activeNumPRs", setState: setActiveNumPRs },
-    { key: "step", setState: setStep },
-    { key: "repoDetails", setState: setRepoDetails },
-    { key: "patCode", setState: setPAT },
-    { key: "numPageResults", setState: setNumPageResults },
-    { key: "reposToggled", setState: setReposToggled },
-    { key: "activeResultsPage", setState: setActiveResultsPage },
-    { key: "pollingRate", setState: setPollingRate },
-  ];
-  storageListenersConfig.forEach(({ key, setState }) => {
-    useChromeStorageListener(key, (value) => setState(value as any));
-  });
 
   useEffect(() => {
     loadInitialData();

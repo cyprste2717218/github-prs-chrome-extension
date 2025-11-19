@@ -31,21 +31,48 @@ async function loadFromLocalStorage<T>(key: string): Promise<T | null> {
       } catch (e) {
         result = dict[key];
       }
-      resolve(result || null);
+      resolve(result);
     });
   });
 }
 
-async function saveAllToLocalStorage(data: object): Promise<void> {
-  return new Promise<void>(async () => {
-    const isRuntimeError = await checkForRunTimeError(
-      "Error saving all entries to localStorage"
-    );
-    if (isRuntimeError) {
-      return null;
-    }
+async function loadAllFromLocalStorage<T>(
+  storageKeys: string[]
+): Promise<T | null> {
+  return new Promise<T | null>((resolve) => {
+    try {
+      const retrievedData: any = new Object();
+      storageKeys.forEach(async (key) => {
+        await loadFromLocalStorage(key).then((retrievedValue: any) => {
+          retrievedData[key] = retrievedValue;
+        });
+      });
 
-    chrome.storage.local.set(data);
+      resolve(retrievedData as T);
+    } catch (e) {
+      console.error(
+        "Error loading all specified entries from localStorage:",
+        e
+      );
+      resolve(null);
+    }
+  });
+}
+
+async function saveAllToLocalStorage(data: object): Promise<void> {
+  return new Promise<void>((resolve) => {
+    try {
+      const storageKeys = Object.keys(data);
+      storageKeys.forEach(async (key: string) => {
+        const value = (data as any)[key];
+        await saveToLocalStorage(key, value);
+      });
+
+      console.log("All specified entries saved to localStorage successfully.");
+    } catch (e) {
+      console.error("Error saving all specified entries to localStorage:", e);
+    }
+    resolve();
   });
 }
 
@@ -58,12 +85,12 @@ async function saveToLocalStorage<T>(
       "Error saving individual entry to localStorage"
     );
     if (isRuntimeError) {
-      return null;
+      return;
     }
 
     chrome.storage.local.set(
       {
-        [key]: value,
+        [key]: JSON.stringify(value),
       },
       resolve
     );
@@ -100,7 +127,7 @@ async function saveToSessionStorage<T>(
       "Error saving to session storage"
     );
     if (isRuntimeError) {
-      return null;
+      return;
     }
 
     chrome.storage.session.set(
@@ -114,6 +141,7 @@ async function saveToSessionStorage<T>(
 
 export {
   loadFromLocalStorage,
+  loadAllFromLocalStorage,
   saveToLocalStorage,
   saveAllToLocalStorage,
   loadFromSessionStorage,
