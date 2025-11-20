@@ -9,6 +9,7 @@ import type {
   ActiveNumPRs,
 } from "./models/frontend/RepoCardModels.ts";
 import "./App.css";
+import { loadAllFromLocalStorage } from "./utilities/service-worker-funcs/storage-utils.ts";
 
 function App() {
   const [username, setUsername] = useState<string>("");
@@ -44,40 +45,24 @@ function App() {
   // Load initial data from storage on component mount
   const loadInitialData = useCallback(async () => {
     const getSetData = async () => {
-      chrome.storage.local.get(keysToLoad, (result) => {
-        // Check for chrome.runtime.lastError in case of an issue
-        if (chrome.runtime.lastError) {
-          console.error("Error loading storage:", chrome.runtime.lastError);
-          return null;
-        }
+      const result = await loadAllFromLocalStorage<{
+        [key: string]: any;
+      }>(keysToLoad);
 
-        console.log("Loaded initial data from storage:", result);
+      if (result === null || undefined || Object.keys(result).length === 0) {
+        throw new Error("Failed to load initial data from storage.");
+      }
 
-        // Checking for empty or null string for username before parsing
-        const jsonUsername = result.username;
-        if (
-          jsonUsername === null ||
-          jsonUsername === undefined ||
-          jsonUsername.trim() === ""
-        ) {
+      // Set state for each retrieved key-value pair
+      intialConfig.forEach(({ key, setState }) => {
+        if (result[key] !== undefined) {
           console.log(
-            "username value retrieved is empty or null, setting empty string manually to avoid JSON parsing error"
+            `Setting state for key: ${key}, value: `,
+            result[key],
+            typeof result[key]
           );
-          setUsername("");
-        } else {
-          setUsername(JSON.parse(result.username));
+          setState(result[key]);
         }
-
-        setRepoDetails(JSON.parse(result.repoDetails));
-        setActiveNumPRs(JSON.parse(result.activeNumPRs));
-        setStep(JSON.parse(result.step));
-        setPAT(JSON.parse(result.patCode));
-        setReposToggled(JSON.parse(result.reposToggled));
-        setNumPageResults(JSON.parse(result.numPageResults));
-        setActiveResultsPage(JSON.parse(result.activeResultsPage));
-        setPollingRate(JSON.parse(result.pollingRate));
-
-        return result;
       });
     };
 

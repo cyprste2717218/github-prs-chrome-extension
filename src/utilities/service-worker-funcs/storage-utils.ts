@@ -18,19 +18,41 @@ async function checkForRunTimeError(context?: string): Promise<boolean> {
 async function loadFromLocalStorage<T>(key: string): Promise<T | null> {
   return new Promise<T | null>((resolve) => {
     chrome.storage.local.get([key], async (dict: any) => {
+      // 1). Check for runtime error prior to indexing attempt
       const isRuntimeError = await checkForRunTimeError(
         "Error loading from storage"
       );
       if (isRuntimeError) {
-        return null;
+        return;
+      }
+
+      // 2). Check if chrome local storage object exists before index attempt
+      const retrievedDict = await dict;
+
+      if (!retrievedDict) {
+        return;
       }
 
       let result;
+
       try {
-        result = JSON.parse(dict[key]);
+        // Check if key exists in local storage object
+        if (retrievedDict[key] === undefined) {
+          throw new Error(
+            `No value retrieved, key '${key}' not found in localStorage`
+          );
+        } else {
+          result = JSON.parse(retrievedDict[key]);
+        }
       } catch (e) {
-        result = dict[key];
+        throw new Error(`Error parsing data from localStorage: ${e}`);
       }
+
+      console.log(
+        `Loaded from localStorage key: ${key}, value: `,
+        result,
+        typeof result
+      );
       resolve(result);
     });
   });
@@ -39,22 +61,39 @@ async function loadFromLocalStorage<T>(key: string): Promise<T | null> {
 async function loadAllFromLocalStorage<T>(
   storageKeys: string[]
 ): Promise<T | null> {
-  return new Promise<T | null>((resolve) => {
-    try {
+  return new Promise<T | null>(async (resolve) => {
+    async function fetchAllData(storageKeys: string[]): Promise<T> {
       const retrievedData: any = new Object();
-      storageKeys.forEach(async (key) => {
-        await loadFromLocalStorage(key).then((retrievedValue: any) => {
-          retrievedData[key] = retrievedValue;
-        });
-      });
 
-      resolve(retrievedData as T);
+      for (const key of storageKeys) {
+        const retrievedValue = await loadFromLocalStorage(key);
+        retrievedData[key] = retrievedValue;
+        console.log("retrieved data so far:", retrievedData);
+      }
+
+      return retrievedData;
+    }
+
+    try {
+      const allRetrievedData = await fetchAllData(storageKeys);
+
+      if (!allRetrievedData) {
+        resolve(null);
+      } else {
+        const isRetrievedDataEmpty = Object.keys(allRetrievedData).length === 0;
+        console.log(
+          "is retrieved data empty:",
+          isRetrievedDataEmpty,
+          "retrieved data:",
+          allRetrievedData
+        );
+        resolve(!isRetrievedDataEmpty ? (allRetrievedData as T) : null);
+      }
     } catch (e) {
       console.error(
         "Error loading all specified entries from localStorage:",
         e
       );
-      resolve(null);
     }
   });
 }
@@ -88,6 +127,7 @@ async function saveToLocalStorage<T>(
       return;
     }
 
+    //console.log(`Saving to localStorage key: ${ key }, value: `, value);
     chrome.storage.local.set(
       {
         [key]: JSON.stringify(value),
