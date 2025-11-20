@@ -42,7 +42,7 @@ const SelectAllButton = ({
     >
       <Button
         variant="secondary"
-        className="rounded shadow mb-5"
+        className="rounded shadow-sm mb-5"
         id="select-all-button"
         onClick={toggleAllSelectedRepos}
         style={{
