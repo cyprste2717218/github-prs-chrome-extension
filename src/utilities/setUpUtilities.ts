@@ -61,7 +61,7 @@ const handleStepBack = async (props: HandleStepBackProps) => {
   console.log("this is the newStep on going back", newStep);
 };
 
-const handleStepForward = (props: HandleStepForwardProps) => {
+const handleStepForward = async (props: HandleStepForwardProps) => {
   const {
     /*  setStepState,
      setActiveNumPRs,
@@ -89,7 +89,8 @@ const handleStepForward = (props: HandleStepForwardProps) => {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
 
-      startPolling({ activeNumPRs, repoOwner });
+      await startPolling({ activeNumPRs, repoOwner });
+      console.log("initial polling complete");
     } else {
       console.log("activeNumPRs array is empty");
     }
@@ -102,7 +103,7 @@ const handleStepForward = (props: HandleStepForwardProps) => {
   console.log("this is the newStep on going forward", newStep);
 };
 
-const handleStepChange = (props: HandleStepChangeProps) => {
+const handleStepChange = async (props: HandleStepChangeProps) => {
   const { stepOperation } = props;
 
   // props for passing to relevant step change handler
@@ -132,10 +133,10 @@ const handleStepChange = (props: HandleStepChangeProps) => {
 
   switch (stepOperation) {
     case "stepBack":
-      handleStepBack(backButtonOperationProps);
+      await handleStepBack(backButtonOperationProps);
       break;
     case "stepForward":
-      handleStepForward(nextButtonOperationsProps);
+      await handleStepForward(nextButtonOperationsProps);
       break;
     default:
       break;

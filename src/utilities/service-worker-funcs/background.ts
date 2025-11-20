@@ -247,21 +247,39 @@ async function updatePRDetails({
     const updatedPRDetails = await fetchNumPRs(repoDetails);
 
     if (isSuccessFetchNumPRs(updatedPRDetails)) {
-      updatedNumPRs.push(updatedPRDetails);
-    } else if (isFailureFetchNumPRs(updatedPRDetails)) {
-      await saveToSessionStorage("waitInterval", updatedPRDetails.waitInterval);
-      await saveToSessionStorage("messages", updatedPRDetails.messages);
+      const targetIndex = activeNumPRs.findIndex(
+        (repo: ActiveNumPRs) => updatedPRDetails.name === repo.name
+      );
 
-      throw new Error(`Error fetching updated number of PRs: ${repoDetails}`);
+      if (targetIndex !== -1) {
+        // 2. Create a shallow copy of the array
+        const activeNumPRsCopy: ActiveNumPRs[] = [...activeNumPRs];
+
+        // 3. Create a NEW object (immutable update) for the target index
+        activeNumPRsCopy[targetIndex] = {
+          ...repoDetails, // Copy existing properties of the target object
+          numActivePRs: updatedPRDetails.numActivePRs, // Apply the new property value
+        };
+
+        await saveToLocalStorage("activeNumPRs", activeNumPRsCopy);
+        //updatedNumPRs.push(activeNumPRsCopy);
+      } else if (isFailureFetchNumPRs(updatedPRDetails)) {
+        await saveToSessionStorage(
+          "waitInterval",
+          updatedPRDetails.waitInterval
+        );
+        await saveToSessionStorage("messages", updatedPRDetails.messages);
+
+        throw new Error(`Error fetching updated number of PRs: ${repoDetails}`);
+      }
     }
+
+    console.log("--------------------------------");
+    console.log("updated num PRs array:", updatedNumPRs);
+    console.log("--------------------------------");
+
+    return;
   }
-
-  console.log("--------------------------------");
-  console.log("updated num PRs array:", updatedNumPRs);
-  console.log("--------------------------------");
-  await saveToLocalStorage("activeNumPRs", updatedNumPRs);
-
-  return;
 }
 
 export {
