@@ -5,7 +5,6 @@ import {
   saveToLocalStorage,
   loadFromLocalStorage,
 } from "./storage-utils";
-import { error } from "console";
 
 type SubmitPRDetailsProps = {
   activeNumPRs: ActiveNumPRs[];
