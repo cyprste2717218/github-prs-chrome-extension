@@ -51,7 +51,10 @@ async function handleDeleteAlarm(alarmName: string): Promise<void> {
     try {
       await deletePollingAlarm();
     } catch (deletionError) {
+      // To-do: add retry logic for deleting polling alarm
       console.error(`Error deleting polling alarm: ${deletionError}`);
+
+      throw new Error("Alarm handling error encountered");
       // To-do: escalate this error to user via toast prompting them to reinstall extension
     }
     console.log("deleted polling alarm");
@@ -59,7 +62,10 @@ async function handleDeleteAlarm(alarmName: string): Promise<void> {
     try {
       await deleteRateLimitErrorAlarm();
     } catch (deletionError) {
+      // To-do: add retry logic for deleting polling alarm
       console.error(`Error deleting rate limit error alarm: ${deletionError}`);
+
+      throw new Error("Alarm handling error encountered");
       // To-do: escalate this error to user via toast prompting them to reinstall extension
     }
   }
@@ -137,34 +143,41 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
     return false;
   }
 
-  if (alarmName === "pollingAlarm") {
-    try {
-      const alarmPollingCreationResult = await createPollingAlarm();
+  try {
+    if (alarmName === "pollingAlarm") {
+      try {
+        const alarmPollingCreationResult = await createPollingAlarm();
 
-      if (alarmPollingCreationResult === false) {
-        console.log("polling alarm already exists, not creating another one");
-      } else if (alarmPollingCreationResult === true) {
-        console.log("created polling alarm successfully");
-      }
-    } catch (e) {
-      console.error(`Error creating polling alarm: ${e}`);
-      // To-do: escalate this error to user via toast prompting them to reinstall extension
-    }
-  } else if (alarmName === "rateLimitErrorAlarm") {
-    try {
-      const alarmRateLimitCreationResult = await createRateLimitErrorAlarm();
+        if (alarmPollingCreationResult === false) {
+          console.log("polling alarm already exists, not creating another one");
+        } else if (alarmPollingCreationResult === true) {
+          console.log("created polling alarm successfully");
+        }
+      } catch (e) {
+        console.error(`Error creating polling alarm: ${e}`);
 
-      if (alarmRateLimitCreationResult === false) {
-        console.log(
-          "rate limit error alarm already exists, not creating another one"
-        );
-      } else if (alarmRateLimitCreationResult === true) {
-        console.log("created rate limit error alarm successfully");
+        throw new Error("Alarm handling error encountered");
       }
-    } catch (e) {
-      console.error(`Error creating rate limit error alarm: ${e}`);
-      // To-do: escalate this error to user via toast prompting them to reinstall extension
+    } else if (alarmName === "rateLimitErrorAlarm") {
+      try {
+        const alarmRateLimitCreationResult = await createRateLimitErrorAlarm();
+
+        if (alarmRateLimitCreationResult === false) {
+          console.log(
+            "rate limit error alarm already exists, not creating another one"
+          );
+        } else if (alarmRateLimitCreationResult === true) {
+          console.log("created rate limit error alarm successfully");
+        }
+      } catch (e) {
+        console.error(`Error creating rate limit error alarm: ${e}`);
+
+        throw new Error("Alarm handling error encountered");
+      }
     }
+  } catch (e) {
+    console.error(`Error during creation of alarm: ${e}`);
+    throw new Error("Alarm handling error encountered");
   }
 }
 
@@ -244,30 +257,69 @@ async function handleAlertPollingAlarm(): Promise<void> {
     message = e.customType;
     timeout = e.waitInterval as number;
 
-    if (message === "Storage Handling Error encountered") {
-      console.error(`Error saving to chrome localStorage: ${e}`);
+    try {
+      if (message === "Storage Handling Error encountered") {
+        console.error(`Error saving to chrome localStorage: ${e}`);
 
-      throw new Error("Storage Handling Error encountered");
-    } else if (message === "Rate Limit Error encountered") {
-      console.warn(
-        `Rate limit error encountered on pollingAlarm alarm occurence: ${e}`
+        message = "Storage Handling Error encountered";
+        throw { customType: message };
+      } else if (message === "Rate Limit Error encountered") {
+        console.warn(
+          `Rate limit error encountered on pollingAlarm alarm occurence: ${e}`
+        );
+
+        console.log(
+          "deleting polling alarm and creating rate limit error alarm"
+        );
+
+        console.log("deleting polling alarm");
+        try {
+          await handleDeleteAlarm("pollingAlarm");
+        } catch (e) {
+          console.log("Error encountered during deletion of polling alarm");
+
+          message = "Alarm handling error encountered";
+          throw { customType: message };
+        }
+
+        console.log("creating rate limit error alarm");
+        try {
+          await handleCreateAlarm("rateLimitErrorAlarm");
+        } catch (e) {
+          console.log(
+            "Error encountered during creation of rate limit error alarm"
+          );
+
+          message = "Alarm handling error encountered";
+          throw { customType: message };
+        }
+
+        throw {
+          customType: message,
+          waitInterval: timeout,
+        };
+      } else {
+        console.warn(
+          "Retrieved error message in alert polling alarm handling doesn't match any available cases"
+        );
+
+        message = "Invalid Error Message";
+        throw {
+          customType: message,
+        };
+      }
+    } catch (e) {
+      if (!isErrorMsg(e)) {
+        return;
+      }
+      console.log(
+        "Error during error handling process for handling polling alarm trigger run:",
+        e.customType
       );
 
-      throw {
-        customType: message,
-        waitInterval: timeout,
-      };
+      message = "Alarm handling error encountered";
+      throw { customType: message };
     }
-
-    console.log("deleting polling alarm and creating rate limit error alarm");
-
-    console.log("deleting polling alarm");
-    await handleDeleteAlarm("pollingAlarm");
-
-    console.log("creating rate limit error alarm");
-    await handleCreateAlarm("rateLimitErrorAlarm");
-
-    throw new Error("Rate Limit Error encountered");
   }
 }
 
@@ -275,12 +327,34 @@ async function handleAlertRateLimitErrorAlarm(): Promise<void> {
   console.log(
     "period elapsed for suspension from making requests due to rate limit error response"
   );
-  console.log("deleting rate limit error alarm");
-  await handleDeleteAlarm("rateLimitErrorAlarm");
-  console.log("deleted rate limit error alarm");
 
-  console.log("creating new polling alarm");
-  await handleCreateAlarm("pollingAlarm");
+  try {
+    console.log("deleting rate limit error alarm");
+    try {
+      await handleDeleteAlarm("rateLimitErrorAlarm");
+      console.log("deleted rate limit error alarm");
+    } catch (e) {
+      console.log("Error during deletion of rate limit error alarm:", e);
+
+      throw new Error("Alarm handling error encountered");
+    }
+
+    console.log("creating new polling alarm");
+    try {
+      await handleCreateAlarm("pollingAlarm");
+      console.log("created new polling alarm");
+    } catch (e) {
+      console.log("Error during creation of polling alarm:", e);
+
+      throw new Error("Alarm handling error encountered");
+    }
+  } catch (e) {
+    console.error(
+      "Issue handling deletion of old rate limit error alarm followed by creation of new polling alarm following rate limit error period having elapsed"
+    );
+
+    throw new Error("Alarm handling error encountered");
+  }
 
   return;
 }

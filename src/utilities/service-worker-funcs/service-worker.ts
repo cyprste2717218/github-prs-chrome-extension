@@ -62,7 +62,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
     if (message === "Storage Handling Error encountered") {
       return toast.error(
-        "Storage misconfiguration error encountered, try reloading or if that doesn't work reinstalling the extension"
+        "An error has occurred, try reloading or alternatively reinstalling the extension"
       );
     } else if (message === "Rate Limit Error encountered") {
       return toast.warning(
@@ -76,7 +76,19 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
       await handleAlertRateLimitErrorAlarm();
     }
   } catch (e) {
-    return toast.warning("");
+    let message;
+
+    if (!isErrorMsg(e)) {
+      return;
+    }
+
+    message = e.customType;
+
+    if (message === "Alarm handling error encountered") {
+      return toast.error(
+        "An error has occurred, try reloading or alternatively reinstalling the extension"
+      );
+    }
   }
 });
 
@@ -108,6 +120,10 @@ chrome.runtime.onInstalled.addListener(async function (details) {
       .catch((error) => {
         console.error(
           `Error saving initial settings to local storage: ${error}`
+        );
+
+        return toast.error(
+          "An error has occurred, try reloading or alternatively reinstalling the extension"
         );
       });
   }
