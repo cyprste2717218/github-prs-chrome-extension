@@ -27,7 +27,7 @@ async function updatePRDetails({
   const storedPATCode = await loadFromLocalStorage("patCode");
   //let updatedNumPRs: ActiveNumPRs[] = [];
 
-  type SucessFetchNumPRs = {
+  type SuccessFetchNumPRs = {
     name: string;
     numActivePRs: number;
   };
@@ -37,9 +37,15 @@ async function updatePRDetails({
     messages: string[];
   };
 
-  type FetchNumPRs = SucessFetchNumPRs | FailureFetchNumPRs;
+  type FetchNumPRs = SuccessFetchNumPRs | FailureFetchNumPRs;
 
-  function isSuccessFetchNumPRs(obj: FetchNumPRs): obj is SucessFetchNumPRs {
+  type HandleUpdateActiveNumPRs = {
+    activeNumPRs: ActiveNumPRs[];
+    updatedPRDetails: SuccessFetchNumPRs;
+    repoDetails: ActiveNumPRs;
+  };
+
+  function isSuccessFetchNumPRs(obj: FetchNumPRs): obj is SuccessFetchNumPRs {
     return (
       typeof obj === "object" &&
       "name" in obj &&
@@ -60,10 +66,33 @@ async function updatePRDetails({
     );
   }
 
+  const handleUpdateActiveNumPRs = async ({
+    activeNumPRs,
+    updatedPRDetails,
+    repoDetails,
+  }: HandleUpdateActiveNumPRs): Promise<Boolean> => {
+    const targetIndex = activeNumPRs.findIndex(
+      (repo: ActiveNumPRs) => updatedPRDetails.name === repo.name
+    );
+
+    if (targetIndex !== -1) {
+      // Create a NEW object (immutable update) for the target index
+      activeNumPRsCopy[targetIndex] = {
+        ...repoDetails, // Copy existing properties of the target object
+        numActivePRs: updatedPRDetails.numActivePRs, // Apply the new property value
+      };
+      console.log("activeNumPRsCopy:", activeNumPRsCopy);
+      await saveToLocalStorage("activeNumPRs", activeNumPRsCopy);
+      return true;
+      //updatedNumPRs.push(activeNumPRsCopy);
+    }
+    return false;
+  };
+
   // Fetch current number of PRs for given repo, using authenticated or deaunthenticated approach
   const fetchNumPRs = async (
     repo: ActiveNumPRs
-  ): Promise<SucessFetchNumPRs | FailureFetchNumPRs> => {
+  ): Promise<SuccessFetchNumPRs | FailureFetchNumPRs> => {
     function handleRedirectLogic({
       response,
     }: {
@@ -242,6 +271,7 @@ async function updatePRDetails({
     };
   };
 
+  // Creating in-memory copy of activeNumPRs for progressive mutation during incremental updates of number of active PRs per repo on display
   const activeNumPRsCopy: ActiveNumPRs[] = [...activeNumPRs];
 
   // Sequential execution of each async call to get current number of PRs per repo
@@ -251,19 +281,15 @@ async function updatePRDetails({
     console.log("length of activeNumPRs:", activeNumPRs.length);
 
     if (isSuccessFetchNumPRs(updatedPRDetails)) {
-      const targetIndex = activeNumPRs.findIndex(
-        (repo: ActiveNumPRs) => updatedPRDetails.name === repo.name
-      );
-
-      if (targetIndex !== -1) {
-        // Create a NEW object (immutable update) for the target index
-        activeNumPRsCopy[targetIndex] = {
-          ...repoDetails, // Copy existing properties of the target object
-          numActivePRs: updatedPRDetails.numActivePRs, // Apply the new property value
-        };
-        console.log("activeNumPRsCopy:", activeNumPRsCopy);
-        await saveToLocalStorage("activeNumPRs", activeNumPRsCopy);
-        //updatedNumPRs.push(activeNumPRsCopy);
+      const isUpdateSuccess = handleUpdateActiveNumPRs({
+        activeNumPRs,
+        updatedPRDetails,
+        repoDetails,
+      });
+      if (!isUpdateSuccess) {
+        throw new Error(
+          `Error updating new number of PRs value to storage: ${repoDetails}`
+        );
       }
     } else if (isFailureFetchNumPRs(updatedPRDetails)) {
       await saveToSessionStorage("waitInterval", updatedPRDetails.waitInterval);
