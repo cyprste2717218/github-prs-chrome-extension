@@ -72,6 +72,153 @@ async function handleDeleteAlarm(alarmName: string): Promise<void> {
 }
 
 async function handleCreateAlarm(alarmName: string): Promise<void> {
+  function getDelay(sliderValue: number): number {
+    // setting the delay based on the polling interval chosen (1,5 or 10 mins)
+
+    let delayMs = 300000;
+
+    if (sliderValue === 0) {
+      delayMs = 10;
+    } else if (sliderValue === 50) {
+      delayMs = 5;
+    } else if (sliderValue === 100) {
+      delayMs = 1;
+    }
+
+    return delayMs;
+  }
+
+  async function createAlarm(alarmName: string): Promise<Boolean> {
+
+
+    type StoragePollingAlarm = {
+      "retrievedPollingRate": number,
+      "trackedRepoDetails": ActiveNumPRs[]
+      "alarmType": string
+    }
+
+    type StorageRateLimitErrorAlarm = {
+      "delayPeriod": number,
+      "alarmType": string
+    }
+
+    type StorageAlarm = StoragePollingAlarm | StorageRateLimitErrorAlarm;
+
+    async function fetchRequiredStorageData(alarmName: string): Promise<StorageAlarm> {
+
+      if (alarmName === "pollingAlarm") {
+
+        const retrievedPollingRate = await loadFromLocalStorage("pollingRate");
+        const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
+
+        const fetchedData = {
+          "retrievedPollingRate": retrievedPollingRate as number,
+          "trackedRepoDetails": trackedRepoDetails as ActiveNumPRs[],
+          "alarmType": alarmName as string
+        }
+
+        return fetchedData;
+
+
+      } else if (alarmName === "rateLimitErrorAlarm") {
+        const delayPeriod = await loadFromSessionStorage("delayPeriod");
+
+        const fetchedData = {
+          "delayPeriod": delayPeriod as number,
+          "alarmType": alarmName as string
+        }
+
+        return fetchedData;
+      } else {
+        console.error(`Invalid alarmName '${alarmName}' passed when fetching data needed to create alarm`)
+        throw new Error("TO-DO: FILL THIS OUT");
+      }
+    }
+
+    async function fetchConditions(alarmName: string): Promise<Object> {
+
+      function isStoragePollingAlarm(result: StorageAlarm): result is StoragePollingAlarm {
+        return result.alarmType === "pollingRateAlarm";
+      }
+
+      function isStorageRateLimitAlarm(result: StorageAlarm): result is StorageRateLimitErrorAlarm {
+        return result.alarmType === "rateLimitErrorAlarm";
+      }
+
+
+
+      const fetchedReqData: StorageAlarm = await fetchRequiredStorageData(alarmName);
+      if (isStoragePollingAlarm(fetchedReqData)) {
+
+        const trackedRepoDetails = fetchedReqData["trackedRepoDetails"];
+        const trackedRepoDetailsConstraints = !trackedRepoDetails || (trackedRepoDetails as ActiveNumPRs[]).length === 0;
+
+        /*        if (trackedRepoDetailsConstraints) {
+                 throw new Error(
+                   "No current repo details for tracking retrieved from localStorage"
+                 );
+               } */
+
+
+        return trackedRepoDetailsConstraints;
+
+      } else if (isStorageRateLimitAlarm(fetchedReqData)) {
+
+        const delayPeriod = fetchedReqData["delayPeriod"];
+        /*   if (!delayPeriod) {
+            throw new Error("No delay period retrieved from session storage");
+          } */
+
+        return !delayPeriod;
+
+      } else {
+        throw new Error("TO-DO: FILL THIS IN");
+      }
+
+
+
+    }
+
+    function getPeriod(alarmName: string) {
+
+    }
+
+
+    const ALARM_NAME = alarmName;
+
+
+    /* Fetch data from storage needing checking for correct creation of alarm type,
+   
+    - retrieving timeout period to wait for creating rate limit error alarm (i.e. fetching from chrome.sessionStorage)
+    
+    - or polling frequency for usual polling alarm creation (chrome.localStorage)
+    */
+    const fetchedConditions = await fetchConditions(alarmName);
+    const period: number = ;
+
+    const alarm = await chrome.alarms.get(ALARM_NAME);
+    if (typeof alarm === "undefined") {
+      if (fetchedConditions
+      ) {
+        const errorMsg = alarmName === 'pollingAlarm' ? "No current repo details for tracking retrieved from localStorage" : "No delay period retrieved from session storage";
+        throw new Error(errorMsg);
+      }
+
+      await chrome.alarms.create(ALARM_NAME, {
+        delayInMinutes: 1,
+        periodInMinutes: getDelay(retrievedPollingRate as number),
+      });
+
+      // doing initial fetching of repo PR details before first alarm goes off
+
+      console.log(`${ALARM_NAME} alarm created`);
+      return true;
+    }
+
+    return false;
+  }
+
+
   async function createPollingAlarm(): Promise<Boolean> {
     function getDelay(sliderValue: number): number {
       // setting the delay based on the polling interval chosen (1,5 or 10 mins)
