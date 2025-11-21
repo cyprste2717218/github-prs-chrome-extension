@@ -89,7 +89,7 @@ const handleStepForward = async (props: HandleStepForwardProps) => {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
 
-      await startPolling({ activeNumPRs, repoOwner });
+      startPolling({ activeNumPRs, repoOwner });
       console.log("initial polling complete");
     } else {
       console.log("activeNumPRs array is empty");

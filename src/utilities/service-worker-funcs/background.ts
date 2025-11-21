@@ -25,7 +25,7 @@ async function updatePRDetails({
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
   const storedPATCode = await loadFromLocalStorage("patCode");
-  let updatedNumPRs: ActiveNumPRs[] = [];
+  //let updatedNumPRs: ActiveNumPRs[] = [];
 
   type SucessFetchNumPRs = {
     name: string;
@@ -242,9 +242,13 @@ async function updatePRDetails({
     };
   };
 
+  const activeNumPRsCopy: ActiveNumPRs[] = [...activeNumPRs];
+
   // Sequential execution of each async call to get current number of PRs per repo
   for (const repoDetails of activeNumPRs) {
     const updatedPRDetails = await fetchNumPRs(repoDetails);
+    console.log(`fetched repoDetails`);
+    console.log("length of activeNumPRs:", activeNumPRs.length);
 
     if (isSuccessFetchNumPRs(updatedPRDetails)) {
       const targetIndex = activeNumPRs.findIndex(
@@ -252,34 +256,27 @@ async function updatePRDetails({
       );
 
       if (targetIndex !== -1) {
-        // 2. Create a shallow copy of the array
-        const activeNumPRsCopy: ActiveNumPRs[] = [...activeNumPRs];
-
-        // 3. Create a NEW object (immutable update) for the target index
+        // Create a NEW object (immutable update) for the target index
         activeNumPRsCopy[targetIndex] = {
           ...repoDetails, // Copy existing properties of the target object
           numActivePRs: updatedPRDetails.numActivePRs, // Apply the new property value
         };
-
+        console.log("activeNumPRsCopy:", activeNumPRsCopy);
         await saveToLocalStorage("activeNumPRs", activeNumPRsCopy);
         //updatedNumPRs.push(activeNumPRsCopy);
-      } else if (isFailureFetchNumPRs(updatedPRDetails)) {
-        await saveToSessionStorage(
-          "waitInterval",
-          updatedPRDetails.waitInterval
-        );
-        await saveToSessionStorage("messages", updatedPRDetails.messages);
-
-        throw new Error(`Error fetching updated number of PRs: ${repoDetails}`);
       }
+    } else if (isFailureFetchNumPRs(updatedPRDetails)) {
+      await saveToSessionStorage("waitInterval", updatedPRDetails.waitInterval);
+      await saveToSessionStorage("messages", updatedPRDetails.messages);
+
+      throw new Error(`Error fetching updated number of PRs: ${repoDetails}`);
     }
 
-    console.log("--------------------------------");
-    console.log("updated num PRs array:", updatedNumPRs);
-    console.log("--------------------------------");
-
-    return;
+    /*     console.log("--------------------------------");
+        console.log("updated num PRs array:", updatedNumPRs);
+        console.log("--------------------------------"); */
   }
+  return;
 }
 
 export {
