@@ -169,6 +169,43 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 }
 
 async function handleAlertPollingAlarm(): Promise<void> {
+  type ErrorMsg = {
+    customType: string;
+    waitInterval?: number;
+  };
+
+  function isErrorMsg(arg: any): arg is ErrorMsg {
+    if (typeof arg !== "object" || arg === null) {
+      return false;
+    }
+
+    const isCustomTypeString = typeof arg.customType === "string";
+    if (!isCustomTypeString) {
+      return false;
+    }
+
+    const isWaitIntervalValid =
+      typeof arg.waitInterval === "undefined" ||
+      typeof arg.waitInterval === "number";
+
+    if (!isWaitIntervalValid) {
+      return false;
+    }
+
+    // If customType is the specific string, waitInterval must be defined
+    const requiresWaitInterval =
+      arg.customType === "Rate Limit Error encountered";
+
+    if (requiresWaitInterval) {
+      // If the error requires waitInterval, check that it is defined and valid
+      if (typeof arg.waitInterval === "undefined") {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   const now = new Date();
   const isoString = now.toISOString();
 
@@ -180,9 +217,11 @@ async function handleAlertPollingAlarm(): Promise<void> {
     typeof repoOwner !== "string" ||
     isActiveNumPRsArray(activeNumPRs) === false
   ) {
-    throw new Error(
+    console.error(
       "Either/and repoOwner and activeNumPRs not correct types when retrieved from extension localStorage"
     );
+
+    throw new Error("Storage Handling Error encountered");
 
     // To-do: escalate this error to user via toast prompting them to reinstall extension
   }
@@ -195,9 +234,30 @@ async function handleAlertPollingAlarm(): Promise<void> {
     );
     return;
   } catch (e) {
-    console.error(
-      `Rate limit error encountered on call to updatePRDetails on pollingAlarm alarm occurence: ${e}`
-    );
+    let message;
+    let timeout: number;
+
+    if (!isErrorMsg(e)) {
+      return;
+    }
+
+    message = e.customType;
+    timeout = e.waitInterval as number;
+
+    if (message === "Storage Handling Error encountered") {
+      console.error(`Error saving to chrome localStorage: ${e}`);
+
+      throw new Error("Storage Handling Error encountered");
+    } else if (message === "Rate Limit Error encountered") {
+      console.warn(
+        `Rate limit error encountered on pollingAlarm alarm occurence: ${e}`
+      );
+
+      throw {
+        customType: message,
+        waitInterval: timeout,
+      };
+    }
 
     console.log("deleting polling alarm and creating rate limit error alarm");
 
@@ -207,7 +267,7 @@ async function handleAlertPollingAlarm(): Promise<void> {
     console.log("creating rate limit error alarm");
     await handleCreateAlarm("rateLimitErrorAlarm");
 
-    return;
+    throw new Error("Rate Limit Error encountered");
   }
 }
 

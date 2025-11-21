@@ -5,6 +5,7 @@ import {
   saveToLocalStorage,
   loadFromLocalStorage,
 } from "./storage-utils";
+import { error } from "console";
 
 type SubmitPRDetailsProps = {
   activeNumPRs: ActiveNumPRs[];
@@ -279,6 +280,15 @@ async function updatePRDetails({
     console.log(`fetched repoDetails`);
     console.log("length of activeNumPRs:", activeNumPRs.length);
 
+    type ErrorMsg = {
+      customType: string;
+      waitInterval?: number;
+    };
+
+    const errorMsg: ErrorMsg = {
+      customType: "",
+    };
+
     if (isSuccessFetchNumPRs(updatedPRDetails)) {
       const isUpdateSuccess = handleUpdateActiveNumPRs({
         activeNumPRs,
@@ -286,15 +296,25 @@ async function updatePRDetails({
         repoDetails,
       });
       if (!isUpdateSuccess) {
-        throw new Error(
-          `Error updating new number of PRs value to storage: ${repoDetails}`
-        );
+        const debugMessage = `Error updating new number of PRs value to storage: ${repoDetails}`;
+        errorMsg.customType = "Storage Handling Error encountered";
+
+        console.error(debugMessage);
+
+        throw errorMsg;
       }
     } else if (isFailureFetchNumPRs(updatedPRDetails)) {
+      const debugMessage = `Rate Limit Error during fetching updated number of PRs, waiting for ${updatedPRDetails.waitInterval} seconds: ${repoDetails}`;
+
+      errorMsg.customType = "Rate Limit Error encountered";
+      errorMsg.waitInterval = updatedPRDetails.waitInterval;
+
       await saveToSessionStorage("waitInterval", updatedPRDetails.waitInterval);
       await saveToSessionStorage("messages", updatedPRDetails.messages);
 
-      throw new Error(`Error fetching updated number of PRs: ${repoDetails}`);
+      console.warn(debugMessage);
+
+      throw errorMsg;
     }
 
     /*     console.log("--------------------------------");
