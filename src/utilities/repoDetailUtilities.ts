@@ -11,10 +11,8 @@ import {
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
-import {
-  saveToLocalStorage,
-  updatePRDetails,
-} from "./service-worker-funcs/background.js";
+import { updatePRDetails } from "./service-worker-funcs/background.js";
+import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does

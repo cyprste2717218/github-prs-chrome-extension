@@ -1,4 +1,4 @@
-import { loadFromLocalStorage } from "./service-worker-funcs/background.js";
+import { loadFromLocalStorage } from "./service-worker-funcs/storage-utils.js";
 import { updatePRDetails } from "./service-worker-funcs/background.js";
 import { toast } from "sonner";
 import { StartPollingProps } from "@/models/utilities/PollingUtilitiesModels.ts";

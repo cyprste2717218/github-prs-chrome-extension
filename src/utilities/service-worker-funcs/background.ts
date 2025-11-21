@@ -4,7 +4,6 @@ import {
   saveToSessionStorage,
   saveToLocalStorage,
   loadFromLocalStorage,
-  loadFromSessionStorage,
 } from "./storage-utils";
 
 type SubmitPRDetailsProps = {
@@ -305,12 +304,6 @@ async function updatePRDetails({
   return;
 }
 
-export {
-  saveToLocalStorage,
-  loadFromLocalStorage,
-  saveToSessionStorage,
-  loadFromSessionStorage,
-  updatePRDetails,
-};
+export { updatePRDetails };
 
 export type { ActiveNumPRs, SubmitPRDetailsProps };
