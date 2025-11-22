@@ -34,8 +34,8 @@ async function handleDeleteAllAlarms(): Promise<void> {
 }
 
 async function handleDeleteAlarm(alarmName: string): Promise<void> {
-  async function deletePollingAlarm(): Promise<Boolean> {
-    const ALARM_NAME = "pollingAlarm";
+  async function deleteAlarm(alarmName: string): Promise<Boolean> {
+    const ALARM_NAME = alarmName;
 
     const alarm = await chrome.alarms.get(ALARM_NAME);
     if (typeof alarm !== "undefined") {
@@ -48,40 +48,18 @@ async function handleDeleteAlarm(alarmName: string): Promise<void> {
     throw new Error(`${ALARM_NAME} alarm does not exist`);
   }
 
-  async function deleteRateLimitErrorAlarm(): Promise<Boolean> {
-    const ALARM_NAME = "rateLimitErrorAlarm";
+  try {
+    await deleteAlarm(alarmName);
+  } catch (e) {
+    console.error(`Error deleting ${alarmName}: ${e}`);
 
-    const alarm = await chrome.alarms.get(ALARM_NAME);
-    if (typeof alarm !== "undefined") {
-      await chrome.alarms.clear(ALARM_NAME);
-      console.log(`${ALARM_NAME} alarm deleted`);
-    }
-
-    throw new Error(`${ALARM_NAME} alarm does not exist`);
-  }
-
-  if (alarmName === "pollingAlarm") {
-    try {
-      await deletePollingAlarm();
-    } catch (deletionError) {
+    if (alarmName === "pollingAlarm") {
       // To-do: add retry logic for deleting polling alarm
-      console.error(`Error deleting polling alarm: ${deletionError}`);
-
-      throw new Error("Alarm handling error encountered");
-      // To-do: escalate this error to user via toast prompting them to reinstall extension
     }
-    console.log("deleted polling alarm");
-  } else if (alarmName === "rateLimitErrorAlarm") {
-    try {
-      await deleteRateLimitErrorAlarm();
-    } catch (deletionError) {
-      // To-do: add retry logic for deleting polling alarm
-      console.error(`Error deleting rate limit error alarm: ${deletionError}`);
 
-      throw new Error("Alarm handling error encountered");
-      // To-do: escalate this error to user via toast prompting them to reinstall extension
-    }
+    throw new Error("Alarm handling error encountered");
   }
+  console.log(`deleted ${alarmName}`);
 }
 
 async function handleCreateAlarm(alarmName: string): Promise<void> {
