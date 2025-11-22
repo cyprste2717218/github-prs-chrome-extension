@@ -6,17 +6,14 @@ import {
   loadFromLocalStorage,
 } from "./storage-utils";
 
-type SubmitPRDetailsProps = {
-  activeNumPRs: ActiveNumPRs[];
-  repoOwner: string;
-};
-
-type ActiveNumPRs = {
-  name: string;
-  numActivePRs: number;
-  redirectUrl?: string;
-};
-
+import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
+import { SubmitPRDetailsProps } from "@/models/utilities/RepoDetailUtilitiesModels";
+import {
+  FailureFetchNumPRs,
+  FetchNumPRs,
+  HandleUpdateActiveNumPRs,
+  SuccessFetchNumPRs,
+} from "@/models/utilities/ServiceWorkerFuncsModels";
 async function updatePRDetails({
   activeNumPRs,
   repoOwner,
@@ -25,24 +22,6 @@ async function updatePRDetails({
   console.log("active num of prs:", activeNumPRs);
   const storedPATCode = await loadFromLocalStorage("patCode");
   //let updatedNumPRs: ActiveNumPRs[] = [];
-
-  type SuccessFetchNumPRs = {
-    name: string;
-    numActivePRs: number;
-  };
-
-  type FailureFetchNumPRs = {
-    waitInterval: number;
-    messages: string[];
-  };
-
-  type FetchNumPRs = SuccessFetchNumPRs | FailureFetchNumPRs;
-
-  type HandleUpdateActiveNumPRs = {
-    activeNumPRs: ActiveNumPRs[];
-    updatedPRDetails: SuccessFetchNumPRs;
-    repoDetails: ActiveNumPRs;
-  };
 
   function isSuccessFetchNumPRs(obj: FetchNumPRs): obj is SuccessFetchNumPRs {
     return (
@@ -324,5 +303,3 @@ async function updatePRDetails({
 }
 
 export { updatePRDetails };
-
-export type { ActiveNumPRs, SubmitPRDetailsProps };

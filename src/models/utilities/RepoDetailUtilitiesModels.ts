@@ -14,7 +14,6 @@ type RepoDetailUtilities = {
 };
 
 type SubmitPRDetailsProps = {
-  setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
 };

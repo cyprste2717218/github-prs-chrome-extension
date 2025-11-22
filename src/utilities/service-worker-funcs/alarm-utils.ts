@@ -1,5 +1,6 @@
 import { loadFromLocalStorage, loadFromSessionStorage } from "./storage-utils";
-import { ActiveNumPRs, updatePRDetails } from "./background";
+import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
+import { updatePRDetails } from "./background";
 
 type StoragePollingAlarm = {
   retrievedPollingRate: number;
