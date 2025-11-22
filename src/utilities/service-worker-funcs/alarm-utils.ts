@@ -72,86 +72,91 @@ async function handleDeleteAlarm(alarmName: string): Promise<void> {
 }
 
 async function handleCreateAlarm(alarmName: string): Promise<void> {
-  function getDelay(sliderValue: number): number {
-    // setting the delay based on the polling interval chosen (1,5 or 10 mins)
-
-    let delayMs = 300000;
-
-    if (sliderValue === 0) {
-      delayMs = 10;
-    } else if (sliderValue === 50) {
-      delayMs = 5;
-    } else if (sliderValue === 100) {
-      delayMs = 1;
-    }
-
-    return delayMs;
-  }
-
   async function createAlarm(alarmName: string): Promise<Boolean> {
-
-
     type StoragePollingAlarm = {
-      "retrievedPollingRate": number,
-      "trackedRepoDetails": ActiveNumPRs[]
-      "alarmType": string
-    }
+      retrievedPollingRate: number;
+      trackedRepoDetails: ActiveNumPRs[];
+      alarmType: string;
+    };
 
     type StorageRateLimitErrorAlarm = {
-      "delayPeriod": number,
-      "alarmType": string
-    }
+      delayPeriod: number;
+      alarmType: string;
+    };
 
     type StorageAlarm = StoragePollingAlarm | StorageRateLimitErrorAlarm;
 
-    async function fetchRequiredStorageData(alarmName: string): Promise<StorageAlarm> {
-
-      if (alarmName === "pollingAlarm") {
-
-        const retrievedPollingRate = await loadFromLocalStorage("pollingRate");
-        const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
-
-        const fetchedData = {
-          "retrievedPollingRate": retrievedPollingRate as number,
-          "trackedRepoDetails": trackedRepoDetails as ActiveNumPRs[],
-          "alarmType": alarmName as string
-        }
-
-        return fetchedData;
-
-
-      } else if (alarmName === "rateLimitErrorAlarm") {
-        const delayPeriod = await loadFromSessionStorage("delayPeriod");
-
-        const fetchedData = {
-          "delayPeriod": delayPeriod as number,
-          "alarmType": alarmName as string
-        }
-
-        return fetchedData;
-      } else {
-        console.error(`Invalid alarmName '${alarmName}' passed when fetching data needed to create alarm`)
-        throw new Error("TO-DO: FILL THIS OUT");
-      }
-    }
-
     async function fetchConditions(alarmName: string): Promise<Object> {
+      function getDelay(sliderValue: number): number {
+        // setting the delay based on the polling interval chosen (1,5 or 10 mins)
 
-      function isStoragePollingAlarm(result: StorageAlarm): result is StoragePollingAlarm {
+        let delayMs = 300000;
+
+        if (sliderValue === 0) {
+          delayMs = 10;
+        } else if (sliderValue === 50) {
+          delayMs = 5;
+        } else if (sliderValue === 100) {
+          delayMs = 1;
+        }
+
+        return delayMs;
+      }
+
+      async function fetchRequiredStorageData(
+        alarmName: string
+      ): Promise<StorageAlarm> {
+        if (alarmName === "pollingAlarm") {
+          const retrievedPollingRate =
+            await loadFromLocalStorage("pollingRate");
+          const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
+
+          const fetchedData = {
+            retrievedPollingRate: retrievedPollingRate as number,
+            trackedRepoDetails: trackedRepoDetails as ActiveNumPRs[],
+            alarmType: alarmName as string,
+          };
+
+          return fetchedData;
+        } else if (alarmName === "rateLimitErrorAlarm") {
+          const delayPeriod = await loadFromSessionStorage("delayPeriod");
+
+          const fetchedData = {
+            delayPeriod: delayPeriod as number,
+            alarmType: alarmName as string,
+          };
+
+          return fetchedData;
+        } else {
+          console.error(
+            `Invalid alarmName '${alarmName}' passed when fetching data needed to create alarm`
+          );
+          throw new Error("TO-DO: FILL THIS OUT");
+        }
+      }
+
+      function isStoragePollingAlarm(
+        result: StorageAlarm
+      ): result is StoragePollingAlarm {
         return result.alarmType === "pollingRateAlarm";
       }
 
-      function isStorageRateLimitAlarm(result: StorageAlarm): result is StorageRateLimitErrorAlarm {
+      function isStorageRateLimitAlarm(
+        result: StorageAlarm
+      ): result is StorageRateLimitErrorAlarm {
         return result.alarmType === "rateLimitErrorAlarm";
       }
 
-
-
-      const fetchedReqData: StorageAlarm = await fetchRequiredStorageData(alarmName);
+      const fetchedReqData: StorageAlarm =
+        await fetchRequiredStorageData(alarmName);
       if (isStoragePollingAlarm(fetchedReqData)) {
-
         const trackedRepoDetails = fetchedReqData["trackedRepoDetails"];
-        const trackedRepoDetailsConstraints = !trackedRepoDetails || (trackedRepoDetails as ActiveNumPRs[]).length === 0;
+        const retrievedPollingRate = fetchedReqData["retrievedPollingRate"];
+
+        const trackedRepoDetailsConstraints =
+          !trackedRepoDetails ||
+          (trackedRepoDetails as ActiveNumPRs[]).length === 0;
+        period = getDelay(retrievedPollingRate);
 
         /*        if (trackedRepoDetailsConstraints) {
                  throw new Error(
@@ -159,33 +164,23 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
                  );
                } */
 
-
         return trackedRepoDetailsConstraints;
-
       } else if (isStorageRateLimitAlarm(fetchedReqData)) {
-
         const delayPeriod = fetchedReqData["delayPeriod"];
         /*   if (!delayPeriod) {
             throw new Error("No delay period retrieved from session storage");
           } */
 
-        return !delayPeriod;
+        period = delayPeriod;
 
+        return !delayPeriod;
       } else {
         throw new Error("TO-DO: FILL THIS IN");
       }
-
-
-
     }
 
-    function getPeriod(alarmName: string) {
-
-    }
-
-
+    let period: number = 0;
     const ALARM_NAME = alarmName;
-
 
     /* Fetch data from storage needing checking for correct creation of alarm type,
    
@@ -194,96 +189,30 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
     - or polling frequency for usual polling alarm creation (chrome.localStorage)
     */
     const fetchedConditions = await fetchConditions(alarmName);
-    const period: number = ;
+
+    if (period === 0) {
+      throw new Error("TO-DO: FILL THIS IN");
+    }
 
     const alarm = await chrome.alarms.get(ALARM_NAME);
+
     if (typeof alarm === "undefined") {
-      if (fetchedConditions
-      ) {
-        const errorMsg = alarmName === 'pollingAlarm' ? "No current repo details for tracking retrieved from localStorage" : "No delay period retrieved from session storage";
+      if (fetchedConditions) {
+        const errorMsg =
+          alarmName === "pollingAlarm"
+            ? "No current repo details for tracking retrieved from localStorage"
+            : "No delay period retrieved from session storage";
         throw new Error(errorMsg);
       }
 
       await chrome.alarms.create(ALARM_NAME, {
         delayInMinutes: 1,
-        periodInMinutes: getDelay(retrievedPollingRate as number),
+        periodInMinutes: period,
       });
 
       // doing initial fetching of repo PR details before first alarm goes off
 
       console.log(`${ALARM_NAME} alarm created`);
-      return true;
-    }
-
-    return false;
-  }
-
-
-  async function createPollingAlarm(): Promise<Boolean> {
-    function getDelay(sliderValue: number): number {
-      // setting the delay based on the polling interval chosen (1,5 or 10 mins)
-
-      let delayMs = 300000;
-
-      if (sliderValue === 0) {
-        delayMs = 10;
-      } else if (sliderValue === 50) {
-        delayMs = 5;
-      } else if (sliderValue === 100) {
-        delayMs = 1;
-      }
-
-      return delayMs;
-    }
-
-    const ALARM_NAME = "pollingAlarm";
-
-    const alarm = await chrome.alarms.get(ALARM_NAME);
-    if (typeof alarm === "undefined") {
-      const retrievedPollingRate = await loadFromLocalStorage("pollingRate");
-
-      const trackedRepoDetails = await loadFromLocalStorage("activeNumPRs");
-      if (
-        !trackedRepoDetails ||
-        (trackedRepoDetails as ActiveNumPRs[]).length === 0
-      ) {
-        throw new Error(
-          "No current repo details for tracking retrieved from localStorage"
-        );
-      }
-
-      await chrome.alarms.create(ALARM_NAME, {
-        delayInMinutes: 1,
-        periodInMinutes: getDelay(retrievedPollingRate as number),
-      });
-
-      // doing initial fetching of repo PR details before first alarm goes off
-
-      console.log(`${ALARM_NAME} alarm created`);
-      return true;
-    }
-
-    return false;
-  }
-
-  async function createRateLimitErrorAlarm(): Promise<Boolean> {
-    const ALARM_NAME = "rateLimitErrorAlarm";
-
-    const alarm = await chrome.alarms.get(ALARM_NAME);
-    if (typeof alarm === "undefined") {
-      const delayPeriod = await loadFromSessionStorage("delayPeriod");
-
-      if (!delayPeriod) {
-        throw new Error("No delay period retrieved from session storage");
-      }
-
-      await chrome.alarms.create(ALARM_NAME, {
-        delayInMinutes: 1,
-        periodInMinutes: delayPeriod as number,
-      });
-
-      console.log(`${ALARM_NAME} alarm created`);
-
       return true;
     }
 
@@ -291,40 +220,16 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
   }
 
   try {
-    if (alarmName === "pollingAlarm") {
-      try {
-        const alarmPollingCreationResult = await createPollingAlarm();
+    const alarmCreationResult = await createAlarm(alarmName);
 
-        if (alarmPollingCreationResult === false) {
-          console.log("polling alarm already exists, not creating another one");
-        } else if (alarmPollingCreationResult === true) {
-          console.log("created polling alarm successfully");
-        }
-      } catch (e) {
-        console.error(`Error creating polling alarm: ${e}`);
-
-        throw new Error("Alarm handling error encountered");
-      }
-    } else if (alarmName === "rateLimitErrorAlarm") {
-      try {
-        const alarmRateLimitCreationResult = await createRateLimitErrorAlarm();
-
-        if (alarmRateLimitCreationResult === false) {
-          console.log(
-            "rate limit error alarm already exists, not creating another one"
-          );
-        } else if (alarmRateLimitCreationResult === true) {
-          console.log("created rate limit error alarm successfully");
-        }
-      } catch (e) {
-        console.error(`Error creating rate limit error alarm: ${e}`);
-
-        throw new Error("Alarm handling error encountered");
-      }
+    if (alarmCreationResult === false) {
+      console.log(`${alarmName} already exists, not creating another one`);
+    } else if (alarmCreationResult === true) {
+      console.log(`created ${alarmName} successfully`);
     }
   } catch (e) {
-    console.error(`Error during creation of alarm: ${e}`);
-    throw new Error("Alarm handling error encountered");
+    console.error(`Error during creation of ${alarmName} alarm: ${e}`);
+    throw new Error(`${alarmName} handling error encountered`);
   }
 }
 
