@@ -1,7 +1,7 @@
 import {
   handleAlertPollingAlarm,
   handleAlertRateLimitErrorAlarm,
-  handleLocalStorageTrackedReposChanges,
+  handleLocalStorageStepChanges,
 } from "./alarm-utils";
 import { saveAllToLocalStorage } from "./storage-utils";
 import { toast } from "sonner";
@@ -92,9 +92,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   }
 });
 
-// listening for changes to activeNumPRs array in local storage to determine if polling alarm needs to be created or deleted
+// listening for changes to current step in local storage to determine if polling alarm needs to be created or deleted
 chrome.storage.onChanged.addListener(async (changes, area) => {
-  await handleLocalStorageTrackedReposChanges(changes, area);
+  await handleLocalStorageStepChanges(changes, area);
 });
 
 chrome.runtime.onInstalled.addListener(async function (details) {

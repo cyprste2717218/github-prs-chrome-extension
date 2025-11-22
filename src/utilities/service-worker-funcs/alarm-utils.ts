@@ -1,6 +1,19 @@
 import { loadFromLocalStorage, loadFromSessionStorage } from "./storage-utils";
 import { ActiveNumPRs, updatePRDetails } from "./background";
 
+type StoragePollingAlarm = {
+  retrievedPollingRate: number;
+  trackedRepoDetails: ActiveNumPRs[];
+  alarmType: string;
+};
+
+type StorageRateLimitErrorAlarm = {
+  delayPeriod: number;
+  alarmType: string;
+};
+
+type StorageAlarm = StoragePollingAlarm | StorageRateLimitErrorAlarm;
+
 function isActiveNumPRsArray(arr: any): arr is ActiveNumPRs[] {
   return (
     Array.isArray(arr) &&
@@ -73,20 +86,9 @@ async function handleDeleteAlarm(alarmName: string): Promise<void> {
 
 async function handleCreateAlarm(alarmName: string): Promise<void> {
   async function createAlarm(alarmName: string): Promise<Boolean> {
-    type StoragePollingAlarm = {
-      retrievedPollingRate: number;
-      trackedRepoDetails: ActiveNumPRs[];
-      alarmType: string;
-    };
-
-    type StorageRateLimitErrorAlarm = {
-      delayPeriod: number;
-      alarmType: string;
-    };
-
-    type StorageAlarm = StoragePollingAlarm | StorageRateLimitErrorAlarm;
-
-    async function fetchConditions(alarmName: string): Promise<Object> {
+    async function fetchAlarmDetails(
+      alarmName: string
+    ): Promise<[Boolean, number]> {
       function getDelay(sliderValue: number): number {
         // setting the delay based on the polling interval chosen (1,5 or 10 mins)
 
@@ -131,14 +133,14 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
           console.error(
             `Invalid alarmName '${alarmName}' passed when fetching data needed to create alarm`
           );
-          throw new Error("TO-DO: FILL THIS OUT");
+          throw new Error("Alarm handling error encountered");
         }
       }
 
       function isStoragePollingAlarm(
         result: StorageAlarm
       ): result is StoragePollingAlarm {
-        return result.alarmType === "pollingRateAlarm";
+        return result.alarmType === "pollingAlarm";
       }
 
       function isStorageRateLimitAlarm(
@@ -147,8 +149,12 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
         return result.alarmType === "rateLimitErrorAlarm";
       }
 
+      let period;
+
       const fetchedReqData: StorageAlarm =
         await fetchRequiredStorageData(alarmName);
+
+      console.log("fetchedReqData:", fetchedReqData);
       if (isStoragePollingAlarm(fetchedReqData)) {
         const trackedRepoDetails = fetchedReqData["trackedRepoDetails"];
         const retrievedPollingRate = fetchedReqData["retrievedPollingRate"];
@@ -158,28 +164,20 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
           (trackedRepoDetails as ActiveNumPRs[]).length === 0;
         period = getDelay(retrievedPollingRate);
 
-        /*        if (trackedRepoDetailsConstraints) {
-                 throw new Error(
-                   "No current repo details for tracking retrieved from localStorage"
-                 );
-               } */
-
-        return trackedRepoDetailsConstraints;
+        return [trackedRepoDetailsConstraints, period];
       } else if (isStorageRateLimitAlarm(fetchedReqData)) {
         const delayPeriod = fetchedReqData["delayPeriod"];
-        /*   if (!delayPeriod) {
-            throw new Error("No delay period retrieved from session storage");
-          } */
-
         period = delayPeriod;
 
-        return !delayPeriod;
+        return [!delayPeriod, period];
       } else {
-        throw new Error("TO-DO: FILL THIS IN");
+        console.error(
+          "Retrieved alarm details don't match rate limit or polling alarm types"
+        );
+        throw new Error("Alarm handling error encountered");
       }
     }
 
-    let period: number = 0;
     const ALARM_NAME = alarmName;
 
     /* Fetch data from storage needing checking for correct creation of alarm type,
@@ -188,10 +186,13 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
     
     - or polling frequency for usual polling alarm creation (chrome.localStorage)
     */
-    const fetchedConditions = await fetchConditions(alarmName);
+    const fetchedAlarmDetails = await fetchAlarmDetails(alarmName);
 
-    if (period === 0) {
-      throw new Error("TO-DO: FILL THIS IN");
+    const fetchedConditions = fetchedAlarmDetails[0];
+    const fetchedPeriod = fetchedAlarmDetails[1];
+
+    if (!fetchedPeriod) {
+      throw new Error("No period fetched for alarm scheduling");
     }
 
     const alarm = await chrome.alarms.get(ALARM_NAME);
@@ -207,7 +208,7 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
 
       await chrome.alarms.create(ALARM_NAME, {
         delayInMinutes: 1,
-        periodInMinutes: period,
+        periodInMinutes: fetchedPeriod,
       });
 
       // doing initial fetching of repo PR details before first alarm goes off
@@ -411,24 +412,28 @@ async function handleAlertRateLimitErrorAlarm(): Promise<void> {
   return;
 }
 
-async function handleLocalStorageTrackedReposChanges(
+async function handleLocalStorageStepChanges(
   changes: { [key: string]: chrome.storage.StorageChange },
   area: string
 ): Promise<void> {
-  // checking if activeNumPRs array in local storage has changed to determine if polling alarm needs to be created or deleted
-  if (area === "local" && changes.activeNumPRs) {
-    const newValue = JSON.parse(changes.activeNumPRs.newValue);
-    if (newValue.length === 0) {
-      // if no repos being tracked, delete polling alarm if it exists
+  // checking if localStorage indicates on repo tracking display screen, to determine if polling alarm needs to be created or deleted
+  if (area === "local" && changes.step) {
+    const newValue = JSON.parse(changes.step.newValue);
+    console.log("the step is:", newValue);
+
+    if (newValue !== 4) {
+      // if not on repo track display screen, delete polling alarm if it exists
 
       console.log(
         "no repos being tracked, deleting polling or rate limit error alarm if it exists"
       );
       await handleDeleteAllAlarms();
-    } else if (newValue.length > 0) {
-      // if repos being tracked, ensure polling alarm exists
+    } else if (newValue === 4) {
+      // if on repo track display screen, ensure polling alarm exists
 
-      console.log("repos being tracked, ensuring polling alarm exists");
+      console.log(
+        "on repo track display screen, ensuring polling alarm exists"
+      );
       await handleCreateAlarm("pollingAlarm");
       console.log("ensured polling alarm exists");
     }
@@ -438,5 +443,5 @@ async function handleLocalStorageTrackedReposChanges(
 export {
   handleAlertPollingAlarm,
   handleAlertRateLimitErrorAlarm,
-  handleLocalStorageTrackedReposChanges,
+  handleLocalStorageStepChanges,
 };
