@@ -6,19 +6,6 @@ import type {
 import { loadFromLocalStorage, loadFromSessionStorage } from "./storage-utils";
 import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
 
-function isActiveNumPRsArray(arr: any): arr is ActiveNumPRs[] {
-  return (
-    Array.isArray(arr) &&
-    arr.every(
-      (item) =>
-        typeof item === "object" &&
-        typeof item.name === "string" &&
-        typeof item.numActivePRs === "number" &&
-        (item.redirectUrl === undefined || typeof item.redirectUrl === "string")
-    )
-  );
-}
-
 async function createAlarm(alarmName: string): Promise<Boolean> {
   async function fetchAlarmDetails(
     alarmName: string
@@ -114,11 +101,11 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
   const ALARM_NAME = alarmName;
 
   /* Fetch data from storage needing checking for correct creation of alarm type,
-   
-	- retrieving timeout period to wait for creating rate limit error alarm (i.e. fetching from chrome.sessionStorage)
-    
-	- or polling frequency for usual polling alarm creation (chrome.localStorage)
-	*/
+	 
+	  - retrieving timeout period to wait for creating rate limit error alarm (i.e. fetching from chrome.sessionStorage)
+	  
+	  - or polling frequency for usual polling alarm creation (chrome.localStorage)
+	  */
   const fetchedAlarmDetails = await fetchAlarmDetails(alarmName);
 
   const fetchedConditions = fetchedAlarmDetails[0];
@@ -167,4 +154,4 @@ async function deleteAlarm(alarmName: string): Promise<Boolean> {
   throw new Error(`${ALARM_NAME} alarm does not exist`);
 }
 
-export { createAlarm, deleteAlarm, isActiveNumPRsArray };
+export { createAlarm, deleteAlarm };

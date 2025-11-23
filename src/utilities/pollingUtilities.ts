@@ -15,6 +15,19 @@ import type {
 import type { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
 import { RequestError } from "@octokit/request-error";
 import { request } from "@octokit/request";
+import {
+  handleUpdatePRDetailsError,
+  isErrorMsg,
+} from "./errorHandlingUtilities.js";
+
+type ErrorMsg = {
+  customType: string;
+  waitInterval?: number;
+};
+
+const errorMsg: ErrorMsg = {
+  customType: "",
+};
 
 async function updatePRDetails({
   activeNumPRs,
@@ -72,11 +85,11 @@ async function updatePRDetails({
   const fetchNumPRs = async (
     repo: ActiveNumPRs
   ): Promise<SuccessFetchNumPRs | FailureFetchNumPRs> => {
-    function handleRedirectLogic({
+    async function handleRedirectLogic({
       response,
     }: {
       response: { status: number; url: string };
-    }): void {
+    }): Promise<void> {
       function checkForRedirects({
         status,
         url,
@@ -112,7 +125,7 @@ async function updatePRDetails({
       if (redirects.type === "temporary") {
         console.log("repeating fetchNumPRs with temporary redirect url");
         const temporaryChangedRepo = { ...repo, redirectUrl: redirects.url };
-        fetchNumPRs(temporaryChangedRepo);
+        await fetchNumPRs(temporaryChangedRepo);
 
         return;
       } else if (redirects.type === "permanent") {
@@ -124,8 +137,8 @@ async function updatePRDetails({
             updatedActiveNumPRs[i].redirectUrl = redirects.url;
           }
         }
-        saveToLocalStorage("activeNumPRs", updatedActiveNumPRs);
-        fetchNumPRs(repo);
+        await saveToLocalStorage("activeNumPRs", updatedActiveNumPRs);
+        await fetchNumPRs(repo);
 
         return;
       }
@@ -192,8 +205,8 @@ async function updatePRDetails({
         },
         url: redirectUrl,
       })
-        .then((response) => {
-          handleRedirectLogic({ response });
+        .then(async (response) => {
+          await handleRedirectLogic({ response });
 
           results = response.data;
         })
@@ -259,15 +272,6 @@ async function updatePRDetails({
     console.log(`fetched repoDetails`);
     console.log("length of activeNumPRs:", activeNumPRs.length);
 
-    type ErrorMsg = {
-      customType: string;
-      waitInterval?: number;
-    };
-
-    const errorMsg: ErrorMsg = {
-      customType: "",
-    };
-
     if (isSuccessFetchNumPRs(updatedPRDetails)) {
       const isUpdateSuccess = handleUpdateActiveNumPRs({
         activeNumPRs,
@@ -332,9 +336,13 @@ async function startPolling({ activeNumPRs, repoOwner }: StartPollingProps) {
       console.log(`finished polling github api`);
     } catch (error) {
       console.error("Error during polling github api:", error);
-      toast.error(
-        "Error during polling github api, if the issue persists try reinstalling the extension"
-      );
+
+      if (!isErrorMsg(error)) {
+        console.error("Unknown error type encountered from polling:", error);
+        throw new Error("polling");
+      }
+
+      await handleUpdatePRDetailsError(error);
     }
   }
 

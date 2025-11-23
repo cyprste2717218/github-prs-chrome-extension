@@ -1,6 +1,11 @@
 import { loadFromLocalStorage } from "./storage-utils";
 import { updatePRDetails } from "../pollingUtilities";
-import { createAlarm, deleteAlarm, isActiveNumPRsArray } from "./alarm-utils";
+import { createAlarm, deleteAlarm } from "./alarm-utils";
+import {
+  ErrorMsg,
+  handleUpdatePRDetailsError,
+} from "../errorHandlingUtilities";
+import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
 
 async function handleDeleteAllAlarms(): Promise<void> {
   console.log("clearing all alarms");
@@ -38,182 +43,56 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
   }
 }
 
-async function handleAlertPollingAlarm(): Promise<void> {
-  type ErrorMsg = {
-    customType: string;
-    waitInterval?: number;
-  };
-
-  function isErrorMsg(arg: any): arg is ErrorMsg {
-    if (typeof arg !== "object" || arg === null) {
-      return false;
-    }
-
-    const isCustomTypeString = typeof arg.customType === "string";
-    if (!isCustomTypeString) {
-      return false;
-    }
-
-    const isWaitIntervalValid =
-      typeof arg.waitInterval === "undefined" ||
-      typeof arg.waitInterval === "number";
-
-    if (!isWaitIntervalValid) {
-      return false;
-    }
-
-    // If customType is the specific string, waitInterval must be defined
-    const requiresWaitInterval =
-      arg.customType === "Rate Limit Error encountered";
-
-    if (requiresWaitInterval) {
-      // If the error requires waitInterval, check that it is defined and valid
-      if (typeof arg.waitInterval === "undefined") {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  const now = new Date();
-  const isoString = now.toISOString();
-
-  console.log(`pollingAlarm alarm triggered at ${isoString}`);
-  const activeNumPRs = await loadFromLocalStorage("activeNumPRs");
-  const repoOwner = await loadFromLocalStorage("username");
-
-  if (
-    typeof repoOwner !== "string" ||
-    isActiveNumPRsArray(activeNumPRs) === false
-  ) {
-    console.error(
-      "Either/and repoOwner and activeNumPRs not correct types when retrieved from extension localStorage"
-    );
-
-    throw new Error("Storage Handling Error encountered");
-
-    // To-do: escalate this error to user via toast prompting them to reinstall extension
-  }
-
+async function handleAlertAlarm(alarmName: string): Promise<void> {
   try {
-    await updatePRDetails({ activeNumPRs, repoOwner });
+    if (alarmName === "pollingAlarm") {
+      const now = new Date();
+      const isoString = now.toISOString();
 
-    console.log(
-      "saved updated PR details to extension localStorage successfully"
-    );
-    return;
-  } catch (e) {
-    let message;
-    let timeout: number;
+      console.log(`pollingAlarm alarm triggered at ${isoString}`);
+      const activeNumPRs = (await loadFromLocalStorage(
+        "activeNumPRs"
+      )) as ActiveNumPRs[];
+      const repoOwner = (await loadFromLocalStorage("username")) as string;
 
-    if (!isErrorMsg(e)) {
-      return;
-    }
-
-    message = e.customType;
-    timeout = e.waitInterval as number;
-
-    try {
-      if (message === "Storage Handling Error encountered") {
-        console.error(`Error saving to chrome localStorage: ${e}`);
-
-        message = "Storage Handling Error encountered";
-        throw { customType: message };
-      } else if (message === "Rate Limit Error encountered") {
-        console.warn(
-          `Rate limit error encountered on pollingAlarm alarm occurence: ${e}`
-        );
+      try {
+        await updatePRDetails({ activeNumPRs, repoOwner });
 
         console.log(
-          "deleting polling alarm and creating rate limit error alarm"
+          "saved updated PR details to extension localStorage successfully"
         );
-
-        console.log("deleting polling alarm");
-        try {
-          await handleDeleteAlarm("pollingAlarm");
-        } catch (e) {
-          console.log("Error encountered during deletion of polling alarm");
-
-          message = "Alarm handling error encountered";
-          throw { customType: message };
-        }
-
-        console.log("creating rate limit error alarm");
-        try {
-          await handleCreateAlarm("rateLimitErrorAlarm");
-        } catch (e) {
-          console.log(
-            "Error encountered during creation of rate limit error alarm"
-          );
-
-          message = "Alarm handling error encountered";
-          throw { customType: message };
-        }
-
-        throw {
-          customType: message,
-          waitInterval: timeout,
-        };
-      } else {
-        console.warn(
-          "Retrieved error message in alert polling alarm handling doesn't match any available cases"
-        );
-
-        message = "Invalid Error Message";
-        throw {
-          customType: message,
-        };
-      }
-    } catch (e) {
-      if (!isErrorMsg(e)) {
         return;
+      } catch (e) {
+        await handleUpdatePRDetailsError(e as ErrorMsg);
       }
+    } else if (alarmName === "rateLimitErrorAlarm") {
       console.log(
-        "Error during error handling process for handling polling alarm trigger run:",
-        e.customType
+        "period elapsed for suspension from making requests due to rate limit error response"
       );
 
-      message = "Alarm handling error encountered";
-      throw { customType: message };
-    }
-  }
-}
+      try {
+        // 1). delete rate limit error alarm
+        console.log("deleting rate limit error alarm");
+        await handleDeleteAlarm("rateLimitErrorAlarm");
+        console.log("deleted rate limit error alarm");
 
-async function handleAlertRateLimitErrorAlarm(): Promise<void> {
-  console.log(
-    "period elapsed for suspension from making requests due to rate limit error response"
-  );
+        // 2). create new polling alarm
+        console.log("creating new polling alarm");
+        await handleCreateAlarm("pollingAlarm");
+        console.log("created new polling alarm");
+      } catch (e) {
+        console.error(
+          "Issue handling deletion of old rate limit error alarm followed by creation of new polling alarm following rate limit error period having elapsed"
+        );
 
-  try {
-    console.log("deleting rate limit error alarm");
-    try {
-      await handleDeleteAlarm("rateLimitErrorAlarm");
-      console.log("deleted rate limit error alarm");
-    } catch (e) {
-      console.log("Error during deletion of rate limit error alarm:", e);
+        throw new Error("Alarm handling error encountered");
+      }
 
-      throw new Error("Alarm handling error encountered");
-    }
-
-    console.log("creating new polling alarm");
-    try {
-      await handleCreateAlarm("pollingAlarm");
-      console.log("created new polling alarm");
-    } catch (e) {
-      console.log("Error during creation of polling alarm:", e);
-
-      throw new Error("Alarm handling error encountered");
+      return;
     }
   } catch (e) {
-    console.error(
-      "Issue handling deletion of old rate limit error alarm followed by creation of new polling alarm following rate limit error period having elapsed"
-    );
-
     throw new Error("Alarm handling error encountered");
   }
-
-  return;
 }
 
 async function handleLocalStorageStepChanges(
@@ -245,7 +124,8 @@ async function handleLocalStorageStepChanges(
 }
 
 export {
-  handleAlertPollingAlarm,
-  handleAlertRateLimitErrorAlarm,
+  handleAlertAlarm,
+  handleCreateAlarm,
+  handleDeleteAlarm,
   handleLocalStorageStepChanges,
 };

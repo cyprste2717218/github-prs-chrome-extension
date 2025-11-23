@@ -172,18 +172,24 @@ async function handleFetchUserRepos(
 }
 
 async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
-  if (
-    activeNumPRs &&
-    Array.isArray(activeNumPRs) &&
-    activeNumPRs.length !== 0
-  ) {
-    console.log("activeNumPRs array is not empty");
-    updatePRDetails({
-      activeNumPRs,
-      repoOwner,
-    });
-  } else {
-    console.log("activeNumPRs array is empty");
+  try {
+    if (
+      activeNumPRs &&
+      Array.isArray(activeNumPRs) &&
+      activeNumPRs.length !== 0
+    ) {
+      console.log("activeNumPRs array is not empty");
+      await updatePRDetails({
+        activeNumPRs,
+        repoOwner,
+      });
+      console.log("Completed manual refresh of PR details");
+    } else {
+      console.log("activeNumPRs array is empty");
+    }
+  } catch (e) {
+    console.error("Error during manual refresh of PR details:", e);
+    throw e;
   }
 }
 

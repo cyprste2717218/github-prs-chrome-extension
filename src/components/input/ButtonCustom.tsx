@@ -28,6 +28,7 @@ import {
 import { handleStepChange } from "@/utilities/setUpUtilities";
 import { displayScrollToTopButton } from "@/utilities/hooks/displayScrollToTopButton.ts";
 import { toast } from "sonner";
+import { getToast } from "@/utilities/toastMessages";
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {
   return (
@@ -96,18 +97,28 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
 }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     console.log("pressed refresh button");
     setIsRefreshing(true);
-    handleRefresh({
-      setActiveNumPRs,
-      setStep,
-      activeNumPRs,
-      currentStep,
-      repoOwner,
-    });
-    setIsRefreshing(false);
-    console.log("succesfully refreshed prs");
+
+    try {
+      await handleRefresh({
+        setActiveNumPRs,
+        setStep,
+        activeNumPRs,
+        currentStep,
+        repoOwner,
+      });
+      setIsRefreshing(false);
+      console.log("succesfully refreshed prs");
+    } catch (e) {
+      // setting isRefreshing to false in case of error
+      setIsRefreshing(false);
+
+      console.error("Error during manual refresh of PR details");
+      const toastMessage = getToast("error", "rateLimitError");
+      return toast.error(toastMessage);
+    }
   };
 
   return (
