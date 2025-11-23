@@ -11,7 +11,7 @@ import {
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
-import { updatePRDetails } from "./service-worker-funcs/background.js";
+import { updatePRDetails } from "./pollingUtilities.ts";
 import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 
 async function handleSubmitUserName({
