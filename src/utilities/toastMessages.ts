@@ -1,5 +1,6 @@
 import type {
   GetToast,
+  RetrieveToast,
   ToastMessages,
 } from "@/models/utilities/ToastMessagesModels";
 
@@ -21,7 +22,7 @@ const toastMessages: ToastMessages = {
   },
 };
 
-const getToast: GetToast = (category, cause, timeout) => {
+const retrieveToast: RetrieveToast = (category, cause, timeout) => {
   if (timeout) {
     if (category === "info" && cause === "rateLimitError") {
       return `You've hit a rate limit! Waiting ${timeout} seconds before trying again`;
@@ -34,6 +35,18 @@ const getToast: GetToast = (category, cause, timeout) => {
   }
 
   return toastMessages[category][cause];
+};
+
+const getToast: GetToast = (category, cause, timeout): string => {
+  const toastMessage = retrieveToast(category, cause, timeout);
+  if (!toastMessage) {
+    console.error(
+      `No toast message found for ${cause} error, returning generic error message for use in toast`
+    );
+    return "An error has occured";
+  }
+
+  return toastMessage;
 };
 
 export { getToast };

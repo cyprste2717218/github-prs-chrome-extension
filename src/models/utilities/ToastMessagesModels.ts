@@ -22,7 +22,7 @@ type ToastMessages = {
   };
 };
 
-interface GetToast {
+interface RetrieveToast {
   (
     category: ToastMessagesType,
     cause: ToastMessageCause,
@@ -30,4 +30,18 @@ interface GetToast {
   ): string | void;
 }
 
-export type { ToastMessages, ToastMessagesType, ToastMessageCause, GetToast };
+interface GetToast {
+  (
+    category: ToastMessagesType,
+    cause: ToastMessageCause,
+    timeout?: number
+  ): string;
+}
+
+export type {
+  ToastMessages,
+  ToastMessagesType,
+  ToastMessageCause,
+  GetToast,
+  RetrieveToast,
+};

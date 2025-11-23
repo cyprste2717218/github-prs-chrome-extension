@@ -1,3 +1,4 @@
+import { getToast } from "../toastMessages";
 import {
   handleAlertPollingAlarm,
   handleAlertRateLimitErrorAlarm,
@@ -61,13 +62,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     timeout = e.waitInterval as number;
 
     if (message === "Storage Handling Error encountered") {
-      return toast.error(
-        "An error has occurred, try reloading or alternatively reinstalling the extension"
-      );
+      const toastMessage = getToast("error", "storageHandling");
+      return toast.error(toastMessage);
     } else if (message === "Rate Limit Error encountered") {
-      return toast.warning(
-        `You've hit a rate limit! Waiting ${timeout} seconds before trying again`
-      );
+      const toastMessage = getToast("info", "rateLimitError", timeout);
+      return toast.warning(toastMessage);
     }
   }
 
@@ -85,9 +84,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     message = e.customType;
 
     if (message === "Alarm handling error encountered") {
-      return toast.error(
-        "An error has occurred, try reloading or alternatively reinstalling the extension"
-      );
+      const toastMessage = getToast("error", "alarmHandling");
+      return toast.error(toastMessage);
     }
   }
 });
@@ -102,9 +100,8 @@ chrome.runtime.onInstalled.addListener(async function (details) {
     try {
       await handleExtensionInstall();
     } catch (e) {
-      return toast.error(
-        "An error has occurred, try reloading or alternatively reinstalling the extension"
-      );
+      const toastMessage = getToast("error", "extensionInstall");
+      return toast.error(toastMessage);
     }
   }
 });

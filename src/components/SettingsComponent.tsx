@@ -14,6 +14,7 @@ import {
   loadFromLocalStorage,
   saveToLocalStorage,
 } from "@/utilities/service-worker-funcs/storage-utils";
+import { getToast } from "@/utilities/toastMessages.ts";
 
 const SliderMarker = ({ numMinutes }: { numMinutes: number }) => {
   let displayText = <p></p>;
@@ -61,7 +62,8 @@ const SettingsComponent = ({ pollingRate }: SettingsProps) => {
     const fetchedPollingRate = await loadFromLocalStorage("pollingRate");
     console.log("Setting new polling rate of", fetchedPollingRate);
 
-    return toast.success("New polling rate saved successfully!");
+    const toastMessage = getToast("success", "savePollingRate");
+    return toast.success(toastMessage);
   }
 
   return (
