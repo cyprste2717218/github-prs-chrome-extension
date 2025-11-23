@@ -210,7 +210,19 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       })
       .catch((error) => {
         console.error("Error in handleSubmitUserName:", error);
-        toast.info("No public repositories discovered for specified user");
+        if (
+          error instanceof Error &&
+          error.message === "Rate Limit error present"
+        ) {
+          const toastMessage = getToast("error", "rateLimitError");
+          return toast.error(toastMessage);
+        } else if (
+          error instanceof Error &&
+          error.message === "No results returned from handleFetchUserRepos"
+        ) {
+          const toastMessage = getToast("error", "noPublicRepos");
+          return toast.info(toastMessage);
+        }
       });
   }
 

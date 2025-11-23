@@ -19,6 +19,8 @@ const toastMessages: ToastMessages = {
       "An error has occurred, try reloading or alternatively reinstalling the extension",
     extensionInstall:
       "An error has occurred, try reloading or alternatively reinstalling the extension",
+    changePageResults:
+      "An error occurred while changing page results, please try again",
   },
 };
 

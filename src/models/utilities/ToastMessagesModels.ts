@@ -9,7 +9,8 @@ type ToastErrorMessages =
   | "polling"
   | "storageHandling"
   | "alarmHandling"
-  | "extensionInstall";
+  | "extensionInstall"
+  | "changePageResults";
 
 type ToastMessageCause =
   | ToastSuccessMessages

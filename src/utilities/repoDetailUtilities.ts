@@ -12,7 +12,12 @@ import {
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
 import { updatePRDetails } from "./pollingUtilities.ts";
-import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
+import {
+  loadFromSessionStorage,
+  saveToLocalStorage,
+} from "./service-worker-funcs/storage-utils.ts";
+import { getToast } from "./toastMessages.ts";
+import { toast } from "sonner";
 
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
@@ -32,8 +37,19 @@ async function handleSubmitUserName({
     username,
     patCode,
     currentResultPageNum
-  ).then((results) => {
+  ).then(async (results) => {
     if (!results) {
+      const retrievedWaitInterval = (await loadFromSessionStorage(
+        "waitInterval"
+      )) as number;
+      const retrievedMessages = (await loadFromSessionStorage(
+        "messages"
+      )) as string[];
+
+      if (retrievedWaitInterval > 0 && retrievedMessages.length > 0) {
+        throw new Error("Rate Limit error present");
+      }
+
       throw new Error("No results returned from handleFetchUserRepos");
     } else {
       setRepoDetails(results);
@@ -206,18 +222,29 @@ async function handleChangePageResults({
   );
 
   // reset details stored
-  setRepoDetails(null);
+  saveToLocalStorage("repoDetails", null);
   // store in state the current github repo result page number
   saveToLocalStorage("currentResultPageNum", currentResultPageNum);
   //setActiveResultsPage(currentResultPageNum);
+  try {
+    await handleSubmitUserName({
+      setRepoDetails,
+      setNumPageResults,
+      username,
+      patCode,
+      currentResultPageNum,
+    });
+  } catch (error) {
+    console.error("Error changing page results:", error);
 
-  await handleSubmitUserName({
-    setRepoDetails,
-    setNumPageResults,
-    username,
-    patCode,
-    currentResultPageNum,
-  });
+    if (
+      error instanceof Error &&
+      error.message === "Rate Limit error present"
+    ) {
+      const toastMessage = getToast("error", "rateLimitError");
+      return toast.error(toastMessage);
+    }
+  }
 }
 
 async function handleToggleRepo({

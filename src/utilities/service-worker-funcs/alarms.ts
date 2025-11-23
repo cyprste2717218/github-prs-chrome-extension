@@ -1,4 +1,4 @@
-import { loadFromLocalStorage } from "./storage-utils";
+import { loadFromLocalStorage, saveToSessionStorage } from "./storage-utils";
 import { updatePRDetails } from "../pollingUtilities";
 import { createAlarm, deleteAlarm } from "./alarm-utils";
 import {
@@ -80,6 +80,12 @@ async function handleAlertAlarm(alarmName: string): Promise<void> {
         console.log("creating new polling alarm");
         await handleCreateAlarm("pollingAlarm");
         console.log("created new polling alarm");
+
+        // 3). updating session storage to indicate rate limit error has been handled
+        console.log("setting watInterval in session storage to 0");
+        await saveToSessionStorage("rateLimitWaitInterval", 0);
+        console.log("clearing rate limit error messages in session storage");
+        await saveToSessionStorage("rateLimitErrorMessages", []);
       } catch (e) {
         console.error(
           "Issue handling deletion of old rate limit error alarm followed by creation of new polling alarm following rate limit error period having elapsed"

@@ -9,6 +9,8 @@ import {
 } from "../ui/pagination";
 import { handleChangePageResults } from "@/utilities/repoDetailUtilities";
 import { PaginationInputProps } from "@/models/frontend/InputModels";
+import { getToast } from "@/utilities/toastMessages";
+import { toast } from "sonner";
 
 const PaginationInput = ({
   setNumPageResults,
@@ -50,12 +52,17 @@ const PaginationInput = ({
         paginationElements.push(
           <PaginationItem key={`pagination-item-${currentResultPageNum}`}>
             <PaginationLink
-              onClick={() =>
-                handleChangePageResults({
-                  ...handleChangePageResultsProps,
-                  currentResultPageNum,
-                })
-              }
+              onClick={async () => {
+                try {
+                  await handleChangePageResults({
+                    ...handleChangePageResultsProps,
+                    currentResultPageNum,
+                  });
+                } catch (e) {
+                  const toastMessage = getToast("error", "changePageResults");
+                  return toast.error(toastMessage);
+                }
+              }}
               isActive={shouldSetActive}
             >
               {currentResultPageNum}
@@ -110,11 +117,17 @@ const PaginationInput = ({
         "aria-disabled": condition,
         tabIndex: condition ? -1 : undefined,
         className: condition ? "pointer-events-none opacity-50" : undefined,
-        onClick: () =>
-          handleChangePageResults({
-            ...handleChangePageResultsProps,
-            currentResultPageNum: newPageNum,
-          }),
+        onClick: async () => {
+          try {
+            await handleChangePageResults({
+              ...handleChangePageResultsProps,
+              currentResultPageNum: newPageNum,
+            });
+          } catch (e) {
+            const toastMessage = getToast("error", "changePageResults");
+            return toast.error(toastMessage);
+          }
+        },
       };
     };
 

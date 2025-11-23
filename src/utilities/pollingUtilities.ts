@@ -16,14 +16,10 @@ import type { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
 import { RequestError } from "@octokit/request-error";
 import { request } from "@octokit/request";
 import {
+  ErrorMsg,
   handleUpdatePRDetailsError,
   isErrorMsg,
 } from "./errorHandlingUtilities.js";
-
-type ErrorMsg = {
-  customType: string;
-  waitInterval?: number;
-};
 
 const errorMsg: ErrorMsg = {
   customType: "",
@@ -76,7 +72,6 @@ async function updatePRDetails({
       console.log("activeNumPRsCopy:", activeNumPRsCopy);
       await saveToLocalStorage("activeNumPRs", activeNumPRsCopy);
       return true;
-      //updatedNumPRs.push(activeNumPRsCopy);
     }
     return false;
   };
@@ -181,6 +176,7 @@ async function updatePRDetails({
         }
       }
 
+      console.log("messages:", messages);
       return {
         waitInterval: waitInterval,
         messages: messages,
