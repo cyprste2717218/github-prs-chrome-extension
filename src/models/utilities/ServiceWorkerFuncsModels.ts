@@ -18,9 +18,25 @@ type HandleUpdateActiveNumPRs = {
   repoDetails: ActiveNumPRs;
 };
 
+type StoragePollingAlarm = {
+  retrievedPollingRate: number;
+  trackedRepoDetails: ActiveNumPRs[];
+  alarmType: string;
+};
+
+type StorageRateLimitErrorAlarm = {
+  delayPeriod: number;
+  alarmType: string;
+};
+
+type StorageAlarm = StoragePollingAlarm | StorageRateLimitErrorAlarm;
+
 export type {
   SuccessFetchNumPRs,
   FailureFetchNumPRs,
   FetchNumPRs,
   HandleUpdateActiveNumPRs,
+  StoragePollingAlarm,
+  StorageRateLimitErrorAlarm,
+  StorageAlarm,
 };

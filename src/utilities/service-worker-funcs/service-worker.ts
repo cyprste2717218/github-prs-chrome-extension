@@ -2,8 +2,8 @@ import {
   handleAlertPollingAlarm,
   handleAlertRateLimitErrorAlarm,
   handleLocalStorageStepChanges,
-} from "./alarm-utils";
-import { saveAllToLocalStorage } from "./storage-utils";
+} from "./alarms";
+import { handleExtensionInstall } from "./background";
 import { toast } from "sonner";
 
 // handling when different alarm types go off
@@ -99,32 +99,12 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
 
 chrome.runtime.onInstalled.addListener(async function (details) {
   if (details.reason === "install") {
-    console.log("GitHub PR Tracker Extension installed or updated!");
-
-    const initialSettings = {
-      step: 1, // Initial step set to 1
-      username: "", // Initial empty username
-      pollingRate: 50, // Default polling rate
-      reposToggled: false, // Default state for all repos selected or not on selection screen
-      numPageResults: 0, // Default number of repo result pages
-      activeResultsPage: 1, // Default page number,
-      patCode: null, // Initial null PAT,
-      repoDetails: null, // Initial null value regarding repository details tracked
-      activeNumPRs: [], // Initial empty array for active PRs
-    };
-
-    await saveAllToLocalStorage(initialSettings)
-      .then(() => {
-        console.log("Initial settings saved to local storage successfully!");
-      })
-      .catch((error) => {
-        console.error(
-          `Error saving initial settings to local storage: ${error}`
-        );
-
-        return toast.error(
-          "An error has occurred, try reloading or alternatively reinstalling the extension"
-        );
-      });
+    try {
+      await handleExtensionInstall();
+    } catch (e) {
+      return toast.error(
+        "An error has occurred, try reloading or alternatively reinstalling the extension"
+      );
+    }
   }
 });

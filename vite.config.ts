@@ -17,9 +17,9 @@ export default defineConfig({
           __dirname,
           "./src/utilities/service-worker-funcs/background.ts"
         ),
-        "alarm-utils": path.resolve(
+        alarms: path.resolve(
           __dirname,
-          "./src/utilities/service-worker-funcs/alarm-utils.ts"
+          "./src/utilities/service-worker-funcs/alarms.ts"
         ),
         "storage-utils": path.resolve(
           __dirname,
