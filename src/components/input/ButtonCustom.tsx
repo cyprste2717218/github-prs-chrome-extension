@@ -116,7 +116,7 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
       setIsRefreshing(false);
 
       console.error("Error during manual refresh of PR details");
-      const toastMessage = getToast("error", "rateLimitError");
+      const toastMessage = getToast("info", "rateLimitError");
       return toast.error(toastMessage);
     }
   };
@@ -210,18 +210,13 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       })
       .catch((error) => {
         console.error("Error in handleSubmitUserName:", error);
-        if (
-          error instanceof Error &&
-          error.message === "Rate Limit error present"
-        ) {
-          const toastMessage = getToast("error", "rateLimitError");
-          return toast.error(toastMessage);
-        } else if (
-          error instanceof Error &&
-          error.message === "No results returned from handleFetchUserRepos"
-        ) {
-          const toastMessage = getToast("error", "noPublicRepos");
-          return toast.info(toastMessage);
+
+        if (error.message === "Rate Limit Error encountered") {
+          const toastMessage = getToast("info", "rateLimitError");
+          return toast.warning(toastMessage);
+        } else if (error.message === "No Public Repos Found") {
+          const toastMessage = getToast("info", "noPublicRepos");
+          return toast.warning(toastMessage);
         }
       });
   }

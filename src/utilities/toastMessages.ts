@@ -8,9 +8,11 @@ const toastMessages: ToastMessages = {
   success: {
     savePollingRate: "New polling rate saved successfully!",
   },
-  info: {},
-  error: {
+  info: {
+    rateLimitError: "You've hit a rate limit! Try again later",
     noPublicRepos: "No public repositories discovered for specified user",
+  },
+  error: {
     polling:
       "Error during polling github api, if the issue persists try reinstalling the extension",
     storageHandling:

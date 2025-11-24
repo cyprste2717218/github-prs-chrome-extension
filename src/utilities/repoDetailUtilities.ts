@@ -1,4 +1,3 @@
-import React from "react";
 import type {
   RepoCardComponentDetails,
   ActiveNumPRs,
@@ -11,18 +10,16 @@ import {
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
+import type { OctokitResponse } from "@octokit/types";
 import { updatePRDetails } from "./pollingUtilities.ts";
-import {
-  loadFromSessionStorage,
-  saveToLocalStorage,
-} from "./service-worker-funcs/storage-utils.ts";
+import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 import { getToast } from "./toastMessages.ts";
 import { toast } from "sonner";
 
 async function handleSubmitUserName({
   // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
-  setRepoDetails,
-  setNumPageResults,
+  /* setRepoDetails,
+  setNumPageResults, */
   username,
   patCode,
   currentResultPageNum = 1,
@@ -32,45 +29,56 @@ async function handleSubmitUserName({
     return;
   }
 
-  await handleFetchUserRepos(
-    setNumPageResults,
-    username,
-    patCode,
-    currentResultPageNum
-  ).then(async (results) => {
-    if (!results) {
-      const retrievedWaitInterval = (await loadFromSessionStorage(
-        "waitInterval"
-      )) as number;
-      const retrievedMessages = (await loadFromSessionStorage(
-        "messages"
-      )) as string[];
+  try {
+    const results = await handleFetchUserRepos(
+      username,
+      patCode,
+      currentResultPageNum
+    );
+    await saveToLocalStorage("repoDetails", results);
+  } catch (e) {
+    console.warn("Error in handleSubmitUserName:", e);
+    const debugMessage = `Error during fetching public repos for user ${username}`;
 
-      if (retrievedWaitInterval > 0 && retrievedMessages.length > 0) {
-        throw new Error("Rate Limit error present");
+    console.warn(debugMessage);
+
+    throw e;
+  }
+
+  /*   await handleFetchUserRepos(
+      setNumPageResults,
+      username,
+      patCode,
+      currentResultPageNum
+    ).then(async (results) => {
+      if (!results) {
+        const retrievedWaitInterval = (await loadFromSessionStorage(
+          "waitInterval"
+        )) as number;
+        const retrievedMessages = (await loadFromSessionStorage(
+          "messages"
+        )) as string[];
+  
+        if (retrievedWaitInterval > 0 && retrievedMessages.length > 0) {
+          throw new Error("Rate Limit error present");
+        }
+  
+        throw new Error("No results returned from handleFetchUserRepos");
+      } else {
+        setRepoDetails(results);
       }
-
-      throw new Error("No results returned from handleFetchUserRepos");
-    } else {
-      setRepoDetails(results);
-    }
-  });
+    }).catch(error => {
+      console.error("Error in handleSubmitUserName:", error);
+      throw error;
+    }); */
 }
 
 async function handleFetchUserRepos(
-  setNumPageResults: React.Dispatch<React.SetStateAction<number>>,
+  /* setNumPageResults: React.Dispatch<React.SetStateAction<number>>, */
   username: string,
   patCode: string | null,
   resultPageNum: number
 ): Promise<RepoCardComponentDetails[] | undefined> {
-  if (!username) {
-    console.warn("No username entered");
-    return;
-  }
-
-  let parsedResults: any;
-  let response: any;
-
   async function checkResponseHeaders(response: any) {
     function extractLastPageNumber(linkHeader: string) {
       // Remove the "link: " prefix if present
@@ -121,7 +129,8 @@ async function handleFetchUserRepos(
 
     try {
       lastValidPageNumber = extractLastPageNumber(linkHeader);
-      setNumPageResults(lastValidPageNumber);
+      //setNumPageResults(lastValidPageNumber);
+      await saveToLocalStorage("numPageResults", lastValidPageNumber);
       console.log("lastValidPageNumber:", lastValidPageNumber);
 
       return lastValidPageNumber;
@@ -132,58 +141,122 @@ async function handleFetchUserRepos(
     }
   }
 
-  if (patCode === null) {
+  async function handleUnauthenticatedFetch(
+    username: string,
+    resultPageNum: number
+  ): Promise<OctokitResponse<any>> {
     console.log("patCode is not defined", patCode);
-    response = await fetch(
-      `https://api.github.com/users/${username}/repos?page=${resultPageNum}`
-    );
 
-    await checkResponseHeaders(response);
+    try {
+      const response = await fetch(
+        `https://api.github.com/users/${username}/repos?page=${resultPageNum}`
+      );
 
-    // parse results
-    parsedResults = await response.json();
-  } else {
-    console.log("patCode is defined", patCode);
-    const requestWithAuth = request.defaults({
-      headers: {
-        authorization: `token ${patCode}`,
-      },
-    });
+      console.log("unauthenticated fetch response:", response.headers);
+      await checkResponseHeaders(response);
 
-    response = await requestWithAuth(
-      `GET /users/${username}/repos?page=${resultPageNum}`
-    );
+      // parse results
+      parsedResults = await response.json();
+      console.log("fetchUserRepos results:", parsedResults);
 
-    await checkResponseHeaders(response);
-
-    // parse results
-    parsedResults = response.data;
-
-    console.log("results:", parsedResults);
+      if (parsedResults && parsedResults.message) {
+        if (parsedResults.message.includes("API rate limit exceeded")) {
+          throw new Error("Rate Limit Error encountered");
+        }
+      }
+      return parsedResults;
+    } catch (e) {
+      console.error("Error during unauthenticated fetch:", e);
+      throw e;
+    }
   }
 
-  if (parsedResults?.length > 0) {
-    const relevantDetails = parsedResults.map((repo: any) => {
-      let shortenedDesc = "";
+  async function handleAuthenticatedFetch(
+    username: string,
+    resultPageNum: number,
+    patCode: string
+  ): Promise<OctokitResponse<any>> {
+    console.log("patCode is defined", patCode);
 
-      if (repo.description && repo.description.length > 150) {
-        shortenedDesc = repo.description.slice(0, 150) + "...";
-      } else if (repo.description) {
-        shortenedDesc = repo.description;
+    try {
+      const requestWithAuth = request.defaults({
+        headers: {
+          authorization: `token ${patCode}`,
+        },
+      });
+
+      const response = await requestWithAuth(
+        `GET /users/${username}/repos?page=${resultPageNum}`
+      );
+
+      await checkResponseHeaders(response);
+
+      // parse results
+      parsedResults = response.data;
+      console.log("results:", parsedResults);
+
+      if (parsedResults && parsedResults.message) {
+        if (parsedResults.message.includes("API rate limit exceeded")) {
+          throw new Error("Rate Limit Error encountered");
+        }
       }
 
-      return {
-        name: repo.name,
-        clone_url: repo.clone_url,
-        description: shortenedDesc,
-        language: repo.language,
-        topics: repo.topics,
-      };
-    });
+      return parsedResults;
+    } catch (e) {
+      console.error("Error during authenticated fetch:", e);
+      throw e;
+    }
+  }
 
-    return relevantDetails;
-  } else {
-    return undefined;
+  if (!username) {
+    console.warn("No username entered");
+    return;
+  }
+
+  let parsedResults: any;
+
+  try {
+    if (patCode === null) {
+      parsedResults = await handleUnauthenticatedFetch(username, resultPageNum);
+    } else {
+      parsedResults = await handleAuthenticatedFetch(
+        username,
+        resultPageNum,
+        patCode
+      );
+    }
+
+    if (!parsedResults) {
+      console.error("No results retrieved from GitHub API:", parsedResults);
+      throw new Error("Rate Limit Error encountered");
+    }
+
+    if (parsedResults.length > 0) {
+      const relevantDetails = parsedResults.map((repo: any) => {
+        let shortenedDesc = "";
+
+        if (repo.description && repo.description.length > 150) {
+          shortenedDesc = repo.description.slice(0, 150) + "...";
+        } else if (repo.description) {
+          shortenedDesc = repo.description;
+        }
+
+        return {
+          name: repo.name,
+          clone_url: repo.clone_url,
+          description: shortenedDesc,
+          language: repo.language,
+          topics: repo.topics,
+        };
+      });
+
+      return relevantDetails;
+    } else {
+      throw new Error("No Public Repos Found");
+    }
+  } catch (e) {
+    console.error("Error fetching user repos:", e);
+    throw e;
   }
 }
 
@@ -212,7 +285,6 @@ async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
 async function handleChangePageResults({
   setNumPageResults,
   setRepoDetails,
-  /* setActiveResultsPage, */
   username,
   patCode,
   currentResultPageNum,
@@ -222,9 +294,9 @@ async function handleChangePageResults({
   );
 
   // reset details stored
-  saveToLocalStorage("repoDetails", null);
+  await saveToLocalStorage("repoDetails", null);
   // store in state the current github repo result page number
-  saveToLocalStorage("currentResultPageNum", currentResultPageNum);
+  await saveToLocalStorage("activeResultsPage", currentResultPageNum);
   //setActiveResultsPage(currentResultPageNum);
   try {
     await handleSubmitUserName({
@@ -239,10 +311,10 @@ async function handleChangePageResults({
 
     if (
       error instanceof Error &&
-      error.message === "Rate Limit error present"
+      error.message === "Rate Limit Error encountered"
     ) {
-      const toastMessage = getToast("error", "rateLimitError");
-      return toast.error(toastMessage);
+      const toastMessage = getToast("info", "rateLimitError");
+      return toast.info(toastMessage);
     }
   }
 }

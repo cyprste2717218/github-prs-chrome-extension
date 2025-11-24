@@ -83,9 +83,9 @@ async function handleAlertAlarm(alarmName: string): Promise<void> {
 
         // 3). updating session storage to indicate rate limit error has been handled
         console.log("setting watInterval in session storage to 0");
-        await saveToSessionStorage("rateLimitWaitInterval", 0);
+        await saveToSessionStorage("waitInterval", 0);
         console.log("clearing rate limit error messages in session storage");
-        await saveToSessionStorage("rateLimitErrorMessages", []);
+        await saveToSessionStorage("messages", []);
       } catch (e) {
         console.error(
           "Issue handling deletion of old rate limit error alarm followed by creation of new polling alarm following rate limit error period having elapsed"

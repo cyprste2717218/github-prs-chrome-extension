@@ -41,7 +41,7 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
 
         return fetchedData;
       } else if (alarmName === "rateLimitErrorAlarm") {
-        const delayPeriod = await loadFromSessionStorage("delayPeriod");
+        const delayPeriod = await loadFromSessionStorage("waitInterval");
 
         const fetchedData = {
           delayPeriod: delayPeriod as number,
@@ -101,11 +101,11 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
   const ALARM_NAME = alarmName;
 
   /* Fetch data from storage needing checking for correct creation of alarm type,
-	 
-	  - retrieving timeout period to wait for creating rate limit error alarm (i.e. fetching from chrome.sessionStorage)
-	  
-	  - or polling frequency for usual polling alarm creation (chrome.localStorage)
-	  */
+   
+    - retrieving timeout period to wait for creating rate limit error alarm (i.e. fetching from chrome.sessionStorage)
+    
+    - or polling frequency for usual polling alarm creation (chrome.localStorage)
+    */
   const fetchedAlarmDetails = await fetchAlarmDetails(alarmName);
 
   const fetchedConditions = fetchedAlarmDetails[0];

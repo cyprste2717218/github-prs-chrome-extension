@@ -140,6 +140,7 @@ async function saveToLocalStorage<T>(
 async function loadFromSessionStorage<T>(key: string): Promise<T | null> {
   return new Promise<T | null>((resolve) => {
     chrome.storage.session.get([key], async (dict: any) => {
+      // 1). Check for runtime error prior to indexing attempt
       const isRuntimeError = await checkForRunTimeError(
         "Error loading from session storage"
       );
@@ -147,13 +148,34 @@ async function loadFromSessionStorage<T>(key: string): Promise<T | null> {
         return null;
       }
 
-      let result;
-      try {
-        result = JSON.parse(dict[key]);
-      } catch (e) {
-        result = dict[key];
+      // 2). Check if chrome local storage object exists before index attempt
+      const retrievedDict = await dict;
+
+      if (!retrievedDict) {
+        return;
       }
-      resolve(result || null);
+
+      let result;
+
+      try {
+        // Check if key exists in local storage object
+        if (retrievedDict[key] === undefined) {
+          throw new Error(
+            `No value retrieved, key '${key}' not found in sessionStorage`
+          );
+        } else {
+          result = JSON.parse(retrievedDict[key]);
+        }
+      } catch (e) {
+        throw new Error(`Error parsing data from sessionStorage: ${e}`);
+      }
+
+      console.log(
+        `Loaded from sessionStorage key: ${key}, value: `,
+        result,
+        typeof result
+      );
+      resolve(result);
     });
   });
 }
@@ -164,7 +186,7 @@ async function saveToSessionStorage<T>(
 ): Promise<void> {
   return new Promise<void>(async (resolve) => {
     const isRuntimeError = await checkForRunTimeError(
-      "Error saving to session storage"
+      "Error saving individual entry to sessionStorage"
     );
     if (isRuntimeError) {
       return;
