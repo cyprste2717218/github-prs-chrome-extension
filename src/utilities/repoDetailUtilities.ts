@@ -11,7 +11,7 @@ import {
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
 import type { OctokitResponse } from "@octokit/types";
-import { updatePRDetails } from "./pollingUtilities.ts";
+import { updatePRDetails } from "./polling/polling.ts";
 import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 import { getToast } from "./toastMessages.ts";
 import { toast } from "sonner";

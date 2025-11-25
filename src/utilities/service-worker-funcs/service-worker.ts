@@ -1,7 +1,10 @@
 import { isErrorMsg } from "../errorHandlingUtilities";
 import { getToast } from "../toastMessages";
 import { handleAlertAlarm, handleLocalStorageStepChanges } from "./alarms";
-import { handleExtensionInstall } from "./background";
+import {
+  handleExtensionInstall,
+  handleSessionStorageChanges,
+} from "./background";
 import { toast } from "sonner";
 
 // handling when different alarm types go off
@@ -42,6 +45,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // listening for changes to current step in local storage to determine if polling alarm needs to be created or deleted
 chrome.storage.onChanged.addListener(async (changes, area) => {
   await handleLocalStorageStepChanges(changes, area);
+});
+
+// listening for changes to sessionStorage when rate limit occurs requiring error toast display
+chrome.storage.onChanged.addListener(async (changes, area) => {
+  await handleSessionStorageChanges(changes, area);
 });
 
 chrome.runtime.onInstalled.addListener(async function (details) {

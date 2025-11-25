@@ -58,66 +58,6 @@ function isErrorMsg(arg: any): arg is ErrorMsg {
   return true;
 }
 
-async function handleUpdatePRDetailsError(e: ErrorMsg): Promise<void> {
-  async function rateLimitErrorHandler(
-    timeout: number,
-    message: string,
-    e: ErrorMsg
-  ): Promise<void> {
-    console.warn(
-      `Rate limit error encountered on pollingAlarm alarm occurence: ${e}`
-    );
-
-    console.log("deleting polling alarm and creating rate limit error alarm");
-
-    console.log("deleting polling alarm");
-    await handleDeleteAlarm("pollingAlarm");
-
-    console.log("creating rate limit error alarm");
-    await handleCreateAlarm("rateLimitErrorAlarm");
-
-    throw {
-      customType: message,
-      waitInterval: timeout,
-    };
-  }
-
-  let message;
-  let timeout: number;
-
-  if (!isErrorMsg(e)) {
-    console.error(
-      "Unknown error type encountered from execution of updatePRDetails func:",
-      e
-    );
-    throw new Error("polling");
-  }
-
-  message = e.customType;
-  timeout = e.waitInterval as number;
-
-  try {
-    if (message === "Storage Handling Error encountered") {
-      console.error(`Error saving to chrome localStorage: ${e}`);
-
-      throw { customType: message };
-    } else if (message === "Rate Limit Error encountered") {
-      await rateLimitErrorHandler(timeout, message, e);
-    }
-  } catch (e) {
-    if (!isErrorMsg(e)) {
-      return;
-    }
-    console.log(
-      "Error during error handling process for handling polling alarm:",
-      e.customType
-    );
-
-    message = "Alarm handling error encountered";
-    throw { customType: message };
-  }
-}
-
 async function handleRateLimitError(
   error: RequestError
 ): Promise<FailureFetchNumPRs> {
@@ -164,7 +104,7 @@ async function handleRateLimitError(
   };
 }
 
-function isSuccessFetchNumPRs(obj: FetchNumPRs): obj is SuccessFetchNumPRs {
+function isSuccessFetchNumPRs(obj: any): obj is SuccessFetchNumPRs {
   return (
     typeof obj === "object" &&
     "name" in obj &&
@@ -174,7 +114,7 @@ function isSuccessFetchNumPRs(obj: FetchNumPRs): obj is SuccessFetchNumPRs {
   );
 }
 
-function isFailureFetchNumPRs(obj: FetchNumPRs): obj is FailureFetchNumPRs {
+function isFailureFetchNumPRs(obj: any): obj is FailureFetchNumPRs {
   return (
     typeof obj === "object" &&
     "waitInterval" in obj &&
@@ -188,7 +128,6 @@ function isFailureFetchNumPRs(obj: FetchNumPRs): obj is FailureFetchNumPRs {
 export {
   isErrorMsg,
   isActiveNumPRsArray,
-  handleUpdatePRDetailsError,
   handleRateLimitError,
   isSuccessFetchNumPRs,
   isFailureFetchNumPRs,

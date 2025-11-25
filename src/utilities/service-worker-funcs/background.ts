@@ -1,4 +1,5 @@
-import { saveAllToLocalStorage } from "./storage-utils";
+import { toast } from "sonner";
+import { loadFromSessionStorage, saveAllToLocalStorage } from "./storage-utils";
 
 async function handleExtensionInstall(): Promise<void> {
   console.log("GitHub PR Tracker Extension installed or updated!");
@@ -28,4 +29,20 @@ async function handleExtensionInstall(): Promise<void> {
     });
 }
 
-export { handleExtensionInstall };
+async function handleSessionStorageChanges(
+  changes: { [key: string]: chrome.storage.StorageChange },
+  area: string
+): Promise<any> {
+  if (area === "session" && changes.messages) {
+    const messages: string[] | null = await loadFromSessionStorage("messages");
+    if (!messages) {
+      return;
+    }
+
+    for (const msg in messages) {
+      return toast.error(msg);
+    }
+  }
+}
+
+export { handleExtensionInstall, handleSessionStorageChanges };

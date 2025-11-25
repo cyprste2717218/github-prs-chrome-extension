@@ -3,7 +3,7 @@ import type {
   HandleStepBackProps,
   HandleStepForwardProps,
 } from "@/models/utilities/stepHandleModels.ts";
-import { startPolling } from "./pollingUtilities.ts";
+import { startPolling } from "./polling/utils/pollingUtilities.ts";
 import {
   saveToLocalStorage,
   saveToSessionStorage,

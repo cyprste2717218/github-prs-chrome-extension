@@ -1,10 +1,7 @@
 import { loadFromLocalStorage, saveToSessionStorage } from "./storage-utils";
-import { updatePRDetails } from "../pollingUtilities";
+import { updatePRDetails } from "../polling/polling";
 import { createAlarm, deleteAlarm } from "./alarm-utils";
-import {
-  ErrorMsg,
-  handleUpdatePRDetailsError,
-} from "../errorHandlingUtilities";
+import { ErrorMsg } from "../errorHandlingUtilities";
 import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
 
 async function handleDeleteAllAlarms(): Promise<void> {
@@ -63,7 +60,7 @@ async function handleAlertAlarm(alarmName: string): Promise<void> {
         );
         return;
       } catch (e) {
-        await handleUpdatePRDetailsError(e as ErrorMsg);
+        console.error("Error in handleAlertAlarm:", e);
       }
     } else if (alarmName === "rateLimitErrorAlarm") {
       console.log(
