@@ -17,9 +17,6 @@ import { getToast } from "./toastMessages.ts";
 import { toast } from "sonner";
 
 async function handleSubmitUserName({
-  // To-do: rename this to handleSubmitDetails to make it more reflective of what function does
-  /* setRepoDetails,
-  setNumPageResults, */
   username,
   patCode,
   currentResultPageNum = 1,
@@ -44,33 +41,6 @@ async function handleSubmitUserName({
 
     throw e;
   }
-
-  /*   await handleFetchUserRepos(
-      setNumPageResults,
-      username,
-      patCode,
-      currentResultPageNum
-    ).then(async (results) => {
-      if (!results) {
-        const retrievedWaitInterval = (await loadFromSessionStorage(
-          "waitInterval"
-        )) as number;
-        const retrievedMessages = (await loadFromSessionStorage(
-          "messages"
-        )) as string[];
-  
-        if (retrievedWaitInterval > 0 && retrievedMessages.length > 0) {
-          throw new Error("Rate Limit error present");
-        }
-  
-        throw new Error("No results returned from handleFetchUserRepos");
-      } else {
-        setRepoDetails(results);
-      }
-    }).catch(error => {
-      console.error("Error in handleSubmitUserName:", error);
-      throw error;
-    }); */
 }
 
 async function handleFetchUserRepos(

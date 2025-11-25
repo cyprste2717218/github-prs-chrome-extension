@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/button";
-import { ChevronsUpDown, Github } from "lucide-react";
+import { ChevronsUpDown, Github, RefreshCw } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
 import CheckBoxCustom from "../input/CheckBoxCustom";
@@ -30,8 +30,16 @@ const AllPreviewRepoCards = ({
   activeNumPRs,
   allReposToggled,
 }: AllPreviewRepoCardsProps): JSX.Element => {
+  const [isUpdating, setIsUpdating] = useState<boolean>(true);
+
   if (!repoDetails) {
-    return <h3>No Repos found for provided username</h3>;
+    return (
+      <div className="flex justify-center items-center p-10">
+        <RefreshCw className={`h-10 w-10 ${isUpdating && "animate-spin"}`} />
+      </div>
+    );
+  } else {
+    () => setIsUpdating(false);
   }
 
   return (
