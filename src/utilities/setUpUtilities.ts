@@ -4,7 +4,10 @@ import type {
   HandleStepForwardProps,
 } from "@/models/utilities/stepHandleModels.ts";
 import { startPolling } from "./pollingUtilities.ts";
-import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
+import {
+  saveToLocalStorage,
+  saveToSessionStorage,
+} from "./service-worker-funcs/storage-utils.ts";
 
 const handleStepBack = async (props: HandleStepBackProps) => {
   const {
@@ -37,6 +40,7 @@ const handleStepBack = async (props: HandleStepBackProps) => {
     saveToLocalStorage("activeNumPRs", []);
     saveToLocalStorage("patCode", initialValuePAT);
     saveToLocalStorage("numPageResults", 0);
+    saveToSessionStorage("tokenExpiry", null);
 
     // setUsername("");
     //setActiveNumPRs([]);

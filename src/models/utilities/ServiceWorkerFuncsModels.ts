@@ -3,6 +3,7 @@ import type { ActiveNumPRs } from "../frontend/RepoCardModels";
 type SuccessFetchNumPRs = {
   name: string;
   numActivePRs: number;
+  expiry: Date | null;
 };
 
 type FailureFetchNumPRs = {

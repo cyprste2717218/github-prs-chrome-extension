@@ -1,5 +1,6 @@
 import {
   loadFromLocalStorage,
+  loadFromSessionStorage,
   saveToLocalStorage,
   saveToSessionStorage,
 } from "./service-worker-funcs/storage-utils.js";
@@ -23,6 +24,7 @@ import {
   isFailureFetchNumPRs,
   isSuccessFetchNumPRs,
 } from "./errorHandlingUtilities.js";
+import { getToast } from "./toastMessages.js";
 
 const errorMsg: ErrorMsg = {
   customType: "",
@@ -32,6 +34,20 @@ async function updatePRDetails({
   activeNumPRs,
   repoOwner,
 }: SubmitPRDetailsProps): Promise<void> {
+  function checkTokenExpiry(headers: any): string | undefined {
+    try {
+      const expirationDate = headers["github-authentication-token-expiration"];
+
+      if (expirationDate) {
+        console.log(`Token expires on: ${expirationDate}`);
+        return expirationDate as string;
+      }
+    } catch (e) {
+      console.log("Token expiration header not found.");
+      return;
+    }
+  }
+
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
 
@@ -63,17 +79,21 @@ async function updatePRDetails({
 
   // Fetch current number of PRs for given repo, using authenticated or deaunthenticated approach
   const fetchNumPRs = async (
-    repo: ActiveNumPRs
+    repo: ActiveNumPRs,
+    currentFetch: number
   ): Promise<SuccessFetchNumPRs | FailureFetchNumPRs> => {
     async function retrieveFetchResults(
       owner: string,
       repoName: string,
-      storedPATCode: string | null
+      storedPATCode: string | null,
+      currentFetch: number
     ): Promise<any> {
       async function handleRedirectLogic({
         response,
+        currentFetch,
       }: {
         response: { status: number; url: string };
+        currentFetch: number;
       }): Promise<void> {
         function checkForRedirects({
           status,
@@ -110,7 +130,7 @@ async function updatePRDetails({
         if (redirects.type === "temporary") {
           console.log("repeating fetchNumPRs with temporary redirect url");
           const temporaryChangedRepo = { ...repo, redirectUrl: redirects.url };
-          await fetchNumPRs(temporaryChangedRepo);
+          await fetchNumPRs(temporaryChangedRepo, currentFetch);
 
           return;
         } else if (redirects.type === "permanent") {
@@ -123,7 +143,7 @@ async function updatePRDetails({
             }
           }
           await saveToLocalStorage("activeNumPRs", updatedActiveNumPRs);
-          await fetchNumPRs(repo);
+          await fetchNumPRs(repo, currentFetch);
 
           return;
         }
@@ -131,7 +151,8 @@ async function updatePRDetails({
 
       async function handleUnauthenticatedFetch(
         owner: string,
-        repoName: string
+        repoName: string,
+        currentFetch: number
       ): Promise<OctokitResponse<any, number>> {
         // unauthenticated request
         try {
@@ -147,9 +168,9 @@ async function updatePRDetails({
             }
           );
 
-          await handleRedirectLogic({ response });
+          await handleRedirectLogic({ response, currentFetch });
 
-          return response.data;
+          return response;
         } catch (error) {
           if (!(error instanceof RequestError)) {
             console.error("Unknown error type encountered:", error);
@@ -171,7 +192,8 @@ async function updatePRDetails({
       async function handleAuthenticatedFetch(
         owner: string,
         repoName: string,
-        storedPATCode: string
+        storedPATCode: string,
+        currentFetch: number
       ): Promise<OctokitResponse<any, number>> {
         // authenticated request
         try {
@@ -184,9 +206,14 @@ async function updatePRDetails({
             `GET /repos/${owner}/${repoName}/pulls`
           );
 
-          await handleRedirectLogic({ response });
+          console.log(
+            "This is the response from authenticated fetch:",
+            response
+          );
 
-          return response.data;
+          await handleRedirectLogic({ response, currentFetch });
+
+          return response;
         } catch (error) {
           if (!(error instanceof RequestError)) {
             console.error("Unknown error type encountered:", error);
@@ -196,7 +223,7 @@ async function updatePRDetails({
           const errorDetails = await handleRateLimitError(error);
 
           console.log(
-            `error fetching number of PRs for repo ${repoName}: ${error}`
+            `error fetching number of PRs for repo ${repoName}: ${error} `
           );
 
           throw errorDetails;
@@ -209,15 +236,21 @@ async function updatePRDetails({
         // To-do: Switch out request url for authenticated and unauthenticated requests to use the one from the redirectUrl variable if present
         if (!storedPATCode) {
           // unauthenticated request
-          const results = await handleUnauthenticatedFetch(owner, repoName);
+          const results = await handleUnauthenticatedFetch(
+            owner,
+            repoName,
+            currentFetch
+          );
           return results;
         } else {
           // authenticated request
           const results = await handleAuthenticatedFetch(
             owner,
             repoName,
-            storedPATCode
+            storedPATCode,
+            currentFetch
           );
+
           return results;
         }
       } catch (e) {
@@ -230,28 +263,57 @@ async function updatePRDetails({
     const currentNumPRs = repo.numActivePRs;
     const redirectUrl = repo.redirectUrl;
 
-    const results = await retrieveFetchResults(owner, repoName, storedPATCode);
+    const results = await retrieveFetchResults(
+      owner,
+      repoName,
+      storedPATCode,
+      currentFetch
+    );
+
+    const resultsHeaders = results.headers;
+    const resultsData = results.data;
 
     // update number of PRs for repo if number changed
 
     // setting a default value in case fetch request doesn't return a number (on first load of displayed tracked repos page)
 
-    console.log("results from fetch:", results);
+    console.log("results from fetch:", resultsData);
 
-    if (isFailureFetchNumPRs(results)) {
-      return results;
+    if (isFailureFetchNumPRs(resultsData)) {
+      return resultsData;
     }
     let updatedNumPRs: number = currentNumPRs ? currentNumPRs : 0;
-    if (currentNumPRs !== results.length && results.length > -1) {
-      updatedNumPRs = results.length;
+    if (currentNumPRs !== resultsData.length && resultsData.length > -1) {
+      updatedNumPRs = resultsData.length;
     }
 
-    console.log("github prs fetched:", results);
-
-    return {
+    const FetchNumPRsReturnObj: SuccessFetchNumPRs = {
       name: repoName,
       numActivePRs: updatedNumPRs,
+      expiry: null,
     };
+
+    // check if current personal access token expiry is coming soon (if response header returned for the request) to flag to user
+    const lastFetch = currentFetch === activeNumPRs.length - 1;
+    //console.log("is last fetch:", lastFetch);
+
+    if (lastFetch) {
+      console.log("on lastfetch so checking following headers", resultsHeaders);
+      const tokenExpiry = checkTokenExpiry(resultsHeaders);
+
+      if (tokenExpiry) {
+        console.log(`Token expiry date: ${tokenExpiry}`);
+
+        const isoString = tokenExpiry.replace(" ", "T").replace(" UTC", "Z");
+
+        const expiryDateObj = new Date(isoString);
+        FetchNumPRsReturnObj["expiry"] = expiryDateObj;
+      }
+    }
+
+    console.log("github prs fetched:", resultsData);
+
+    return FetchNumPRsReturnObj;
   };
 
   await saveToLocalStorage("isRefreshing", true);
@@ -259,8 +321,10 @@ async function updatePRDetails({
   const activeNumPRsCopy: ActiveNumPRs[] = [...activeNumPRs];
 
   // Sequential execution of each async call to get current number of PRs per repo
-  for (const repoDetails of activeNumPRs) {
-    const updatedPRDetails = await fetchNumPRs(repoDetails);
+  for (let i = 0; i < activeNumPRs.length; i++) {
+    const currentFetch = i;
+    const repoDetails = activeNumPRs[currentFetch];
+    const updatedPRDetails = await fetchNumPRs(repoDetails, currentFetch);
     console.log(`fetched repoDetails`);
     console.log("length of activeNumPRs:", activeNumPRs.length);
 
@@ -270,16 +334,22 @@ async function updatePRDetails({
         updatedPRDetails,
         repoDetails,
       });
+
       if (!isUpdateSuccess) {
-        const debugMessage = `Error updating new number of PRs value to storage: ${repoDetails}`;
+        const debugMessage = `Error updating new number of PRs value to storage: ${repoDetails} `;
         errorMsg.customType = "Storage Handling Error encountered";
 
         console.error(debugMessage);
 
         throw errorMsg;
       }
+
+      if (updatedPRDetails.expiry) {
+        console.log("Token expiry detected:", updatedPRDetails.expiry);
+        await saveToSessionStorage("tokenExpiry", updatedPRDetails.expiry);
+      }
     } else if (isFailureFetchNumPRs(updatedPRDetails)) {
-      const debugMessage = `Rate Limit Error during fetching updated number of PRs, waiting for ${updatedPRDetails.waitInterval} seconds: ${repoDetails}`;
+      const debugMessage = `Rate Limit Error during fetching updated number of PRs, waiting for ${updatedPRDetails.waitInterval} seconds: ${repoDetails} `;
 
       errorMsg.customType = "Rate Limit Error encountered";
       errorMsg.waitInterval = updatedPRDetails.waitInterval;
@@ -320,12 +390,60 @@ async function startPolling({ activeNumPRs, repoOwner }: StartPollingProps) {
   async function getData() {
     const delayMs = getDelay(currentSliderValue as unknown as number);
 
+    async function handleIfTokenExpirySoon() {
+      function isWithinFourDays(inputDate: Date): Boolean {
+        console.log("this is the typeof inputDate", typeof inputDate);
+
+        const now = new Date();
+        const fourDaysInMilliseconds = 4 * 24 * 60 * 60 * 1000; // 345,600,000 milliseconds
+
+        // Calculate the absolute difference in milliseconds
+        const timeDifference = Math.abs(now.getTime() - inputDate.getTime());
+
+        // Compare the difference to the 4-day threshold
+        return timeDifference <= fourDaysInMilliseconds;
+      }
+
+      const tokenExpiry = (await loadFromSessionStorage(
+        "tokenExpiry"
+      )) as Date | null;
+
+      console.log(
+        "tokenExpiry from session storage in handleIfTokenExpirySoon:",
+        tokenExpiry
+      );
+
+      if (tokenExpiry) {
+        console.log("tokenExpiry before conversion", tokenExpiry);
+        const convertedTokenExpiry = new Date(tokenExpiry);
+        console.log("convertedTokenExpiry", convertedTokenExpiry);
+        const nearExpiry = isWithinFourDays(convertedTokenExpiry);
+
+        if (nearExpiry) {
+          const toastMessage = getToast(
+            "info",
+            "upcomingTokenExpiry",
+            undefined,
+            convertedTokenExpiry.toString()
+          );
+          return toast.info(toastMessage);
+        }
+
+        console.log("token expiry not within 4 days, no toast triggered");
+        return;
+      }
+    }
+
     try {
       console.log(`polling github api every ${delayMs / 60000} minutes`);
+
       await updatePRDetails({
         activeNumPRs,
         repoOwner,
       });
+
+      await handleIfTokenExpirySoon();
+
       console.log(`finished polling github api`);
     } catch (error) {
       console.error("Error during polling github api:", error);

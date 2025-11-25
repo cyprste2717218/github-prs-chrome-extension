@@ -2,7 +2,7 @@ type ToastMessagesType = "success" | "error" | "info";
 
 type ToastSuccessMessages = "savePollingRate";
 
-type ToastWarningMessages = "rateLimitError";
+type ToastWarningMessages = "rateLimitError" | "upcomingTokenExpiry";
 
 type ToastErrorMessages =
   | "noPublicRepos"
@@ -27,7 +27,8 @@ interface RetrieveToast {
   (
     category: ToastMessagesType,
     cause: ToastMessageCause,
-    timeout?: number
+    timeout?: number,
+    expiryDateObj?: string
   ): string | void;
 }
 
@@ -35,7 +36,8 @@ interface GetToast {
   (
     category: ToastMessagesType,
     cause: ToastMessageCause,
-    timeout?: number
+    timeout?: number,
+    expiryDateObj?: string
   ): string;
 }
 

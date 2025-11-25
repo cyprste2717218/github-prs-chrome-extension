@@ -26,23 +26,35 @@ const toastMessages: ToastMessages = {
   },
 };
 
-const retrieveToast: RetrieveToast = (category, cause, timeout) => {
-  if (timeout) {
-    if (category === "info" && cause === "rateLimitError") {
+const retrieveToast: RetrieveToast = (
+  category,
+  cause,
+  timeout,
+  expiryDateObj
+) => {
+  if (category === "info") {
+    if (cause === "rateLimitError" && timeout !== undefined) {
       return `You've hit a rate limit! Waiting ${timeout} seconds before trying again`;
-    } else {
-      console.error(
-        "Invalid parameters passed to getToast function with timeout"
-      );
-      return;
+    } else if (cause === "upcomingTokenExpiry" && expiryDateObj !== undefined) {
+      return `Your Personal Access Token is set to expire on ${expiryDateObj}. Please update it to avoid interruptions`;
     }
+  } else {
+    console.error(
+      "Invalid parameters passed to getToast function with timeout"
+    );
+    return;
   }
 
   return toastMessages[category][cause];
 };
 
-const getToast: GetToast = (category, cause, timeout): string => {
-  const toastMessage = retrieveToast(category, cause, timeout);
+const getToast: GetToast = (
+  category,
+  cause,
+  timeout,
+  expiryDateObj
+): string => {
+  const toastMessage = retrieveToast(category, cause, timeout, expiryDateObj);
   if (!toastMessage) {
     console.error(
       `No toast message found for ${cause} error, returning generic error message for use in toast`
