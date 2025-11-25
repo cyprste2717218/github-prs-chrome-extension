@@ -17,6 +17,7 @@ const HeaderComponent = ({
   activeNumPRs,
   repoOwner,
   hasPAT,
+  isRefreshing,
 }: HeaderProps): JSX.Element => {
   // To-do: make separate bundles for props for respective back and next button types
 
@@ -97,6 +98,7 @@ const HeaderComponent = ({
             type="refresh"
             setActiveNumPRs={setActiveNumPRs}
             setStep={setStepState}
+            isRefreshing={isRefreshing}
             activeNumPRs={activeNumPRs}
             currentStep={currentStep}
             repoOwner={repoOwner}

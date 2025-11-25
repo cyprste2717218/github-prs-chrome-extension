@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import {
   handleSubmitUserName,
   handleRefresh,
@@ -29,6 +29,7 @@ import { handleStepChange } from "@/utilities/setUpUtilities";
 import { displayScrollToTopButton } from "@/utilities/hooks/displayScrollToTopButton.ts";
 import { toast } from "sonner";
 import { getToast } from "@/utilities/toastMessages";
+import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {
   return (
@@ -90,16 +91,15 @@ const UsernameButton: React.FC<UsernameButtonProps> = ({}) => {
 const RefreshButton: React.FC<RefreshButtonProps> = ({
   setActiveNumPRs,
   setStep,
+  isRefreshing,
   activeNumPRs,
   currentStep,
   repoOwner,
   patCode,
 }) => {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   const handleClick = async () => {
     console.log("pressed refresh button");
-    setIsRefreshing(true);
+    await saveToLocalStorage("isRefreshing", true);
 
     try {
       await handleRefresh({
@@ -109,11 +109,11 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
         currentStep,
         repoOwner,
       });
-      setIsRefreshing(false);
+
       console.log("succesfully refreshed prs");
     } catch (e) {
       // setting isRefreshing to false in case of error
-      setIsRefreshing(false);
+      await saveToLocalStorage("isRefreshing", false);
 
       console.error("Error during manual refresh of PR details");
       const toastMessage = getToast("info", "rateLimitError");

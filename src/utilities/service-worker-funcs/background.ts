@@ -13,6 +13,7 @@ async function handleExtensionInstall(): Promise<void> {
     patCode: null, // Initial null PAT,
     repoDetails: null, // Initial null value regarding repository details tracked
     activeNumPRs: [], // Initial empty array for active PRs
+    isRefreshing: false, // Initial not refreshing state
   };
 
   await saveAllToLocalStorage(initialSettings)

@@ -238,16 +238,20 @@ async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
       activeNumPRs.length !== 0
     ) {
       console.log("activeNumPRs array is not empty");
+
       await updatePRDetails({
         activeNumPRs,
         repoOwner,
       });
+
       console.log("Completed manual refresh of PR details");
     } else {
       console.log("activeNumPRs array is empty");
     }
   } catch (e) {
     console.error("Error during manual refresh of PR details:", e);
+
+    await saveToLocalStorage("isRefreshing", false);
     throw e;
   }
 }

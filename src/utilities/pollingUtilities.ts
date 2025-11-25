@@ -34,6 +34,7 @@ async function updatePRDetails({
 }: SubmitPRDetailsProps): Promise<void> {
   console.log("gets to here");
   console.log("active num of prs:", activeNumPRs);
+
   const storedPATCode = (await loadFromLocalStorage("patCode")) as
     | string
     | null;
@@ -253,6 +254,7 @@ async function updatePRDetails({
     };
   };
 
+  await saveToLocalStorage("isRefreshing", true);
   // Creating in-memory copy of activeNumPRs for progressive mutation during incremental updates of number of active PRs per repo on display
   const activeNumPRsCopy: ActiveNumPRs[] = [...activeNumPRs];
 
@@ -294,6 +296,7 @@ async function updatePRDetails({
         console.log("updated num PRs array:", updatedNumPRs);
         console.log("--------------------------------"); */
   }
+  await saveToLocalStorage("isRefreshing", false);
   return;
 }
 

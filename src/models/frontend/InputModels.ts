@@ -28,6 +28,7 @@ type ScrollToTopButtonProps = ButtonProps<{}>;
 type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  isRefreshing: boolean;
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;

@@ -18,6 +18,7 @@ type HeaderProps = {
   setNumPageResults: React.Dispatch<React.SetStateAction<number>>;
   setDisplayWarning: React.Dispatch<React.SetStateAction<boolean>>;
   setReposToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  isRefreshing: boolean;
   allReposToggled: boolean;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;

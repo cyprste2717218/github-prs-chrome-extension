@@ -24,6 +24,7 @@ function App() {
   const [reposToggled, setReposToggled] = useState<boolean>(false);
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   const intialConfig = [
     { key: "username", setState: setUsername },
@@ -35,6 +36,7 @@ function App() {
     { key: "reposToggled", setState: setReposToggled },
     { key: "activeResultsPage", setState: setActiveResultsPage },
     { key: "pollingRate", setState: setPollingRate },
+    { key: "isRefreshing", setState: setIsRefreshing },
   ];
 
   // Configure storage listeners for updating state accordingly
@@ -100,6 +102,7 @@ function App() {
         setNumPageResults={setNumPageResults}
         setPAT={setPAT}
         setDisplayWarning={setDisplayWarning}
+        isRefreshing={isRefreshing}
         activeNumPRs={activeNumPRs}
         currentStep={step}
         repoOwner={username}
