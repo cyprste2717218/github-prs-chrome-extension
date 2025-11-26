@@ -105,6 +105,7 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
       await handleRefresh({
         setActiveNumPRs,
         setStep,
+        patCode,
         activeNumPRs,
         currentStep,
         repoOwner,

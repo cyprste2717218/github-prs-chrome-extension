@@ -1,12 +1,8 @@
 import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
 import {
   FailureFetchNumPRs,
-  FetchNumPRs,
   SuccessFetchNumPRs,
 } from "@/models/utilities/ServiceWorkerFuncsModels";
-import { handleDeleteAlarm } from "@/utilities/service-worker-funcs/alarms.ts";
-import { handleCreateAlarm } from "@/utilities/service-worker-funcs/alarms.ts";
-import { RequestError } from "@octokit/request-error";
 
 type ErrorMsg = {
   customType: string;
@@ -58,11 +54,9 @@ function isErrorMsg(arg: any): arg is ErrorMsg {
   return true;
 }
 
-async function handleRateLimitError(
-  error: RequestError
-): Promise<FailureFetchNumPRs> {
+async function handleRateLimitError(error: any): Promise<FailureFetchNumPRs> {
   // check if it was a primary or secondary rate limit error which was met
-  let waitInterval: number = 0;
+  let minutesWaitInterval: number = 0;
   const messages: string[] = [];
 
   if (error.response && (error.status === 403 || error.status === 429)) {
@@ -76,9 +70,9 @@ async function handleRateLimitError(
       const currentTimeEpochSeconds = Math.floor(Date.now() / 1000);
       const secondsToWait = resetTimeEpochSeconds - currentTimeEpochSeconds;
 
-      waitInterval = secondsToWait;
+      minutesWaitInterval = secondsToWait / 60;
       messages.push(
-        `Primary rate limit error, waiting ${waitInterval} seconds before making another request`
+        `Primary rate limit error, waiting ${minutesWaitInterval} minutes before making another request`
       );
     }
 
@@ -87,20 +81,22 @@ async function handleRateLimitError(
       const retryAfterHeaderVal: number = Number(
         error.response.headers["retry-after"]
       );
-      if (retryAfterHeaderVal > waitInterval) {
-        waitInterval = retryAfterHeaderVal;
+
+      const minutesRetryAfterHeaderVal = retryAfterHeaderVal / 60;
+      if (minutesRetryAfterHeaderVal > minutesWaitInterval) {
+        minutesWaitInterval = minutesRetryAfterHeaderVal;
       }
 
       messages.push(
-        `Secondary rate limit error, waiting ${waitInterval} seconds before making another request`
+        `Secondary rate limit error, waiting ${minutesWaitInterval} seconds before making another request`
       );
     }
   }
 
   console.log("messages:", messages);
   return {
-    waitInterval: waitInterval,
-    messages: messages,
+    waitInterval: minutesWaitInterval,
+    toastMessages: messages,
   };
 }
 
@@ -118,10 +114,10 @@ function isFailureFetchNumPRs(obj: any): obj is FailureFetchNumPRs {
   return (
     typeof obj === "object" &&
     "waitInterval" in obj &&
-    "messages" in obj &&
+    "toastMessages" in obj &&
     typeof obj.waitInterval === "number" &&
-    Array.isArray(obj.messages) &&
-    obj.messages.every((item: any) => typeof item === "string")
+    Array.isArray(obj.toastMessages) &&
+    obj.toastMessages.every((item: any) => typeof item === "string")
   );
 }
 

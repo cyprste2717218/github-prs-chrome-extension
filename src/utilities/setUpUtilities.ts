@@ -3,8 +3,9 @@ import type {
   HandleStepBackProps,
   HandleStepForwardProps,
 } from "@/models/utilities/stepHandleModels.ts";
-import { startPolling } from "./polling/utils/pollingUtilities.ts";
+import { startPolling } from "./polling/polling.ts";
 import {
+  loadFromLocalStorage,
   saveToLocalStorage,
   saveToSessionStorage,
 } from "./service-worker-funcs/storage-utils.ts";
@@ -93,7 +94,12 @@ const handleStepForward = async (props: HandleStepForwardProps) => {
     if (activeNumPRs.length !== 0) {
       console.log("activeNumPRs array is not empty");
 
-      startPolling({ activeNumPRs, repoOwner });
+      const currentSliderValue = (await loadFromLocalStorage(
+        "pollingRate"
+      )) as number;
+      const patCode = (await loadFromLocalStorage("patCode")) as string;
+
+      startPolling({ currentSliderValue, activeNumPRs, repoOwner, patCode });
       console.log("initial polling complete");
     } else {
       console.log("activeNumPRs array is empty");

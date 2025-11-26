@@ -14,7 +14,7 @@ type RepoDetailUtilities = {
 };
 
 type SubmitPRDetailsProps = {
-  activeNumPRs: ActiveNumPRs[];
+  patCode: string | null;
   repoOwner: string;
 };
 
@@ -24,6 +24,7 @@ type HandleRefreshProps = {
   activeNumPRs: ActiveNumPRs[];
   currentStep: number;
   repoOwner: string;
+  patCode: string | null;
 };
 
 type HandleChangePageResultsProps = {

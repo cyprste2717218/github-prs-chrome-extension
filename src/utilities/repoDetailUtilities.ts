@@ -11,7 +11,7 @@ import {
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
 import type { OctokitResponse } from "@octokit/types";
-import { updatePRDetails } from "./polling/polling.ts";
+import { makePollingCall } from "./polling/polling.ts";
 import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 import { getToast } from "./toastMessages.ts";
 import { toast } from "sonner";
@@ -230,7 +230,11 @@ async function handleFetchUserRepos(
   }
 }
 
-async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
+async function handleRefresh({
+  activeNumPRs,
+  repoOwner,
+  patCode,
+}: HandleRefreshProps) {
   try {
     if (
       activeNumPRs &&
@@ -239,10 +243,7 @@ async function handleRefresh({ activeNumPRs, repoOwner }: HandleRefreshProps) {
     ) {
       console.log("activeNumPRs array is not empty");
 
-      await updatePRDetails({
-        activeNumPRs,
-        repoOwner,
-      });
+      await makePollingCall(patCode, repoOwner);
 
       console.log("Completed manual refresh of PR details");
     } else {

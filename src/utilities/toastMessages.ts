@@ -38,11 +38,6 @@ const retrieveToast: RetrieveToast = (
     } else if (cause === "upcomingTokenExpiry" && expiryDateObj !== undefined) {
       return `Your Personal Access Token is set to expire on ${expiryDateObj}. Please update it to avoid interruptions`;
     }
-  } else {
-    console.error(
-      "Invalid parameters passed to getToast function with timeout"
-    );
-    return;
   }
 
   return toastMessages[category][cause];

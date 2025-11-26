@@ -1,8 +1,6 @@
 import { loadFromLocalStorage, saveToSessionStorage } from "./storage-utils";
-import { updatePRDetails } from "../polling/polling";
+import { makePollingCall } from "../polling/polling";
 import { createAlarm, deleteAlarm } from "./alarm-utils";
-import { ErrorMsg } from "../errorHandlingUtilities";
-import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
 
 async function handleDeleteAllAlarms(): Promise<void> {
   console.log("clearing all alarms");
@@ -47,13 +45,11 @@ async function handleAlertAlarm(alarmName: string): Promise<void> {
       const isoString = now.toISOString();
 
       console.log(`pollingAlarm alarm triggered at ${isoString}`);
-      const activeNumPRs = (await loadFromLocalStorage(
-        "activeNumPRs"
-      )) as ActiveNumPRs[];
       const repoOwner = (await loadFromLocalStorage("username")) as string;
+      const patCode = (await loadFromLocalStorage("patCode")) as string | null;
 
       try {
-        await updatePRDetails({ activeNumPRs, repoOwner });
+        await makePollingCall(patCode, repoOwner);
 
         console.log(
           "saved updated PR details to extension localStorage successfully"

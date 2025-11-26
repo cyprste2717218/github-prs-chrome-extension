@@ -1,9 +1,10 @@
 import { ActiveNumPRs } from "../frontend/RepoCardModels";
 
 type StartPollingProps = {
-  //setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;
+  currentSliderValue: number;
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
+  patCode: string | null;
 };
 
 export type { StartPollingProps };

@@ -1,221 +1,306 @@
-import { isFailureFetchNumPRs } from "@/utilities/errorHandlingUtilities";
-import { fetchNumPRs } from "./fetchNumPRs";
 import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
-import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
 import { request } from "@octokit/request";
-
-async function handleRedirectLogic({
-	repo,
-	repoOwner,
-	repoName,
-	storedPATCode,
-	activeNumPRs,
-	response,
-	currentFetch,
-}: {
-	repo: ActiveNumPRs;
-	repoOwner: string;
-	repoName: string;
-	storedPATCode: string;
-	activeNumPRs: ActiveNumPRs[];
-	response: { status: number; url: string };
-	currentFetch: number;
-}): Promise<void> {
-	function checkForRedirects({
-		status,
-		url,
-	}: {
-		status: number;
-		url: string;
-	}): { type: string; url: string } {
-		console.log("status:", status);
-		console.log("url:", url);
-
-		let redirectionType: string = "na";
-
-		// Handling redirection status codes - see https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#follow-redirects
-
-		if (status === 302 || status === 307) {
-			// temporary redirection
-			redirectionType = "temporary";
-		} else if (status === 301) {
-			// permanent redirection
-			redirectionType = "permanent";
-		}
-
-		return {
-			type: redirectionType,
-			url: url,
-		};
-	}
-
-	const status = response.status;
-	const url = response.url;
-	const redirects = checkForRedirects({ status, url });
-
-	if (redirects.type === "temporary") {
-		console.log("repeating fetchNumPRs with temporary redirect url");
-		const temporaryChangedRepo = { ...repo, redirectUrl: redirects.url };
-		await fetchNumPRs(
-			activeNumPRs,
-			temporaryChangedRepo,
-			repoOwner,
-			currentFetch,
-			storedPATCode
-		);
-
-		return;
-	} else if (redirects.type === "permanent") {
-		console.log("repeating fetchNumPRs with permanent redirect url");
-
-		const updatedActiveNumPRs = activeNumPRs;
-		for (let i = 0; i < updatedActiveNumPRs.length; i++) {
-			if (updatedActiveNumPRs[i].name === repoName) {
-				updatedActiveNumPRs[i].redirectUrl = redirects.url;
-			}
-		}
-		await saveToLocalStorage("activeNumPRs", updatedActiveNumPRs);
-		await fetchNumPRs(
-			activeNumPRs,
-			repo,
-			repoOwner,
-			currentFetch,
-			storedPATCode
-		);
-
-		return;
-	}
-}
+import { OctokitResponse } from "@octokit/types";
+import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
+import { getToast } from "@/utilities/toastMessages";
+import { handleRateLimitError } from "@/utilities/errorHandlingUtilities";
+import { FailureFetchNumPRs } from "@/models/utilities/ServiceWorkerFuncsModels";
 
 async function handleUnauthenticatedFetch(
-	owner: string,
-	repoName: string,
-	currentFetch: number
+  repo: ActiveNumPRs,
+  repoOwner: string,
+  repoName: string
 ): Promise<OctokitResponse<any, number>> {
-	// unauthenticated request
-	try {
-		const response = await request(`GET /repos/${owner}/${repoName}/pulls`, {
-			owner: owner,
-			repo: repoName,
-			headers: {
-				"X-GitHub-Api-Version": "2022-11-28",
-			},
+  // unauthenticated request
+  try {
+    const redirectUrl = repo.redirectUrl;
 
-		});
+    const response = await request(
+      `GET ${redirectUrl ? redirectUrl : `/repos/${repoOwner}/${repoName}/pulls`}`,
+      {
+        owner: repoOwner,
+        repo: repoName,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      }
+    );
 
-		await handleRedirectLogic({ response, currentFetch });
+    return response;
+  } catch (error) {
+    console.log(
+      `error fetching number of PRs (unauthenticated request) for repo ${repoName}: ${error}`
+    );
+    const errorObj: FailureFetchNumPRs = {
+      waitInterval: 0,
+      toastMessages: [],
+    };
 
-		return response;
-	} catch (error) {
-		if (!(error instanceof RequestError)) {
-			console.error("Unknown error type encountered:", error);
-			throw error;
-		}
+    try {
+      const retrievedErrorObj = await handleRateLimitError(error);
 
-		const errorDetails = { customType: "Rate Limit Error encountered", waitInterval: 3600 };
+      errorObj.toastMessages = retrievedErrorObj.toastMessages;
+      errorObj.waitInterval = retrievedErrorObj.waitInterval;
+    } catch (e) {
+      console.error(
+        "Unable to succesfully parse error object thrown in handleUnauthenticatedFetch within handleRateLimitError func"
+      );
 
-		console.log(`error fetching number of PRs for repo ${repoName}: ${error}`);
+      throw errorObj;
+    }
 
-		throw errorDetails;
+    throw errorObj;
 
-		//To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
-	}
+    //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
+  }
 }
 
 async function handleAuthenticatedFetch(
-	owner: string,
-	repoName: string,
-	storedPATCode: string,
-	currentFetch: number
+  repo: ActiveNumPRs,
+  repoOwner: string,
+  repoName: string,
+  storedPATCode: string
 ): Promise<OctokitResponse<any, number>> {
-	// authenticated request
-	try {
-		const requestWithAuth = request.defaults({
-			headers: {
-				authorization: `token ${storedPATCode}`,
-			},
-		});
-		const response = await requestWithAuth(
-			`GET /repos/${owner}/${repoName}/pulls`
-		);
+  // authenticated request
+  try {
+    const requestWithAuth = request.defaults({
+      headers: {
+        authorization: `token ${storedPATCode}`,
+      },
+    });
 
-		console.log("This is the response from authenticated fetch:", response);
+    const redirectUrl = repo.redirectUrl;
 
-		await handleRedirectLogic({ response, currentFetch });
+    const response = await requestWithAuth(
+      `GET ${redirectUrl ? redirectUrl : `/repos/${repoOwner}/${repoName}/pulls`}`
+    );
 
-		return response;
-	} catch (error) {
-		if (!(error instanceof RequestError)) {
-			console.error("Unknown error type encountered:", error);
-			throw error;
-		}
+    console.log("This is the response from authenticated fetch:", response);
 
-		const errorDetails = { customType: "Rate Limit Error encountered", waitInterval: 3600 };
+    return response;
+  } catch (error) {
+    console.error(
+      `error fetching number of PRs (authenticated request) for repo ${repoName}: ${error} `
+    );
 
-		console.log(`error fetching number of PRs for repo ${repoName}: ${error} `);
+    const errorObj: FailureFetchNumPRs = {
+      waitInterval: 0,
+      toastMessages: [],
+    };
 
-		throw errorDetails;
+    try {
+      const retrievedErrorObj = await handleRateLimitError(error);
 
-		//To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
-	}
+      errorObj.toastMessages = retrievedErrorObj.toastMessages;
+      errorObj.waitInterval = retrievedErrorObj.waitInterval;
+
+      throw errorObj;
+    } catch (e) {
+      console.error(
+        "Unable to succesfully parse error object thrown in handleUnauthenticatedFetch within handleRateLimitError func"
+      );
+
+      throw errorObj;
+    }
+
+    //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
+  }
 }
 
 async function retrieveFetchResults(
-	owner: string,
-	repoName: string,
-	storedPATCode: string | null,
-	currentFetch: number
-): Promise<any> {
-	try {
-		// To-do: Switch out request url for authenticated and unauthenticated requests to use the one from the redirectUrl variable if present
-		if (!storedPATCode) {
-			// unauthenticated request
-			const results = await handleUnauthenticatedFetch(
-				owner,
-				repoName,
-				currentFetch
-			);
-			return results;
-		} else {
-			// authenticated request
-			const results = await handleAuthenticatedFetch(
-				owner,
-				repoName,
-				storedPATCode,
-				currentFetch
-			);
-
-			return results;
-		}
-	} catch (e) {
-		if (!isFailureFetchNumPRs(e)) {
-			throw new Error(`Unrecognised error format: ${e}`);
-		}
-		throw e;
-	}
+  repo: ActiveNumPRs,
+  repoOwner: string,
+  repoName: string,
+  storedPATCode: string | null
+): Promise<OctokitResponse<any, number>> {
+  try {
+    if (!storedPATCode) {
+      // unauthenticated request
+      const results = await handleUnauthenticatedFetch(
+        repo,
+        repoOwner,
+        repoName
+      );
+      return results;
+    } else {
+      // authenticated request
+      const results = await handleAuthenticatedFetch(
+        repo,
+        repoOwner,
+        repoName,
+        storedPATCode
+      );
+      return results;
+    }
+  } catch (e) {
+    console.log("error in retrieveFetchResults:", e);
+    throw e;
+  }
 }
 
 async function handleRetrieval(
-	owner: string,
-	repoName: string,
-	storedPATCode: string,
-	currentFetch: number
-) {
-	try {
-		const results = await retrieveFetchResults(
-			owner,
-			repoName,
-			storedPATCode,
-			currentFetch
-		);
-		return results;
-	} catch (e) {
-		if (!isFailureFetchNumPRs(e)) {
-			console.error("Unrecognised error format:", e);
-		}
-
-		throw e;
-	}
+  repo: ActiveNumPRs,
+  repoOwner: string,
+  repoName: string,
+  storedPATCode: string | null
+): Promise<OctokitResponse<any, number>> {
+  try {
+    const results = await retrieveFetchResults(
+      repo,
+      repoOwner,
+      repoName,
+      storedPATCode
+    );
+    return results;
+  } catch (e) {
+    console.error("error in handleRetrieval:", e);
+    throw e;
+  }
 }
 
-export { retrieveFetchResults, handleRetrieval };
+async function handleRedirectLogic({
+  repo,
+  repoName,
+  activeNumPRs,
+  responseStatus,
+  responseUrl,
+}: {
+  repo: ActiveNumPRs;
+  repoName: string;
+  activeNumPRs: ActiveNumPRs[];
+  responseStatus: number;
+  responseUrl: string;
+}): Promise<ActiveNumPRs | void> {
+  function checkForRedirects({
+    status,
+    url,
+  }: {
+    status: number;
+    url: string;
+  }): { type: string; url: string } {
+    console.log("status:", status);
+    console.log("url:", url);
+
+    let redirectionType: string = "na";
+
+    // Handling redirection status codes - see https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#follow-redirects
+
+    if (status === 302 || status === 307) {
+      // temporary redirection
+      redirectionType = "temporary";
+    } else if (status === 301) {
+      // permanent redirection
+      redirectionType = "permanent";
+    }
+
+    return {
+      type: redirectionType,
+      url: url,
+    };
+  }
+
+  const status = responseStatus;
+  const url = responseUrl;
+  const redirects = checkForRedirects({ status, url });
+
+  if (redirects.type === "temporary") {
+    console.log("repeating fetchNumPRs with temporary redirect url");
+    const temporaryChangedRepo = { ...repo, redirectUrl: redirects.url };
+
+    return temporaryChangedRepo;
+  } else if (redirects.type === "permanent") {
+    console.log("repeating fetchNumPRs with permanent redirect url");
+
+    const updatedActiveNumPRs = activeNumPRs;
+    for (let i = 0; i < updatedActiveNumPRs.length; i++) {
+      if (updatedActiveNumPRs[i].name === repoName) {
+        updatedActiveNumPRs[i].redirectUrl = redirects.url;
+        await saveToLocalStorage("activeNumPRs", updatedActiveNumPRs);
+
+        return updatedActiveNumPRs[i];
+      }
+    }
+  } else {
+    console.log(`no redirects detected in pr fetch for repo ${repoName}`);
+    return;
+  }
+}
+
+function checkUpcomingTokenExpiry(
+  responseHeaders: any,
+  currentFetch: number,
+  activeNumPRs: ActiveNumPRs[]
+): string | undefined {
+  function isWithinFourDays(inputDate: Date): Boolean {
+    console.log("this is the typeof inputDate", typeof inputDate);
+
+    const now = new Date();
+    const fourDaysInMilliseconds = 4 * 24 * 60 * 60 * 1000; // 345,600,000 milliseconds
+
+    // Calculate the absolute difference in milliseconds
+    const timeDifference = Math.abs(now.getTime() - inputDate.getTime());
+
+    // Compare the difference to the 4-day threshold
+    return timeDifference <= fourDaysInMilliseconds;
+  }
+
+  function isTokenExpiry(headers: any): string | undefined {
+    try {
+      const expirationDate = headers["github-authentication-token-expiration"];
+
+      if (expirationDate) {
+        console.log(`Token expires on: ${expirationDate}`);
+        return expirationDate as string;
+      }
+    } catch (e) {
+      console.log("Token expiration header not found.");
+      return;
+    }
+  }
+
+  // check if current personal access token expiry is coming soon (if response header returned for the request) to flag to user
+  const lastFetch = currentFetch === activeNumPRs.length - 1;
+
+  if (lastFetch) {
+    console.log("on lastfetch so checking following headers", responseHeaders);
+    const tokenExpiry = isTokenExpiry(responseHeaders);
+
+    // checking token expiry header is present in response
+    if (tokenExpiry) {
+      console.log(`Token expiry date: ${tokenExpiry}`);
+
+      const isoString = tokenExpiry.replace(" ", "T").replace(" UTC", "Z");
+
+      //console.log("tokenExpiry before conversion", isoString);
+      const expiryDateObj = new Date(isoString);
+      //console.log("expiryDateObj", convertedTokenExpiry);
+
+      // check if token is set to expire within four days
+      const nearExpiry = isWithinFourDays(expiryDateObj);
+
+      if (nearExpiry) {
+        const toastMessage = getToast(
+          "info",
+          "upcomingTokenExpiry",
+          undefined,
+          expiryDateObj.toString()
+        );
+        return toastMessage;
+      }
+
+      console.log("token expiry not within 4 days, no toast triggered");
+      return;
+    }
+
+    return;
+  }
+
+  return;
+}
+
+export {
+  retrieveFetchResults,
+  handleRetrieval,
+  handleRedirectLogic,
+  checkUpcomingTokenExpiry,
+};

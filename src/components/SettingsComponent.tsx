@@ -62,7 +62,12 @@ const SettingsComponent = ({ pollingRate }: SettingsProps) => {
     const fetchedPollingRate = await loadFromLocalStorage("pollingRate");
     console.log("Setting new polling rate of", fetchedPollingRate);
 
-    const toastMessage = getToast("success", "savePollingRate");
+    const toastMessage = getToast(
+      "success",
+      "savePollingRate",
+      undefined,
+      undefined
+    );
     return toast.success(toastMessage);
   }
 
