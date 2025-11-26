@@ -111,6 +111,17 @@ const handleUpdateActiveNumPRs = async ({
     };
     console.log("activeNumPRsCopy:", activeNumPRsCopy);
     await saveToLocalStorage("activeNumPRs", activeNumPRsCopy);
+
+    // display toast messages for any warnings returned (i.e. nearing primary rate limit)
+
+    const warningMessages: string[] = updatedPRDetails.toastMessages;
+
+    if (warningMessages.length > 0) {
+      warningMessages.forEach((message) => {
+        return toast.warning(message);
+      });
+    }
+
     return true;
   }
   return false;

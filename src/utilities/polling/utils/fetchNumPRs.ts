@@ -8,6 +8,7 @@ import {
   handleRedirectLogic,
   handleRetrieval,
 } from "./fetchNumPRsUtils";
+import { checkNearPrimaryRateLimitBound } from "@/utilities/errorHandlingUtilities";
 
 const fetchNumPRs = async (
   activeNumPRs: ActiveNumPRs[],
@@ -59,8 +60,12 @@ const fetchNumPRs = async (
       );
     }
 
-    // 4). Check if nearing primary or secondary rate limits, if so return to user
-    // TO-DO IMPLEMENT THIS FUNCTIONALITY
+    // 4). Check if nearing primary rate limit, if so return to user
+    const primaryRateLimitNearMessages =
+      await checkNearPrimaryRateLimitBound(responseHeaders);
+    if (primaryRateLimitNearMessages) {
+      warningMessages.push(...primaryRateLimitNearMessages);
+    }
 
     // 5). Check if nearing PAT token expiry (if one supplied), if so flag to user
     const upcomingExpiryMessage = checkUpcomingTokenExpiry(

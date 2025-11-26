@@ -54,6 +54,34 @@ function isErrorMsg(arg: any): arg is ErrorMsg {
   return true;
 }
 
+async function checkNearPrimaryRateLimitBound(
+  headers: any
+): Promise<string[] | undefined> {
+  const warningMessages: string[] = [];
+
+  try {
+    if (headers["x-ratelimit-remaining"]) {
+      const numRequestsRemaining = Number(headers["x-ratelimit-remaining"]);
+
+      if (numRequestsRemaining <= 300) {
+        warningMessages.push(
+          `Warning! Only ${numRequestsRemaining} requests remaining before you meet the primary rate limit! Perhaps alter your number of tracked repositories or reduce the frequency of requests made in settings!`
+        );
+
+        return warningMessages;
+      }
+      console.log(
+        `Not near primary rate limit, ${numRequestsRemaining} requests remaining`
+      );
+    }
+
+    return;
+  } catch (e) {
+    console.error("Error checking primary rate limit bound:", e);
+    return;
+  }
+}
+
 async function handleRateLimitError(error: any): Promise<FailureFetchNumPRs> {
   // check if it was a primary or secondary rate limit error which was met
   let minutesWaitInterval: number = 0;
@@ -125,6 +153,7 @@ export {
   isErrorMsg,
   isActiveNumPRsArray,
   handleRateLimitError,
+  checkNearPrimaryRateLimitBound,
   isSuccessFetchNumPRs,
   isFailureFetchNumPRs,
 };
