@@ -21,7 +21,7 @@ async function startPolling({
 
   try {
     // convert polling rate from miliseconds to minutes for info console.log
-    const delayMs = getDelay(currentSliderValue);
+    const delayMs = await getDelay(currentSliderValue);
     console.log(`polling github api every ${delayMs / 60000} minutes`);
 
     await makePollingCall(patCode, repoOwner);

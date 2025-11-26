@@ -5,27 +5,12 @@ import type {
 } from "@/models/utilities/ServiceWorkerFuncsModels";
 import { loadFromLocalStorage, loadFromSessionStorage } from "./storage-utils";
 import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
+import { getDelay } from "../polling/utils/pollingUtilities";
 
 async function createAlarm(alarmName: string): Promise<Boolean> {
   async function fetchAlarmDetails(
     alarmName: string
   ): Promise<[Boolean, number]> {
-    function getDelay(sliderValue: number): number {
-      // setting the delay based on the polling interval chosen (1,5 or 10 mins)
-
-      let delayMs = 300000;
-
-      if (sliderValue === 0) {
-        delayMs = 10;
-      } else if (sliderValue === 50) {
-        delayMs = 5;
-      } else if (sliderValue === 100) {
-        delayMs = 1;
-      }
-
-      return delayMs;
-    }
-
     async function fetchRequiredStorageData(
       alarmName: string
     ): Promise<StorageAlarm> {
@@ -82,7 +67,7 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
       const trackedRepoDetailsConstraints =
         !trackedRepoDetails ||
         (trackedRepoDetails as ActiveNumPRs[]).length === 0;
-      period = getDelay(retrievedPollingRate);
+      period = await getDelay(retrievedPollingRate);
 
       return [trackedRepoDetailsConstraints, period];
     } else if (isStorageRateLimitAlarm(fetchedReqData)) {

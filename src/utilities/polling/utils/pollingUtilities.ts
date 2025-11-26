@@ -69,7 +69,11 @@ async function handleUpdateAllRepoNumPRs(
         console.error("Error not related to rate limit has occured", e);
         return;
       } else {
-        await saveToSessionStorage("waitInterval", errorWaitInterval);
+        const milisecondsErrorWaitInterval = errorWaitInterval * 60000;
+        await saveToSessionStorage(
+          "waitInterval",
+          milisecondsErrorWaitInterval
+        );
         await saveToSessionStorage("messages", errorToastMessages);
 
         errorToastMessages.forEach((message) => {
@@ -216,9 +220,14 @@ async function handleUpdateIndividualRepoNumPRs(
   }
 }
 
-function getDelay(sliderValue: number): number {
-  // setting the delay based on the polling interval chosen (1,5 or 10 mins)
+async function getDelay(sliderValue: number): Promise<number> {
+  // checking storage to see if PAT is null, if so setting delay to 30min equivalent in ms (to help avoid meeting rate limit in authenticated fetches)
+  const patCode = await loadFromLocalStorage("patCode");
+  if (patCode === null) {
+    return 1800000;
+  }
 
+  // setting the delay based on the polling interval chosen (1,5 or 10 mins)
   let delayMs = 300000;
 
   if (sliderValue === 0) {
