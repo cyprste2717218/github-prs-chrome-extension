@@ -28,8 +28,17 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
       } else if (alarmName === "rateLimitErrorAlarm") {
         const delayPeriod = await loadFromSessionStorage("waitInterval");
 
+        // convert delay period from ms to minutes
+        if (!(typeof delayPeriod === "number")) {
+          console.error(
+            `delayPeriod retrieved from session storage is of type: ${typeof delayPeriod} instead of expected type number`
+          );
+          throw new Error("Storage Retrieval Error");
+        }
+        const delayPeriodInMinutes = Math.floor(delayPeriod / 60000);
+
         const fetchedData = {
-          delayPeriod: delayPeriod as number,
+          delayPeriod: delayPeriodInMinutes,
           alarmType: alarmName as string,
         };
 
