@@ -23,6 +23,7 @@ type HeaderProps = {
   activeNumPRs: ActiveNumPRs[];
   repoOwner: string;
   repoDetails: RepoCardComponentDetails[] | null;
+  lastUpdated: string;
 } & TitleProps;
 
 export type { HeaderProps, TitleProps };

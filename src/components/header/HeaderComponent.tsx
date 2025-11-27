@@ -3,6 +3,7 @@ import ButtonCustom from "../input/ButtonCustom";
 import "../../App.css";
 import { HeaderProps } from "@/models/frontend/HeaderComponentModels";
 import TitleComponent from "./TitleComponent";
+import LastUpdatedComponent from "./LastUpdatedComponent";
 
 const HeaderComponent = ({
   setStepState,
@@ -18,6 +19,7 @@ const HeaderComponent = ({
   repoOwner,
   hasPAT,
   isRefreshing,
+  lastUpdated,
 }: HeaderProps): JSX.Element => {
   // To-do: make separate bundles for props for respective back and next button types
 
@@ -156,6 +158,18 @@ const HeaderComponent = ({
           <TitleComponent hasPAT={hasPAT} currentStep={currentStep} />
           <NextButton />
           <RefreshButton />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "start",
+            paddingTop: "5px",
+          }}
+        >
+          <LastUpdatedComponent
+            lastUpdated={lastUpdated}
+            currentStep={currentStep}
+          />
         </div>
       </div>
     </div>

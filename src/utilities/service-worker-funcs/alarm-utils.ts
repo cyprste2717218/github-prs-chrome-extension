@@ -69,7 +69,10 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
         (trackedRepoDetails as ActiveNumPRs[]).length === 0;
       period = await getDelay(retrievedPollingRate);
 
-      return [trackedRepoDetailsConstraints, period];
+      const periodInMinutes = Math.floor(period / 60000);
+      console.log("period:", periodInMinutes);
+
+      return [trackedRepoDetailsConstraints, periodInMinutes];
     } else if (isStorageRateLimitAlarm(fetchedReqData)) {
       const delayPeriod = fetchedReqData["delayPeriod"];
       period = delayPeriod;
@@ -99,6 +102,8 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
   if (!fetchedPeriod) {
     throw new Error("No period fetched for alarm scheduling");
   }
+
+  console.log("alarm period:", fetchedPeriod);
 
   const alarm = await chrome.alarms.get(ALARM_NAME);
 

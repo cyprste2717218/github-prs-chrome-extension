@@ -131,45 +131,6 @@ const handleUpdateActiveNumPRs = async ({
   return false;
 };
 
-/* async function handleUpdatePRDetailsError(e: ErrorMsg): Promise<void> {
- 
-
-  let message;
-  let timeout: number;
-
-  if (!isErrorMsg(e)) {
-    console.error(
-      "Unknown error type encountered from execution of updatePRDetails func:",
-      e
-    );
-    throw new Error("polling");
-  }
-
-  message = e.customType;
-  timeout = e.waitInterval as number;
-
-  try {
-    if (message === "Storage Handling Error encountered") {
-      console.error(`Error saving to chrome localStorage: ${e}`);
-
-      throw { customType: message };
-    } else if (message === "Rate Limit Error encountered") {
-      await rateLimitErrorHandler(timeout, message, e);
-    }
-  } catch (e) {
-    if (!isErrorMsg(e)) {
-      return;
-    }
-    console.log(
-      "Error during error handling process for handling polling alarm:",
-      e.customType
-    );
-
-    message = "Alarm handling error encountered";
-    throw { customType: message };
-  }
-} */
-
 async function handleUpdateIndividualRepoNumPRs(
   activeNumPRs: ActiveNumPRs[],
   repoDetails: ActiveNumPRs,
@@ -221,6 +182,8 @@ async function handleUpdateIndividualRepoNumPRs(
 }
 
 async function getDelay(sliderValue: number): Promise<number> {
+  // Converting slider value to ms equivalent
+
   // checking storage to see if PAT is null, if so setting delay to 30min equivalent in ms (to help avoid meeting rate limit in authenticated fetches)
   const patCode = await loadFromLocalStorage("patCode");
   if (patCode === null) {
@@ -261,6 +224,10 @@ async function updatePRDetails({
 
     // stopping fetch spinner due to succesful update process
     await saveToLocalStorage("isRefreshing", false);
+
+    // updating date/time of last succesful update
+    const currentDate = new Date();
+    await saveToLocalStorage("lastUpdated", currentDate.toUTCString());
 
     return;
   } catch (e) {

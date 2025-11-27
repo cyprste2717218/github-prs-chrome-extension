@@ -25,6 +25,7 @@ function App() {
   const [activeResultsPage, setActiveResultsPage] = useState<number>(1);
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [lastUpdated, setLastUpdated] = useState<string>("");
 
   const intialConfig = [
     { key: "username", setState: setUsername },
@@ -37,6 +38,7 @@ function App() {
     { key: "activeResultsPage", setState: setActiveResultsPage },
     { key: "pollingRate", setState: setPollingRate },
     { key: "isRefreshing", setState: setIsRefreshing },
+    { key: "lastUpdated", setState: setLastUpdated },
   ];
 
   // Configure storage listeners for updating state accordingly
@@ -78,6 +80,7 @@ function App() {
       "numPageResults",
       "activeResultsPage",
       "pollingRate",
+      "lastUpdated",
     ];
 
     const result = await getSetData();
@@ -110,6 +113,7 @@ function App() {
         repoDetails={repoDetails}
         allReposToggled={reposToggled}
         setReposToggled={setReposToggled}
+        lastUpdated={lastUpdated}
       />
 
       <StepComponent
