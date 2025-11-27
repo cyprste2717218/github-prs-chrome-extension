@@ -163,7 +163,7 @@ const HeaderComponent = ({
           style={{
             display: "flex",
             justifyContent: "start",
-            paddingTop: "5px",
+            paddingTop: "20px",
           }}
         >
           <LastUpdatedComponent
