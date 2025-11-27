@@ -3,8 +3,55 @@ import { request } from "@octokit/request";
 import { OctokitResponse } from "@octokit/types";
 import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
 import { getToast } from "@/utilities/toastMessages";
-import { handleRateLimitError } from "@/utilities/errorHandlingUtilities";
+import {
+  handleNetworkRequestRetry,
+  handleRequestError,
+} from "@/utilities/errorHandlingUtilities";
 import { FailureFetchNumPRs } from "@/models/utilities/ServiceWorkerFuncsModels";
+import { RequestError } from "@octokit/request-error";
+
+const unauthenticatedFetch = async (
+  repo: ActiveNumPRs,
+  repoOwner: string,
+  repoName: string
+): Promise<OctokitResponse<any, number>> => {
+  const redirectUrl = repo.redirectUrl;
+
+  const response = await request(
+    `GET ${redirectUrl ? redirectUrl : `/repos/${repoOwner}/${repoName}/pulls`}`,
+    {
+      owner: repoOwner,
+      repo: repoName,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+
+  return response;
+};
+
+const authenticatedFetch = async (
+  repo: ActiveNumPRs,
+  repoOwner: string,
+  repoName: string,
+  storedPATCode: string
+): Promise<OctokitResponse<any, number>> => {
+  const requestWithAuth = request.defaults({
+    headers: {
+      authorization: `token ${storedPATCode}`,
+    },
+  });
+
+  const redirectUrl = repo.redirectUrl;
+
+  const response = await requestWithAuth(
+    `GET ${redirectUrl ? redirectUrl : `/repos/${repoOwner}/${repoName}/pulls`}`
+  );
+
+  console.log("This is the response from authenticated fetch:", response);
+  return response;
+};
 
 async function handleUnauthenticatedFetch(
   repo: ActiveNumPRs,
@@ -13,34 +60,52 @@ async function handleUnauthenticatedFetch(
 ): Promise<OctokitResponse<any, number>> {
   // unauthenticated request
   try {
-    const redirectUrl = repo.redirectUrl;
+    try {
+      const response = await unauthenticatedFetch(repo, repoOwner, repoName);
+      return response;
+    } catch (e) {
+      // handling network request retries in first instance if that is the error
 
-    const response = await request(
-      `GET ${redirectUrl ? redirectUrl : `/repos/${repoOwner}/${repoName}/pulls`}`,
-      {
-        owner: repoOwner,
-        repo: repoName,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
+      const requestError = e as RequestError;
+      if (requestError.status === 500) {
+        const succesfulRetryResponse = await handleNetworkRequestRetry(
+          repo,
+          repoOwner,
+          repoName,
+          3
+        );
+
+        if (succesfulRetryResponse) {
+          return succesfulRetryResponse;
+        } else {
+          throw new Error("Error during handling of network request retry");
+        }
+      } else {
+        // not a network request error so throwing error on for handling other recognised error types
+        throw e;
       }
-    );
-
-    return response;
+    }
   } catch (error) {
-    console.log(
-      `error fetching number of PRs (unauthenticated request) for repo ${repoName}: ${error}`
-    );
+    // handling other errors not related to network issuess
     const errorObj: FailureFetchNumPRs = {
       waitInterval: 0,
       toastMessages: [],
     };
 
     try {
-      const retrievedErrorObj = await handleRateLimitError(error);
+      console.error(
+        `error fetching number of PRs (unauthenticated request) for repo ${repoName}: ${error} `
+      );
+
+      const retrievedErrorObj = await handleRequestError(error as RequestError);
+      if (!retrievedErrorObj) {
+        throw error;
+      }
 
       errorObj.toastMessages = retrievedErrorObj.toastMessages;
       errorObj.waitInterval = retrievedErrorObj.waitInterval;
+
+      throw errorObj;
     } catch (e) {
       console.error(
         "Unable to succesfully parse error object thrown in handleUnauthenticatedFetch within handleRateLimitError func"
@@ -48,8 +113,6 @@ async function handleUnauthenticatedFetch(
 
       throw errorObj;
     }
-
-    throw errorObj;
 
     //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo
   }
@@ -63,33 +126,53 @@ async function handleAuthenticatedFetch(
 ): Promise<OctokitResponse<any, number>> {
   // authenticated request
   try {
-    const requestWithAuth = request.defaults({
-      headers: {
-        authorization: `token ${storedPATCode}`,
-      },
-    });
+    try {
+      const response = await authenticatedFetch(
+        repo,
+        repoOwner,
+        repoName,
+        storedPATCode
+      );
+      return response;
+    } catch (e) {
+      // handling network request retries in first instance if that is the error
 
-    const redirectUrl = repo.redirectUrl;
+      const requestError = e as RequestError;
+      if (requestError.status === 500) {
+        const succesfulRetryResponse = await handleNetworkRequestRetry(
+          repo,
+          repoOwner,
+          repoName,
+          3,
+          storedPATCode
+        );
 
-    const response = await requestWithAuth(
-      `GET ${redirectUrl ? redirectUrl : `/repos/${repoOwner}/${repoName}/pulls`}`
-    );
-
-    console.log("This is the response from authenticated fetch:", response);
-
-    return response;
+        if (succesfulRetryResponse) {
+          return succesfulRetryResponse;
+        } else {
+          throw new Error("Error during handling of network request retry");
+        }
+      } else {
+        // not a network request error so throwing error on for handling other recognised error types
+        throw e;
+      }
+    }
   } catch (error) {
-    console.error(
-      `error fetching number of PRs (authenticated request) for repo ${repoName}: ${error} `
-    );
-
+    // handling other errors not related to network issuess
     const errorObj: FailureFetchNumPRs = {
       waitInterval: 0,
       toastMessages: [],
     };
 
     try {
-      const retrievedErrorObj = await handleRateLimitError(error);
+      console.error(
+        `error fetching number of PRs (authenticated request) for repo ${repoName}: ${error} `
+      );
+
+      const retrievedErrorObj = await handleRequestError(error as RequestError);
+      if (!retrievedErrorObj) {
+        throw error;
+      }
 
       errorObj.toastMessages = retrievedErrorObj.toastMessages;
       errorObj.waitInterval = retrievedErrorObj.waitInterval;
@@ -303,4 +386,6 @@ export {
   handleRetrieval,
   handleRedirectLogic,
   checkUpcomingTokenExpiry,
+  authenticatedFetch,
+  unauthenticatedFetch,
 };

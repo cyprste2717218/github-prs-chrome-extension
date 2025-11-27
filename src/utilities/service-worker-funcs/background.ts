@@ -35,13 +35,27 @@ async function handleSessionStorageChanges(
   area: string
 ): Promise<any> {
   if (area === "session" && changes.messages) {
-    const messages: string[] | null = await loadFromSessionStorage("messages");
-    if (!messages) {
-      return;
-    }
+    if (changes.messages) {
+      const messages: string[] | null =
+        await loadFromSessionStorage("messages");
+      if (!messages) {
+        return;
+      }
 
-    for (const msg in messages) {
-      return toast.error(msg);
+      for (const msg in messages) {
+        return toast.error(msg);
+      }
+    } else if (changes.networkError) {
+      // rendering toast error message as relevant to state of current netowrk retry logic (in case of network error)
+      if (changes.networkError.newValue !== "") {
+        const networkErrorMessage = (await loadFromSessionStorage(
+          "networkError"
+        )) as string;
+
+        return toast.error(networkErrorMessage);
+      } else if (changes.networkError.newValue === "") {
+        return toast.success("Network connection re-established!");
+      }
     }
   }
 }

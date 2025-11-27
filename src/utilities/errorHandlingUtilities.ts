@@ -1,8 +1,14 @@
 import { ActiveNumPRs } from "@/models/frontend/RepoCardModels";
+import { RequestError } from "@octokit/request-error";
 import {
   FailureFetchNumPRs,
   SuccessFetchNumPRs,
 } from "@/models/utilities/ServiceWorkerFuncsModels";
+import { saveToSessionStorage } from "./service-worker-funcs/storage-utils";
+import {
+  authenticatedFetch,
+  unauthenticatedFetch,
+} from "./polling/utils/fetchNumPRsUtils";
 
 type ErrorMsg = {
   customType: string;
@@ -82,8 +88,79 @@ async function checkNearPrimaryRateLimitBound(
   }
 }
 
-async function handleRateLimitError(error: any): Promise<FailureFetchNumPRs> {
+async function handleRequestError(
+  error: RequestError
+): Promise<FailureFetchNumPRs | void> {
+  if (error.status === 403) {
+    console.error(`HTTP ${error.status} error: Rate Limit Error has occurred`);
+
+    const errorObj = await handleRateLimitError(error);
+    if (!isFailureFetchNumPRs(errorObj)) {
+      console.error("errorObj is not of type FailureFetchNumPRs");
+    }
+
+    return errorObj;
+  }
+  return;
+}
+
+async function handleNetworkRequestRetry(
+  repo: ActiveNumPRs,
+  repoOwner: string,
+  repoName: string,
+  maxRetries: number,
+  storedPATCode?: string
+) {
+  console.log("Handling network request retry...");
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      let response;
+      await saveToSessionStorage(
+        "networkError",
+        "Network Error encountered, retrying request now"
+      );
+
+      if (storedPATCode) {
+        response = await authenticatedFetch(
+          repo,
+          repoOwner,
+          repoName,
+          storedPATCode
+        );
+      }
+      response = await unauthenticatedFetch(repo, repoOwner, repoName);
+
+      // successful network request retry so clearing sessionStorage for network error
+      await saveToSessionStorage("networkError", "");
+      return response;
+    } catch (error) {
+      if (i === maxRetries) {
+        // Wait before retrying (exponential backoff)
+
+        // 1). Create exponential delay
+        const delay = Math.pow(2, i) * 1000;
+
+        // 2). Update sessionStorage with current network error status
+        await saveToSessionStorage(
+          "networkError",
+          `Initial Network retries failed, waiting ${delay} seconds before trying again`
+        );
+
+        // 3). Wait for the delay before retrying
+        console.log(
+          `Waiting for ${delay} seconds before retrying network request...`
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+}
+
+async function handleRateLimitError(
+  error: RequestError
+): Promise<FailureFetchNumPRs> {
   // check if it was a primary or secondary rate limit error which was met
+
   let minutesWaitInterval: number = 0;
   const messages: string[] = [];
 
@@ -152,9 +229,10 @@ function isFailureFetchNumPRs(obj: any): obj is FailureFetchNumPRs {
 export {
   isErrorMsg,
   isActiveNumPRsArray,
-  handleRateLimitError,
   checkNearPrimaryRateLimitBound,
   isSuccessFetchNumPRs,
   isFailureFetchNumPRs,
+  handleRequestError,
+  handleNetworkRequestRetry,
 };
 export type { ErrorMsg };
