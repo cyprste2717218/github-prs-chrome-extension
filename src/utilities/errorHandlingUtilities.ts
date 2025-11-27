@@ -98,7 +98,7 @@ async function handleRateLimitError(error: any): Promise<FailureFetchNumPRs> {
       const currentTimeEpochSeconds = Math.floor(Date.now() / 1000);
       const secondsToWait = resetTimeEpochSeconds - currentTimeEpochSeconds;
 
-      minutesWaitInterval = secondsToWait / 60;
+      minutesWaitInterval = Math.floor(secondsToWait / 60);
       messages.push(
         `Primary rate limit error, waiting ${minutesWaitInterval} minutes before making another request`
       );
