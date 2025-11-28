@@ -14,7 +14,7 @@ export const useChromeStorageListener = <T>(
       changes: { [key: string]: chrome.storage.StorageChange },
       area: string
     ) => {
-      if (area === "local" && changes[storageKey]) {
+      if ((area === "local" || area === "session") && changes[storageKey]) {
         const newValue = JSON.parse(changes[storageKey].newValue);
         console.log(
           "Storage key changed:",

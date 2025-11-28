@@ -6,6 +6,7 @@ import {
 } from "@/models/utilities/ServiceWorkerFuncsModels";
 import {
   loadFromLocalStorage,
+  loadFromSessionStorage,
   saveToLocalStorage,
   saveToSessionStorage,
 } from "../../service-worker-funcs/storage-utils";
@@ -37,6 +38,18 @@ async function rateLimitErrorHandler(e: FailureFetchNumPRs): Promise<void> {
   return;
 }
 
+async function networkErrorAlarmHandler(e: FailureFetchNumPRs): Promise<void> {
+  console.log("deleting polling alarm and creating network error alarm:", e);
+
+  console.log("deleting polling alarm");
+  await handleDeleteAlarm("pollingAlarm");
+
+  console.log("creating network error alarm");
+  await handleCreateAlarm("rateLimitErrorAlarm");
+
+  return;
+}
+
 async function handleUpdateAllRepoNumPRs(
   repoOwner: string,
   patCode: string | null
@@ -59,30 +72,59 @@ async function handleUpdateAllRepoNumPRs(
         patCode
       );
     }
+
+    return true;
   } catch (e) {
     if (isFailureFetchNumPRs(e)) {
-      // Handling rate limit error case
+      // Handling rate limit or network error cases
+      const errorType = e.type;
       const errorToastMessages = e.toastMessages;
       const errorWaitInterval = e.waitInterval;
 
-      if (errorToastMessages.length === 0 && errorWaitInterval === 0) {
+      if (
+        errorToastMessages.length === 0 &&
+        errorWaitInterval === 0 &&
+        errorType === ""
+      ) {
         console.error("Error not related to rate limit has occured", e);
-        return;
+        return false;
       } else {
         const milisecondsErrorWaitInterval = errorWaitInterval * 60000;
+        console.log(
+          "milisecondErrorWaitInterval:",
+          milisecondsErrorWaitInterval
+        );
+
         await saveToSessionStorage(
           "waitInterval",
           milisecondsErrorWaitInterval
         );
         await saveToSessionStorage("messages", errorToastMessages);
 
+        const retrievedWaitInterval =
+          await loadFromSessionStorage("waitInterval");
+        console.log(
+          "wait interval from session storage after having saved it:",
+          retrievedWaitInterval
+        );
+
+        // creating alarm to wait out period needed before safe to make usual polling requests again (due to meeting Github API rate limit or waiting before worth retrying network requests)
+        try {
+          if (errorType === "rateLimit") {
+            await rateLimitErrorHandler(e);
+          } else if (errorType === "networkError") {
+            await networkErrorAlarmHandler(e);
+          }
+        } catch (e) {
+          console.error(
+            "Alarm handling error during handleUpdateAllRepoNumPRS func"
+          );
+        }
+
+        // display any error toasts
         errorToastMessages.forEach((message) => {
           return toast.error(message);
         });
-
-        // creating alarm to wait out period needed before safe to make usual polling requests again (due to meeting Github API rate limit)
-
-        await rateLimitErrorHandler(e);
 
         throw e;
       }
@@ -220,7 +262,13 @@ async function updatePRDetails({
     }
 
     // sequential execution of each async call to get current number of PRs per repo
-    await handleUpdateAllRepoNumPRs(repoOwner, patCode);
+    const successfulPollingUpdate = await handleUpdateAllRepoNumPRs(
+      repoOwner,
+      patCode
+    );
+    if (!successfulPollingUpdate) {
+      throw new Error();
+    }
 
     // stopping fetch spinner due to succesful update process
     await saveToLocalStorage("isRefreshing", false);

@@ -1,5 +1,5 @@
 import { loadFromLocalStorage, saveToSessionStorage } from "./storage-utils";
-import { makePollingCall } from "../polling/polling";
+import { startPolling } from "../polling/polling";
 import { createAlarm, deleteAlarm } from "./alarm-utils";
 
 async function handleDeleteAllAlarms(): Promise<void> {
@@ -45,22 +45,25 @@ async function handleAlertAlarm(alarmName: string): Promise<void> {
       const isoString = now.toISOString();
 
       console.log(`pollingAlarm alarm triggered at ${isoString}`);
-      const repoOwner = (await loadFromLocalStorage("username")) as string;
-      const patCode = (await loadFromLocalStorage("patCode")) as string | null;
 
       try {
-        await makePollingCall(patCode, repoOwner);
+        const repoOwner = (await loadFromLocalStorage("username")) as string;
+        const patCode = (await loadFromLocalStorage("patCode")) as
+          | string
+          | null;
+        const currentSliderValue = (await loadFromLocalStorage(
+          "pollingRate"
+        )) as number;
 
-        console.log(
-          "saved updated PR details to extension localStorage successfully"
-        );
+        await startPolling({ currentSliderValue, repoOwner, patCode });
+
         return;
       } catch (e) {
         console.error("Error in handleAlertAlarm:", e);
       }
     } else if (alarmName === "rateLimitErrorAlarm") {
       console.log(
-        "period elapsed for suspension from making requests due to rate limit error response"
+        "period elapsed for suspension from making requests due to rate limit/network error response"
       );
 
       try {
@@ -74,11 +77,13 @@ async function handleAlertAlarm(alarmName: string): Promise<void> {
         await handleCreateAlarm("pollingAlarm");
         console.log("created new polling alarm");
 
-        // 3). updating session storage to indicate rate limit error has been handled
-        console.log("setting watInterval in session storage to 0");
+        // 3). updating session storage to indicate rate limit/network error has been handled
+        console.log("setting waitInterval in session storage to 0");
         await saveToSessionStorage("waitInterval", 0);
         console.log("clearing rate limit error messages in session storage");
         await saveToSessionStorage("messages", []);
+        console.log("clearing network error message in session storage");
+        await saveToSessionStorage("networkError", "");
       } catch (e) {
         console.error(
           "Issue handling deletion of old rate limit error alarm followed by creation of new polling alarm following rate limit error period having elapsed"
@@ -126,5 +131,6 @@ export {
   handleAlertAlarm,
   handleCreateAlarm,
   handleDeleteAlarm,
+  handleDeleteAllAlarms,
   handleLocalStorageStepChanges,
 };

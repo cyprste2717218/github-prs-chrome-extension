@@ -9,6 +9,7 @@ type SuccessFetchNumPRs = {
 type FailureFetchNumPRs = {
   waitInterval: number;
   toastMessages: string[];
+  type: string;
 };
 
 type FetchNumPRs = SuccessFetchNumPRs | FailureFetchNumPRs;

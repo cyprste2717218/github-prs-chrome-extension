@@ -46,16 +46,20 @@ async function handleSessionStorageChanges(
         return toast.error(msg);
       }
     } else if (changes.networkError) {
-      // rendering toast error message as relevant to state of current netowrk retry logic (in case of network error)
-      if (changes.networkError.newValue !== "") {
-        const networkErrorMessage = (await loadFromSessionStorage(
-          "networkError"
-        )) as string;
+      // rendering toast error message as relevant to state of current network retry logic (in case of network error)
 
-        return toast.error(networkErrorMessage);
-      } else if (changes.networkError.newValue === "") {
+      const networkErrorMsg = (await loadFromSessionStorage(
+        "networkError"
+      )) as string;
+      if (!networkErrorMsg) {
+        return;
+      }
+
+      if (networkErrorMsg === "") {
         return toast.success("Network connection re-established!");
       }
+
+      return toast.error(networkErrorMsg);
     }
   }
 }

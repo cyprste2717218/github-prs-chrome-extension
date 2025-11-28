@@ -1,8 +1,5 @@
 import { Fragment } from "react";
-import {
-  handleSubmitUserName,
-  handleRefresh,
-} from "@/utilities/repoDetailUtilities";
+import { handleSubmitUserName } from "@/utilities/repoDetailUtilities";
 import {
   SettingsButtonProps,
   RefreshButtonProps,
@@ -29,7 +26,8 @@ import { handleStepChange } from "@/utilities/setUpUtilities";
 import { displayScrollToTopButton } from "@/utilities/hooks/displayScrollToTopButton.ts";
 import { toast } from "sonner";
 import { getToast } from "@/utilities/toastMessages";
-import { saveToLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
+import { loadFromLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
+import { startPolling } from "@/utilities/polling/polling";
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {
   return (
@@ -89,37 +87,20 @@ const UsernameButton: React.FC<UsernameButtonProps> = ({}) => {
 };
 
 const RefreshButton: React.FC<RefreshButtonProps> = ({
-  setActiveNumPRs,
-  setStep,
   isRefreshing,
-  activeNumPRs,
-  currentStep,
   repoOwner,
   patCode,
 }) => {
   const handleClick = async () => {
     console.log("pressed refresh button");
-    await saveToLocalStorage("isRefreshing", true);
 
-    try {
-      await handleRefresh({
-        setActiveNumPRs,
-        setStep,
-        patCode,
-        activeNumPRs,
-        currentStep,
-        repoOwner,
-      });
+    const currentSliderValue = (await loadFromLocalStorage(
+      "pollingRate"
+    )) as number;
+    const patCode = (await loadFromLocalStorage("patCode")) as string;
 
-      console.log("succesfully refreshed prs");
-    } catch (e) {
-      // setting isRefreshing to false in case of error
-      await saveToLocalStorage("isRefreshing", false);
-
-      console.error("Error during manual refresh of PR details");
-      const toastMessage = getToast("info", "rateLimitError");
-      return toast.error(toastMessage);
-    }
+    await startPolling({ currentSliderValue, repoOwner, patCode });
+    console.log("succesfully refreshed prs");
   };
 
   return (

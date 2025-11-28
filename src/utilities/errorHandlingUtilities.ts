@@ -91,7 +91,7 @@ async function checkNearPrimaryRateLimitBound(
 async function handleRequestError(
   error: RequestError
 ): Promise<FailureFetchNumPRs | void> {
-  if (error.status === 403) {
+  if (error.status === 403 || error.status === 429) {
     console.error(`HTTP ${error.status} error: Rate Limit Error has occurred`);
 
     const errorObj = await handleRateLimitError(error);
@@ -100,6 +100,25 @@ async function handleRequestError(
     }
 
     return errorObj;
+  } else if (error.status === 500) {
+    // Not implementing custom handling function as for rate limit error handling as defining error object here suffices
+
+    console.error(`HTTP ${error.status} error: Network Error has occurred`);
+    const waitInterval = 2;
+
+    const networkErrorObj: FailureFetchNumPRs = {
+      type: "networkError",
+      waitInterval: waitInterval,
+      toastMessages: [
+        `Attempts to re-establish network connection failed, will try again in ${waitInterval} minutes`,
+      ],
+    };
+
+    if (!isFailureFetchNumPRs(networkErrorObj)) {
+      console.error("errorObj is not of type FailureFetchNumPRs");
+    }
+
+    return networkErrorObj;
   }
   return;
 }
@@ -111,13 +130,19 @@ async function handleNetworkRequestRetry(
   maxRetries: number,
   storedPATCode?: string
 ) {
+  /*  async function renderToast(message: string) {
+     return toast.error(message);
+   } */
+
   console.log("Handling network request retry...");
-  for (let i = 0; i < maxRetries; i++) {
+
+  for (let i = 0; i <= maxRetries; i++) {
+    console.log("current retry iteration:", i);
     try {
       let response;
       await saveToSessionStorage(
         "networkError",
-        "Network Error encountered, retrying request now"
+        `Network Error encountered, retrying request now (attempt ${i + 1})`
       );
 
       if (storedPATCode) {
@@ -135,23 +160,40 @@ async function handleNetworkRequestRetry(
       return response;
     } catch (error) {
       if (i === maxRetries) {
-        // Wait before retrying (exponential backoff)
-
-        // 1). Create exponential delay
-        const delay = Math.pow(2, i) * 1000;
+        console.log(
+          `on i value of ${i} (is of type: ${typeof i}) which is equal to max retries`
+        );
 
         // 2). Update sessionStorage with current network error status
         await saveToSessionStorage(
           "networkError",
-          `Initial Network retries failed, waiting ${delay} seconds before trying again`
+          "Initial Network retries failed, check your network connection or try reloading/reinstalling the extension"
         );
 
-        // 3). Wait for the delay before retrying
-        console.log(
-          `Waiting for ${delay} seconds before retrying network request...`
-        );
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        // await renderToast("Initial Network retries failed, check your network connection or try reloading/reinstalling the extension");
+
+        throw error;
       }
+
+      // Wait before retrying network request (exponential backoff)
+
+      // 1). Create exponential delay
+      const delay = Math.pow(2, i) * 1000;
+      const delayInSeconds = Math.floor(delay / 1000);
+
+      console.log(
+        `Waiting for ${delayInSeconds} seconds before retrying network request...`
+      );
+
+      // 2). Updating session storage for error toast to render
+      await saveToSessionStorage(
+        "networkError",
+        `Waiting for ${delayInSeconds} seconds before retrying network request...`
+      );
+
+      // await renderToast(`Waiting for ${Math.floor(delay / 1000)} seconds before retrying network request...`);
+      // 3). Wait for the delay before retrying
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 }
@@ -200,6 +242,7 @@ async function handleRateLimitError(
 
   console.log("messages:", messages);
   return {
+    type: "rateLimit",
     waitInterval: minutesWaitInterval,
     toastMessages: messages,
   };
@@ -220,7 +263,9 @@ function isFailureFetchNumPRs(obj: any): obj is FailureFetchNumPRs {
     typeof obj === "object" &&
     "waitInterval" in obj &&
     "toastMessages" in obj &&
+    "type" in obj &&
     typeof obj.waitInterval === "number" &&
+    typeof obj.type === "string" &&
     Array.isArray(obj.toastMessages) &&
     obj.toastMessages.every((item: any) => typeof item === "string")
   );

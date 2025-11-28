@@ -6,6 +6,7 @@ import { getToast } from "@/utilities/toastMessages";
 import {
   handleNetworkRequestRetry,
   handleRequestError,
+  isFailureFetchNumPRs,
 } from "@/utilities/errorHandlingUtilities";
 import { FailureFetchNumPRs } from "@/models/utilities/ServiceWorkerFuncsModels";
 import { RequestError } from "@octokit/request-error";
@@ -90,6 +91,7 @@ async function handleUnauthenticatedFetch(
     const errorObj: FailureFetchNumPRs = {
       waitInterval: 0,
       toastMessages: [],
+      type: "",
     };
 
     try {
@@ -148,8 +150,12 @@ async function handleAuthenticatedFetch(
         );
 
         if (succesfulRetryResponse) {
+          // creating polling alarm again as retry process succesful
+          console.log("succesful github fetch made");
+
           return succesfulRetryResponse;
         } else {
+          console.log("falsy value for succesfulRetryResponse var");
           throw new Error("Error during handling of network request retry");
         }
       } else {
@@ -158,10 +164,10 @@ async function handleAuthenticatedFetch(
       }
     }
   } catch (error) {
-    // handling other errors not related to network issuess
     const errorObj: FailureFetchNumPRs = {
       waitInterval: 0,
       toastMessages: [],
+      type: "",
     };
 
     try {
@@ -171,19 +177,24 @@ async function handleAuthenticatedFetch(
 
       const retrievedErrorObj = await handleRequestError(error as RequestError);
       if (!retrievedErrorObj) {
+        console.log("there is no retrievedErrorObj");
         throw error;
       }
 
+      console.log("this is the retrievedErrorObj:", retrievedErrorObj);
+
+      errorObj.type = retrievedErrorObj.type;
       errorObj.toastMessages = retrievedErrorObj.toastMessages;
       errorObj.waitInterval = retrievedErrorObj.waitInterval;
 
       throw errorObj;
     } catch (e) {
-      console.error(
-        "Unable to succesfully parse error object thrown in handleUnauthenticatedFetch within handleRateLimitError func"
-      );
+      console.error("error thrown in handleAuthenticatedFetch:", e);
 
-      throw errorObj;
+      if (!isFailureFetchNumPRs(e)) {
+        throw errorObj;
+      }
+      throw e;
     }
 
     //To-Do: get implementation of shadcn/ui Sonner (banner)component to display if error fetching updated num prs for repo

@@ -10,6 +10,7 @@ import type {
 } from "./models/frontend/RepoCardModels.ts";
 import "./App.css";
 import { loadAllFromLocalStorage } from "./utilities/service-worker-funcs/storage-utils.ts";
+import { toast } from "sonner";
 
 function App() {
   const [username, setUsername] = useState<string>("");
@@ -26,6 +27,8 @@ function App() {
   const [pollingRate, setPollingRate] = useState<number>(50); //To-do: set pollingRate values to minute equivalents
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string>("");
+  const [networkErrorMsg, setIsNetworkErrorMsg] = useState<string | null>(null);
+  const [miscErrorMsgs, setMiscErrorMsgs] = useState<string[]>([]);
 
   const intialConfig = [
     { key: "username", setState: setUsername },
@@ -39,6 +42,8 @@ function App() {
     { key: "pollingRate", setState: setPollingRate },
     { key: "isRefreshing", setState: setIsRefreshing },
     { key: "lastUpdated", setState: setLastUpdated },
+    { key: "networkError", setState: setIsNetworkErrorMsg },
+    { key: "messages", setState: setMiscErrorMsgs },
   ];
 
   // Configure storage listeners for updating state accordingly
@@ -90,6 +95,18 @@ function App() {
       return;
     }
   }, []);
+
+  useEffect(() => {
+    if (networkErrorMsg === "") {
+      toast.success(networkErrorMsg);
+    } else if (networkErrorMsg && networkErrorMsg !== "") {
+      toast.error(networkErrorMsg);
+    } else if (miscErrorMsgs.length > 0) {
+      miscErrorMsgs.forEach((msg) => {
+        toast.error(msg);
+      });
+    }
+  }, [networkErrorMsg, miscErrorMsgs]);
 
   useEffect(() => {
     loadInitialData();

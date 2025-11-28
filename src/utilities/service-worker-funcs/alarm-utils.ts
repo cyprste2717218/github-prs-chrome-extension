@@ -126,7 +126,6 @@ async function createAlarm(alarmName: string): Promise<Boolean> {
     }
 
     await chrome.alarms.create(ALARM_NAME, {
-      delayInMinutes: 0,
       periodInMinutes: fetchedPeriod,
     });
 
