@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import {
   handleCheckAlarmExists,
   handleDeleteAlarm,
-  handleDeleteAllAlarms,
 } from "./service-worker-funcs/alarms.ts";
 
 async function handleSubmitUserName({
