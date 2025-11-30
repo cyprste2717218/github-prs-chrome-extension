@@ -15,6 +15,11 @@ import { makePollingCall } from "./polling/polling.ts";
 import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 import { getToast } from "./toastMessages.ts";
 import { toast } from "sonner";
+import {
+  handleCheckAlarmExists,
+  handleDeleteAlarm,
+  handleDeleteAllAlarms,
+} from "./service-worker-funcs/alarms.ts";
 
 async function handleSubmitUserName({
   username,
@@ -244,6 +249,13 @@ async function handleRefresh({
       console.log("activeNumPRs array is not empty");
 
       await makePollingCall(patCode, repoOwner);
+
+      // deleting rate limit error alarm if manual refresh is succesful before scheduled network error alarm is triggered
+      const rateLimitErrorAlarmExists =
+        await handleCheckAlarmExists("rateLimitError");
+      if (rateLimitErrorAlarmExists) {
+        await handleDeleteAlarm("rateLimitError");
+      }
 
       console.log("Completed manual refresh of PR details");
     } else {

@@ -140,10 +140,6 @@ async function handleNetworkRequestRetry(
     console.log("current retry iteration:", i);
     try {
       let response;
-      await saveToSessionStorage(
-        "networkError",
-        `Network Error encountered, retrying request now (attempt ${i + 1})`
-      );
 
       if (storedPATCode) {
         response = await authenticatedFetch(
@@ -156,7 +152,7 @@ async function handleNetworkRequestRetry(
       response = await unauthenticatedFetch(repo, repoOwner, repoName);
 
       // successful network request retry so clearing sessionStorage for network error
-      await saveToSessionStorage("networkError", "");
+      await saveToSessionStorage("networkError", "Retry Success");
       return response;
     } catch (error) {
       if (i === maxRetries) {
@@ -167,7 +163,7 @@ async function handleNetworkRequestRetry(
         // 2). Update sessionStorage with current network error status
         await saveToSessionStorage(
           "networkError",
-          "Initial Network retries failed, check your network connection or try reloading/reinstalling the extension"
+          "Initial Network retries failed, trying again in 2 minutes"
         );
 
         // await renderToast("Initial Network retries failed, check your network connection or try reloading/reinstalling the extension");

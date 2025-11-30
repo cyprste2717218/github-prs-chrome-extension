@@ -38,6 +38,16 @@ async function handleCreateAlarm(alarmName: string): Promise<void> {
   }
 }
 
+async function handleCheckAlarmExists(alarmName: string): Promise<Boolean> {
+  const alarm = await chrome.alarms.get(alarmName);
+
+  if (typeof alarm === "undefined") {
+    return false;
+  }
+
+  return true;
+}
+
 async function handleAlertAlarm(alarmName: string): Promise<void> {
   try {
     if (alarmName === "pollingAlarm") {
@@ -82,8 +92,15 @@ async function handleAlertAlarm(alarmName: string): Promise<void> {
         await saveToSessionStorage("waitInterval", 0);
         console.log("clearing rate limit error messages in session storage");
         await saveToSessionStorage("messages", []);
-        console.log("clearing network error message in session storage");
-        await saveToSessionStorage("networkError", "");
+
+        // 4). making new request
+        const currentSliderValue = (await loadFromLocalStorage(
+          "pollingRate"
+        )) as number;
+        const repoOwner = (await loadFromLocalStorage("username")) as string;
+        const patCode = (await loadFromLocalStorage("patCode")) as string;
+
+        await startPolling({ currentSliderValue, repoOwner, patCode });
       } catch (e) {
         console.error(
           "Issue handling deletion of old rate limit error alarm followed by creation of new polling alarm following rate limit error period having elapsed"
@@ -133,4 +150,5 @@ export {
   handleDeleteAlarm,
   handleDeleteAllAlarms,
   handleLocalStorageStepChanges,
+  handleCheckAlarmExists,
 };

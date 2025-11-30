@@ -99,7 +99,7 @@ const handleStepForward = async (props: HandleStepForwardProps) => {
       )) as number;
       const patCode = (await loadFromLocalStorage("patCode")) as string;
 
-      await startPolling({ currentSliderValue, repoOwner, patCode });
+      startPolling({ currentSliderValue, repoOwner, patCode });
       console.log("initial polling complete");
     } else {
       console.log("activeNumPRs array is empty");

@@ -122,9 +122,9 @@ async function handleUpdateAllRepoNumPRs(
         }
 
         // display any error toasts
-        errorToastMessages.forEach((message) => {
-          return toast.error(message);
-        });
+        /*  errorToastMessages.forEach((message) => {
+           return toast.error(message);
+         }); */
 
         throw e;
       }

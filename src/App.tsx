@@ -9,7 +9,10 @@ import type {
   ActiveNumPRs,
 } from "./models/frontend/RepoCardModels.ts";
 import "./App.css";
-import { loadAllFromLocalStorage } from "./utilities/service-worker-funcs/storage-utils.ts";
+import {
+  loadAllFromLocalStorage,
+  saveToSessionStorage,
+} from "./utilities/service-worker-funcs/storage-utils.ts";
 import { toast } from "sonner";
 
 function App() {
@@ -97,16 +100,21 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (networkErrorMsg === "") {
-      toast.success(networkErrorMsg);
-    } else if (networkErrorMsg && networkErrorMsg !== "") {
+    if (networkErrorMsg === "Retry Success") {
+      toast.success("Network connection re-established!");
+      saveToSessionStorage("networkError", "Success");
+    } else if (networkErrorMsg && networkErrorMsg !== "Success") {
       toast.error(networkErrorMsg);
-    } else if (miscErrorMsgs.length > 0) {
+    }
+  }, [networkErrorMsg]);
+
+  useEffect(() => {
+    if (miscErrorMsgs.length > 0) {
       miscErrorMsgs.forEach((msg) => {
         toast.error(msg);
       });
     }
-  }, [networkErrorMsg, miscErrorMsgs]);
+  }, [miscErrorMsgs]);
 
   useEffect(() => {
     loadInitialData();
