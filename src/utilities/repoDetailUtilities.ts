@@ -5,20 +5,14 @@ import type {
 import { request } from "@octokit/request";
 import {
   HandleChangePageResultsProps,
-  HandleRefreshProps,
   HandleToggleAllSelectedReposProps,
   HandleToggleSingleRepoProps,
   RepoDetailUtilities,
 } from "@/models/utilities/RepoDetailUtilitiesModels.ts";
 import type { OctokitResponse } from "@octokit/types";
-import { makePollingCall } from "./polling/polling.ts";
 import { saveToLocalStorage } from "./service-worker-funcs/storage-utils.ts";
 import { getToast } from "./toastMessages.ts";
 import { toast } from "sonner";
-import {
-  handleCheckAlarmExists,
-  handleDeleteAlarm,
-} from "./service-worker-funcs/alarms.ts";
 
 async function handleSubmitUserName({
   username,
@@ -234,7 +228,7 @@ async function handleFetchUserRepos(
   }
 }
 
-async function handleRefresh({
+/* async function handleRefresh({
   activeNumPRs,
   repoOwner,
   patCode,
@@ -253,6 +247,7 @@ async function handleRefresh({
       const rateLimitErrorAlarmExists =
         await handleCheckAlarmExists("rateLimitError");
       if (rateLimitErrorAlarmExists) {
+        console.log("on manual refresh, rate limit error exists");
         await handleDeleteAlarm("rateLimitError");
       }
 
@@ -266,7 +261,7 @@ async function handleRefresh({
     await saveToLocalStorage("isRefreshing", false);
     throw e;
   }
-}
+} */
 
 async function handleChangePageResults({
   setNumPageResults,
@@ -390,7 +385,6 @@ async function handleToggleAllRepos({
 export {
   handleFetchUserRepos,
   handleSubmitUserName,
-  handleRefresh,
   handleChangePageResults,
   handleToggleAllRepos,
   handleToggleRepo,

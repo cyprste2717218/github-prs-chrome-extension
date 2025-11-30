@@ -28,6 +28,11 @@ import { toast } from "sonner";
 import { getToast } from "@/utilities/toastMessages";
 import { loadFromLocalStorage } from "@/utilities/service-worker-funcs/storage-utils";
 import { startPolling } from "@/utilities/polling/polling";
+import {
+  handleCheckAlarmExists,
+  handleCreateAlarm,
+  handleDeleteAlarm,
+} from "@/utilities/service-worker-funcs/alarms";
 
 const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {
   return (
@@ -100,6 +105,16 @@ const RefreshButton: React.FC<RefreshButtonProps> = ({
     const patCode = (await loadFromLocalStorage("patCode")) as string;
 
     await startPolling({ currentSliderValue, repoOwner, patCode });
+
+    // deleting rate limit error alarm if manual refresh is succesful before scheduled network error alarm is triggered
+    const rateLimitErrorAlarmExists = await handleCheckAlarmExists(
+      "rateLimitErrorAlarm"
+    );
+    if (rateLimitErrorAlarmExists) {
+      console.log("on manual refresh, rate limit error exists");
+      await handleDeleteAlarm("rateLimitErrorAlarm");
+      await handleCreateAlarm("pollingAlarm");
+    }
     console.log("succesfully refreshed prs");
   };
 
