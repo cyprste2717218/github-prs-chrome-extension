@@ -1,0 +1,19 @@
+
+
+node_modules
+dist
+image
+
+# .dockerignore
+# .husky
+# .vscode
+# *.dockerfile
+# .github
+# .gitignore
+# .nvmrc
+# .prettierignore
+# .prettierrc
+LICENSE
+README.md
+# package-lock.json
+
