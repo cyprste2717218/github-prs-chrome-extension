@@ -1,0 +1,13 @@
+services:
+  browser-extension:
+    build:
+      context: .
+      dockerfile: browser-extension.dockerfile
+  json-server:
+    image: vimagick/json-server
+    command: -p 3000 -w db.json
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/data
+    restart: always

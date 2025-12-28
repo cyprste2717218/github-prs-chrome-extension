@@ -6,7 +6,7 @@ USER root
 
 COPY . .
 
-RUN sudo apt-get install xvfb
+RUN apt update
 
 RUN npm install
 
@@ -14,7 +14,7 @@ RUN npm run build
 
 RUN npx puppeteer browsers install chrome
 
-# RUN useradd -ms /bin/bash default
-# USER default
+RUN useradd -ms /bin/bash default
+USER default
 
 ENTRYPOINT ["npm", "run", "test:end"]

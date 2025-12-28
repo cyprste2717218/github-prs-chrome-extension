@@ -29,6 +29,7 @@ describe("User Flow (E2E) Testing", () => {
       enableExtensions: [EXTENSION_PATH],
       args: [
         "--no-sandbox",
+        "--disable-gpu",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
         "-enable-unsafe-extension-debugging",
