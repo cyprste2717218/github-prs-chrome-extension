@@ -19,6 +19,9 @@ const ChooseReposComponent = ({
   allReposToggled,
   activeResultsPage,
 }: ChooseReposComponentProps) => {
+  // Threshold for the scroll to top button to appear
+  const thresholdPixels = -128;
+
   return (
     <div
       style={{
@@ -59,7 +62,10 @@ const ChooseReposComponent = ({
         />
       </div>
       <div className="fixed bottom-4 right-0 z-10">
-        <ButtonCustom type="scrollToTop" />
+        <ButtonCustom
+          type="scrollToTop"
+          scrollThresholdPixels={thresholdPixels}
+        />
       </div>
     </div>
   );

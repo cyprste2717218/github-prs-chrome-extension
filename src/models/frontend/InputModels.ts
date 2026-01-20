@@ -23,7 +23,9 @@ type SettingsButtonProps = ButtonProps<{
   onClick: () => void;
 }>;
 
-type ScrollToTopButtonProps = ButtonProps<{}>;
+type ScrollToTopButtonProps = ButtonProps<{
+  scrollThresholdPixels?: number;
+}>;
 
 type RefreshButtonProps = ButtonProps<{
   setActiveNumPRs: React.Dispatch<React.SetStateAction<ActiveNumPRs[]>>;

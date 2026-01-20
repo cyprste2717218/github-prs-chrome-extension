@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useScrollPosition } from "@n8tb1t/use-scroll-position";
 
-function displayScrollToTopButton() {
+function displayScrollToTopButton(thresholdPixels: number = -128) {
   const [scrollTopButtonStyle, setScrollTopButtonStyle] = useState({});
 
   useScrollPosition(
     ({ currPos }) => {
-      const isVisible = currPos.y < -128;
+      const isVisible = currPos.y < thresholdPixels;
 
       const shouldBeStyle = {
         visibility: isVisible ? "visible" : "hidden",

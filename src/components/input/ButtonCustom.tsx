@@ -42,7 +42,9 @@ const SettingsButton: React.FC<SettingsButtonProps> = ({ onClick }) => {
   );
 };
 
-const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({}) => {
+const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({
+  scrollThresholdPixels = -128,
+}) => {
   function handleClick() {
     window.scrollTo({
       top: 0,
@@ -50,7 +52,7 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({}) => {
     });
   }
 
-  const hookStyle = displayScrollToTopButton();
+  const hookStyle = displayScrollToTopButton(scrollThresholdPixels);
 
   return (
     <Button
