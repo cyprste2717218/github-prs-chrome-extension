@@ -60,6 +60,6 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^6.4.1",
-    "xo": "^0.60.0"
+    "xo": "^4.0.0"
   }
 }
