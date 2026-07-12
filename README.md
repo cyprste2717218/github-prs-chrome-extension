@@ -9,12 +9,29 @@
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Chrome Extension](https://img.shields.io/badge/manifest%20v3-chrome%20extension-4285F4.svg?style=for-the-badge&logo=googlechrome&logoColor=white)
+![Jest](https://img.shields.io/badge/jest-%23C21325.svg?style=for-the-badge&logo=jest&logoColor=white)
+![Puppeteer](https://img.shields.io/badge/puppeteer-%2340B5A4.svg?style=for-the-badge&logo=puppeteer&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/cyprste2717218/github-prs-chrome-extension/test.yml?style=for-the-badge&label=build)](https://github.com/cyprste2717218/github-prs-chrome-extension/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 Chrome extension that displays the number of open pull requests across tracked repositories (note: public repos only at current but this may change).
 
 Built in React with TypeScript using Vite, utilising [shadcn/ui](https://ui.shadcn.com) components using tailwind on the frontend.
 
 To-do: include link to chrome web store listing when out here
+
+## Contents
+
+- [How to Use](#how-to-use)
+- [Authenticated Approach](#authenticated-approach)
+- [Local Setup](#local-setup)
+- [Project Structure](#project-structure)
+- [Development](#development)
+  - [Testing](#testing)
+- [Git hooks (husky)](#git-hooks-husky)
+- [FAQ/Gotchas](#faqgotchas)
 
 ## How to Use
 
@@ -46,6 +63,34 @@ You can generate a Personal Access Token (classic) with no additional permission
 4). In Chrome, go to chrome://extensions and enable "Developer mode" in the top-right corner.
 
 5). Click the "<em>Load unpacked</em>" button and select the generated `dist/` directory
+
+# Project Structure
+
+```
+├── public/                        # manifest.json, icons — copied as-is into dist/
+├── src/
+│   ├── components/                # popup UI (React) — StepComponent.tsx drives the wizard flow
+│   │   ├── header/
+│   │   ├── input/
+│   │   ├── repo-cards/
+│   │   └── ui/                    # shadcn/ui primitives
+│   ├── models/                    # shared TypeScript types (frontend + utilities)
+│   ├── utilities/
+│   │   ├── hooks/                 # e.g. useChromeStorageListener
+│   │   ├── polling/                # GitHub PR-count fetching logic
+│   │   └── service-worker-funcs/  # MV3 background service worker (alarms, storage-utils)
+│   ├── App.tsx
+│   └── main.tsx
+├── test/
+│   ├── unit/                      # Jest, *.unit.test.ts
+│   ├── integration/               # Jest, *.it.test.ts (currently empty)
+│   └── e2e/                       # Puppeteer, *.end.test.ts
+├── data/                          # json-server mock fixtures (db.json, routes.json)
+├── image/                         # README screenshots/demo assets
+├── browser-extension.dockerfile
+├── docker-compose.yml
+└── vite.config.ts                 # defines the extension's separate build entry points
+```
 
 # Development
 
