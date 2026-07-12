@@ -122,7 +122,7 @@ async function handleLocalStorageStepChanges(
 ): Promise<void> {
   // checking if localStorage indicates on repo tracking display screen, to determine if polling alarm needs to be created or deleted
   if (area === "local" && changes.step) {
-    const newValue = JSON.parse(changes.step.newValue);
+    const newValue = JSON.parse(changes.step.newValue as string);
     console.log("the step is:", newValue);
 
     if (newValue !== 4) {
