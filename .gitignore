@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+scripts/store-assets/output
+scripts/icon/preview*
 *.local
 tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
