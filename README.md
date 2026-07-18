@@ -25,6 +25,7 @@ To-do: include link to chrome web store listing when out here
 ## Contents
 
 - [How to Use](#how-to-use)
+- [Screenshots](#screenshots)
 - [Authenticated Approach](#authenticated-approach)
 - [Local Setup](#local-setup)
 - [Project Structure](#project-structure)
@@ -47,6 +48,16 @@ To-do: include link to chrome web store listing when out here
 3). Select the Repositories You Wish to Track
 
 4). Voila! If you want to refresh your pull request repo details, press the refresh button
+
+## Screenshots
+
+<div align="center">
+	<img src="image/screenshot-choose-repos.png" width="700" />
+	<br><br>
+	<img src="image/screenshot-tracked-repos.png" width="700" />
+	<br><br>
+	<img src="image/screenshot-settings.png" width="700" />
+</div>
 
 # Authenticated Approach
 

@@ -154,6 +154,18 @@ async function main() {
   // slightly after the worker target itself becomes available.
   await new Promise((r) => setTimeout(r, 1000));
 
+  // Each scene is captured at its own natural content height (no padding to
+  // match the tallest scene). The raw PNG's pixel dimensions aren't a
+  // reliable source for that height downstream, though: non-headless Chrome
+  // applies an inconsistent OS display-scaling factor per popup window, so
+  // two captures at the identical CSS viewport can come out at different
+  // physical pixel widths. compose.mjs would then derive the wrong aspect
+  // ratio from those pixels and visibly stretch/compress the image. So we
+  // record each scene's true CSS-space height here and hand it to
+  // compose.mjs directly instead of letting it infer aspect ratio from the
+  // PNG.
+  const cssHeights = {};
+
   for (const scene of scenes) {
     console.log(`Seeding scene: ${scene.name}`);
     await seedStorage(worker, scene.storage);
@@ -180,7 +192,8 @@ async function main() {
     // inner scrolling container, not document-level overflow).
     const contentHeight = await popupPage.evaluate(() => {
       const style = document.createElement("style");
-      style.textContent = "* { scrollbar-width: none !important; } *::-webkit-scrollbar { display: none !important; }";
+      style.textContent =
+        "* { scrollbar-width: none !important; } *::-webkit-scrollbar { display: none !important; }";
       document.head.appendChild(style);
       const root = document.getElementById("root") ?? document.body;
       return Math.max(
@@ -189,18 +202,25 @@ async function main() {
         document.documentElement.scrollHeight
       );
     });
-    await popupPage.setViewport({
-      width: POPUP_WIDTH,
-      height: Math.min(Math.max(contentHeight + 20, 300), 900),
-    });
+    // A few px of slack avoids re-triggering a scrollbar right at the
+    // boundary; no min/max clamp — this is each scene's true height.
+    const cssHeight = contentHeight + 4;
+    await popupPage.setViewport({ width: POPUP_WIDTH, height: cssHeight });
     await new Promise((r) => setTimeout(r, 200));
 
     const outPath = path.join(OUT_DIR, `${scene.name}.png`);
     await popupPage.screenshot({ path: outPath, fullPage: false });
     console.log(`  -> ${outPath}`);
 
+    cssHeights[scene.name] = { width: POPUP_WIDTH, height: cssHeight };
+
     await popupPage.close();
   }
+
+  fs.writeFileSync(
+    path.join(OUT_DIR, "dimensions.json"),
+    JSON.stringify(cssHeights, null, 2)
+  );
 
   await browser.close();
   console.log("Done.");

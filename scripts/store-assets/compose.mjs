@@ -2,6 +2,10 @@
 // Chrome Web Store-ready assets: two 1280x800 screenshots, a 440x280 small
 // promo tile, and a 1400x560 marquee promo tile. Pure HTML/CSS rendered via
 // Puppeteer — no image-processing deps required.
+//
+// The embedded popup screenshots are placed at their native captured pixel
+// dimensions — never resized/rescaled — so nothing about them is stretched
+// or compressed once they're overlaid on the background/frame/copy.
 
 import puppeteer from "puppeteer";
 import path from "path";
@@ -33,14 +37,6 @@ const ICON = toDataUriFromPublic("icon128.png");
 const TRACKED_SHOT = toDataUri("01-tracked-repos.png");
 const SETTINGS_SHOT = toDataUri("02-settings.png");
 const CHOOSE_REPOS_SHOT = toDataUri("04-choose-repos.png");
-
-// Screenshots were captured at the popup's natural (unscaled) CSS width;
-// downscale the displayed image so it renders at a consistent ~420px wide
-// regardless of the OS display-scaling factor baked into the PNG's pixels.
-const DISPLAY_WIDTH = 420;
-function displayHeight(shot) {
-  return Math.round((shot.height / shot.width) * DISPLAY_WIDTH);
-}
 
 const FONT_STACK = `'Source Code Pro', 'Courier New', monospace`;
 const BRAND_YELLOW = "#f5c518";
@@ -92,7 +88,7 @@ const baseStyles = `
   }
 `;
 
-function screenshotSceneHtml({ shotDataUri, shotWidth, shotHeight, heading, subheading }) {
+function screenshotSceneHtml({ shot, heading, subheading }) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>${baseStyles}
     .layout { display: flex; width: 100%; height: 100%; align-items: center; padding: 0 90px; gap: 70px; }
     .copy { flex: 0 0 420px; }
@@ -101,7 +97,7 @@ function screenshotSceneHtml({ shotDataUri, shotWidth, shotHeight, heading, subh
     .copy p { font-size: 18px; line-height: 1.5; color: #444; }
     .accent { color: ${BRAND_YELLOW}; -webkit-text-stroke: 1px ${INK}; }
     .frame-wrap { position: relative; flex: 1; display: flex; justify-content: center; }
-    .browser-chrome { width: ${shotWidth + 8}px; }
+    .browser-chrome { width: ${shot.width + 8}px; }
     .browser-toolbar .dot:nth-child(1) { background: #ff5f57; }
     .browser-toolbar .dot:nth-child(2) { background: #febc2e; }
     .browser-toolbar .dot:nth-child(3) { background: #28c840; }
@@ -121,7 +117,7 @@ function screenshotSceneHtml({ shotDataUri, shotWidth, shotHeight, heading, subh
             <div class="browser-toolbar">
               <div class="dot"></div><div class="dot"></div><div class="dot"></div>
             </div>
-            <img class="popup-shot" src="${shotDataUri}" width="${shotWidth}" height="${shotHeight}" />
+            <img class="popup-shot" src="${shot.uri}" width="${shot.width}" height="${shot.height}" />
           </div>
           <div class="puzzle-badge"><img src="${ICON}" /></div>
         </div>
@@ -147,6 +143,24 @@ function smallPromoHtml() {
 }
 
 function marqueeHtml() {
+  // The marquee canvas (1400x560) is too short to fit the popup screenshot
+  // at its native captured size (a tall, portrait-oriented popup). Unlike
+  // the store screenshots, it has to be scaled down to fit here — but
+  // uniformly, by the same factor on both axes, so the aspect ratio (and
+  // everything drawn inside it) stays exactly proportional. That's
+  // different from the earlier bug, which stretched width and height by
+  // *different* factors and visibly distorted the image.
+  const availableWidth = 1400 - 110 * 2 - 520 - 90;
+  const toolbarHeight = 40;
+  const availableImageHeight = 560 - 40 - toolbarHeight;
+  const scale = Math.min(
+    availableWidth / TRACKED_SHOT.width,
+    availableImageHeight / TRACKED_SHOT.height,
+    1
+  );
+  const imgWidth = Math.round(TRACKED_SHOT.width * scale);
+  const imgHeight = Math.round(TRACKED_SHOT.height * scale);
+
   return `<!doctype html><html><head><meta charset="utf-8"><style>${baseStyles}
     .layout { display: flex; width: 100%; height: 100%; align-items: center; padding: 0 110px; gap: 90px; }
     .copy { flex: 0 0 520px; }
@@ -154,7 +168,7 @@ function marqueeHtml() {
     .copy h1 { font-size: 48px; line-height: 1.15; color: ${INK}; margin-bottom: 16px; }
     .copy p { font-size: 20px; line-height: 1.5; color: #444; }
     .frame-wrap { position: relative; flex: 1; display: flex; justify-content: center; }
-    .browser-chrome { width: ${420 + 8}px; }
+    .browser-chrome { width: ${imgWidth + 8}px; }
     .browser-toolbar .dot:nth-child(1) { background: #ff5f57; }
     .browser-toolbar .dot:nth-child(2) { background: #febc2e; }
     .browser-toolbar .dot:nth-child(3) { background: #28c840; }
@@ -170,7 +184,7 @@ function marqueeHtml() {
         <div class="frame-wrap">
           <div class="browser-chrome">
             <div class="browser-toolbar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-            <img class="popup-shot" src="${TRACKED_SHOT.uri}" width="${DISPLAY_WIDTH}" height="${displayHeight(TRACKED_SHOT)}" />
+            <img class="popup-shot" src="${TRACKED_SHOT.uri}" width="${imgWidth}" height="${imgHeight}" />
           </div>
         </div>
       </div>
@@ -192,37 +206,31 @@ async function main() {
   const shots = [
     {
       out: "store-screenshot-1-tracked-repos.png",
-      shotDataUri: TRACKED_SHOT.uri,
-      shotWidth: DISPLAY_WIDTH,
-      shotHeight: displayHeight(TRACKED_SHOT),
+      shot: TRACKED_SHOT,
       heading: `Track every open <span class="accent">PR</span>, at a glance`,
       subheading:
         "See open pull request counts across all your tracked GitHub repositories, right from your toolbar.",
     },
     {
       out: "store-screenshot-2-settings.png",
-      shotDataUri: SETTINGS_SHOT.uri,
-      shotWidth: DISPLAY_WIDTH,
-      shotHeight: displayHeight(SETTINGS_SHOT),
+      shot: SETTINGS_SHOT,
       heading: "Poll on your schedule",
       subheading:
         "Choose how often the extension checks GitHub, from once a minute to once every 10.",
     },
     {
       out: "store-screenshot-3-choose-repos.png",
-      shotDataUri: CHOOSE_REPOS_SHOT.uri,
-      shotWidth: DISPLAY_WIDTH,
-      shotHeight: displayHeight(CHOOSE_REPOS_SHOT),
+      shot: CHOOSE_REPOS_SHOT,
       heading: "Pick exactly what to track",
       subheading:
-        "Browse your repositories and choose which ones to track for open pull requests.",
+        "Enter any GitHub user or organization, then browse their repositories and choose which ones to track for open pull requests.",
     },
   ];
 
-  for (const shot of shots) {
-    console.log(`Rendering ${shot.out}`);
-    const html = screenshotSceneHtml(shot);
-    await renderToPng(html, 1280, 800, path.join(OUT_DIR, shot.out));
+  for (const entry of shots) {
+    console.log(`Rendering ${entry.out}`);
+    const html = screenshotSceneHtml(entry);
+    await renderToPng(html, 1280, 800, path.join(OUT_DIR, entry.out));
   }
 
   console.log("Rendering small-promo-tile.png");
